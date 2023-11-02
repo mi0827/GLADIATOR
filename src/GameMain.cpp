@@ -62,13 +62,14 @@ void GameUpdate()
 	{
 		player.m_move_judge = true; // 移動に支障があるのでtrueを返す
 		player.Get_other(&object[0]->m_cube_hit_pos, &object[0]->m_cube_size_half); // Playerに当たった相手の情報を渡する
+		player.Move_Hit_Update(); // 壁擦り用の関数
 	}
 	else {
 		player.m_move_judge = false;
 	}
+	
 
 	// 各クラスの更新処理
-	player.move2(&camera.m_rot);
 	player2.Update(&camera.m_rot);
 	field.Update();
 	camera.Update(&player.m_pos);

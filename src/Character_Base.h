@@ -16,6 +16,7 @@ public:
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
 	virtual void Update(Vector3* camera_rot) = 0;		//	更新処理
+	virtual void Move_Hit_Update() = 0; // 壁擦り用の関数
 	virtual void Draw() = 0;		//	描画処理
 	virtual void Exit() = 0;		//	終了処理
 
@@ -31,7 +32,8 @@ public:
 	// キャラクターの移動用関数(ゲームパッド用)
 	void Move_GamePad(bool* m_move_judg, bool* m_check_move, Vector3* mov, Vector3* camera_rot, const float* mov_speed);
 
-
+	// キャラクターの壁擦り用関数
+	void Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* other_pos, Vector3* other_size);
 
 	// 当たり判定のあったとき当たった相手の情報をとってくる関数
 	void Get_other(float* hit_other_x,float* hit_other_z,float* hit_other_r); // カプセル、円

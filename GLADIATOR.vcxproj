@@ -22,7 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{5819d4c6-a795-4ac6-b524-6c85f9b27fc2}</ProjectGuid>
-    <RootNamespace>base</RootNamespace>
+    <RootNamespace>GLADIATOR</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>GLADIATOR</ProjectName>
   </PropertyGroup>

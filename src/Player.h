@@ -31,7 +31,7 @@ public:
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
 	void Update(Vector3* camera_rot) override;		//	更新処理
-	void move2(Vector3* camera_rot) ;		//	更新処理
+	void Move_Hit_Update()override;
 
 	void Draw()override;		//	描画処理
 	void Exit()override;		//	終了処理

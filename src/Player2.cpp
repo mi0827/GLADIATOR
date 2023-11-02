@@ -195,6 +195,10 @@ void Player2::Update(Vector3* camera_rot)
 	}*/
 }
 
+void Player2::Move_Hit_Update()
+{
+}
+
 
 // •`‰æˆ—
 void Player2::Draw()

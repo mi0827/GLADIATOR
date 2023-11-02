@@ -77,6 +77,20 @@ void CharacterBase::Move_GamePad(bool* m_move_judg, bool* m_check_move, Vector3*
 	
 }
 
+// ƒLƒƒƒ‰ƒNƒ^[‚Ì•ÇŽC‚è—pŠÖ”
+void CharacterBase::Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* other_pos, Vector3* other_size)
+{
+	if (before_pos->x + hit_size->x >= other_pos->x -other_size->x && before_pos->x - hit_size->x <= other_pos->x +other_size->x) {
+		// c•ûŒü‚¾‚¯–ß‚·
+		m_pos.z = before_pos->z;
+		
+	}
+	if (before_pos->z + hit_size->z >= other_pos->z -other_size->z && before_pos->z - hit_size->z <= other_pos->z +other_size->z) {
+		// c•ûŒü‚¾‚¯–ß‚·
+		m_pos.x = before_pos->x;
+	}
+}
+
 void CharacterBase::Get_other(float* hit_other_x, float* hit_other_z, float* hit_other_r)
 {
 	m_hit_other_pos = { *hit_other_x,*hit_other_z,*hit_other_r };
