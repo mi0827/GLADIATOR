@@ -1,0 +1,81 @@
+#pragma once
+
+#include "Base.h"
+
+// キャラクタークラス
+// Baseクラスを継承
+class CharacterBase : public Base
+{
+public:
+	//---------------
+	// 関数の定義
+	//---------------
+	//virtual と = 0 しておくことで派生クラスでオーバーロードできる
+	CharacterBase();
+	virtual void Init() = 0;        //　初期処理
+	// カメラに対して前後左右に移動するため
+	// カメラがどの方向にあるのかを情報として使う
+	virtual void Update(Vector3* camera_rot) = 0;		//	更新処理
+	virtual void Draw() = 0;		//	描画処理
+	virtual void Exit() = 0;		//	終了処理
+
+	// 前移動
+	void Move_Front(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	// 後ろ移動
+	void Move_Dehind(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	// 左移動
+	void Move_Left(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	// 右移動
+	void Move_Right(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+
+	// キャラクターの移動用関数(ゲームパッド用)
+	void Move_GamePad(bool* m_move_judg, bool* m_check_move, Vector3* mov, Vector3* camera_rot, const float* mov_speed);
+
+
+
+	// 当たり判定のあったとき当たった相手の情報をとってくる関数
+	void Get_other(float* hit_other_x,float* hit_other_z,float* hit_other_r); // カプセル、円
+	void Get_other(Vector3* hit_other_1, Vector3* hit_other_2);               // 立方体
+	//---------------
+	// 定数の定義
+	//---------------
+public:
+
+	//---------------
+	// 変数の定義
+	//---------------
+public:
+	// ゲームパッド用の変数
+	int pad_input;
+
+	//-----------------------------------------------
+	// 各キャラの当たり判定用変数
+	//==============================
+	// 当たり判定があったときの各処理の判断用変数
+	bool m_move_judge;         // いまは移動していいていいかの判断
+	bool m_attack_judge;       // 今攻撃中なのかの判断 
+	Vector3 m_hit_other_pos;  // 当たり判定があった相手の座標を入れる
+	Vector3 m_hit_other_size; // 当たり判定があった相手のサイズを入れる（立方体の場合）
+	//===============================
+	// カプセル型の当たり判定用変数
+	Vector3 m_hit_body_pos_top;     // カプセルの上側 
+	Vector3 m_hit_body_pos_under;   // 下側
+	float m_hit_body_r = 0;         // 半径
+
+	// 移動用当たり判定（ボックス）
+	Vector3 m_move_hit_box_pos;  // キャラの足の下にパネルのようにして使う
+	Vector3 m_move_hit_box_size; // パネルサイズ
+	Vector3 m_charcter_size;     // プレイヤーをボックスとしたときの大きさ(中心座標からPANEL_HA+L)
+protected:
+	int	m_model = 0;	  // 各キャラのモデルを入れる用の変数
+	int anim_num = 0;     // 各継承先のクラスでのアニメーションを切り替える用の変数
+	int  action_mode;     // 今攻撃モードなのかを判断する用の変数
+
+	// 移動に関する物
+	bool m_check_move;    // 移動中かどうかを判断する変数
+	Vector3 mov;          //  ゲームパッド用移動用ベクトル用変数
+public:
+	Vector3 before_mov;   // 毎フレーム移動前の座標をいれる用の変数
+
+
+};

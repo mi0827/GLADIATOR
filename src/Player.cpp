@@ -1,0 +1,515 @@
+#include "WinMain.h"
+#include "GameMain.h"
+#include "Player.h"
+
+
+
+#define PANEL_SIZE	5.0f              // パネルの大きさ
+#define PANEL_HALF	(PANEL_SIZE/2.0f) // パネルの半分の大きさ
+
+// コンストラクタ（初期化）
+Player::Player()
+{
+	m_pos.set(0.0f, 0.0f, -50.0f);           // 初期座標の設定
+	m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
+	before_mov.set(m_pos);                       // 最初は最初の座標を入れとく
+
+	// アニメーションが何フレーム進んでいるか用の変数
+	// 最初は０から開始
+	for (int i = 0; i < ANIM_MAX; i++)
+	{
+		anim_frame[i] = 0.0f;
+	}
+	anim_num = 0;                                     // 最初は０ばんのアニメーションをする
+	action_mode = 0;                                  // 最初は普通アニメーションモードにしておく
+	attack_anim_pick = -1;                            // 最初はなんのアニメーションも入っていない
+	m_check_move = false;                             // 最初は走っていいない
+
+	//------------------------------
+	// 当たり判定用変数
+
+	//=============
+	// カプセル
+	m_hit_body_pos_top.clear();                       // 上側
+	m_hit_body_pos_under.clear();                     // 下側
+	m_hit_body_r = 2.0f;                              // 半径
+	//======================
+	// 移動用のボックス
+	// m_move_hit_box_pos.clear();                                                          // パネルの座標 
+	m_move_hit_box_size.set(PANEL_HALF - 0.1, PANEL_HALF - 0.1, PANEL_HALF - 0.1);                // パネルの大きさ
+	// m_charcter_size.set(PANEL_HALF - 0.1, PANEL_HALF - 0.1, PANEL_HALF - 0.1 ); // キャラをボックスとしたときの大きさ（中心座標から一定分ずらす）
+																	// 毎フレーム移動前の座標を入れる
+
+
+	// 判断用、フラグ変数
+	m_move_judge = false;                              // 最初は動いてはいけない
+	m_attack_judge = false;                            // 攻撃していない
+	bead_hit_judg = false;                            // なににもあたってない
+}
+
+// 初期処理
+void Player::Init()
+{
+	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
+	// 普通アニメーションの初期化
+	// アニメーションの読み込み
+	anim_model[ANIM_IDLE] = MV1LoadModel("Data/Model/Player/Animation/Player_Idle.mv1"); // アイドル
+	anim_model[ANIM_RUN] = MV1LoadModel("Data/Model/Player/Animation/Player_Run.mv1");   // 走る
+	for (int i = 0; i < ANIM_MAX; i++)
+	{
+		anim_attach[i] = MV1AttachAnim(m_model, 1, anim_model[i]);             // モデルにアニメーションをアタッチ（つける）する
+		anim_total[i] = MV1GetAttachAnimTotalTime(m_model, anim_attach[i]);               // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		// 不必要なものにはブレンド率を0.0fにしておく（最初はアイドルにしておく）
+		if (i != ANIM_IDLE)  // アイドル以外のアニメーションをモデルから外す
+		{
+			anim_rate[i] = 0.0f;
+		}
+		else {
+			anim_rate[i] = 1.0f;
+		}
+	}
+
+	// 攻撃アニメーションの初期化
+	// アニメーションの読み込み
+	attack_anim_model[ATTACK_LONG_NORMAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/long_normal_attack.mv1"); // 遠距離普通攻撃
+	attack_anim_model[ATTACK_SHORT_NORMAL_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_1.mv1"); // 
+	attack_anim_model[ATTACK_SHORT_NORMAL_2_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_2.mv1");
+	attack_anim_model[ATTACK_SLIDE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/slide.mv1");
+	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/special_attack.mv1");
+	for (int i = 0; i < ATTACK_ANIM_MAX; i++)
+	{
+		attack_anim_attach[i] = MV1AttachAnim(m_model, 1, attack_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
+		attack_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		attack_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+	}
+
+
+	pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
+
+
+}
+
+// 更新処理
+void Player::Update(Vector3* camera_rot)
+{
+
+	before_mov = m_pos; // 移動される前に入れ替えとく
+
+
+	// アクションモードの判断してそれに合った操作をするようにする
+	switch (action_mode)
+	{
+	case NORMAL_ACTION:        // 普通アクション 
+		m_check_move = false;  // 常にリセット
+
+		// 移動中はダッシュする
+		// ゲームパッドの入力状態をとる
+		//	ゲームパッドの左スティックの値を使って座標（ m_pos ）の値を変更
+		// 左ステックでプレイヤーの向きや座標の更新
+		// ゲームパッドの情報を取得（XINPUT の情報）
+		XINPUT_STATE input;
+		// ゲームパッドの情報を丸ごと取得
+		GetJoypadXInputState(DX_INPUT_PAD1, &input);
+
+
+		// 左スティックの値を設定
+		mov.x = input.ThumbLX;
+		mov.z = input.ThumbLY;
+		// -32768 ～ 32767 を-1.0f　～　1.0fにします
+		mov /= 32768.0f;
+		// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
+		if (mov.GetLength() > 0.5f) {
+			CharacterBase::Move_GamePad(&m_move_judge, &m_check_move, &mov, camera_rot, &MOVE_SPEED);
+		}
+
+		// WASDキーでプレイヤーの移動
+		if (CheckHitKey(KEY_INPUT_W)) // 上移動
+		{
+			CharacterBase::Move_Front(&m_move_judge, &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		}
+		if (CheckHitKey(KEY_INPUT_S)) // 下移動
+		{
+			CharacterBase::Move_Dehind(&m_move_judge, &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		}
+		if (CheckHitKey(KEY_INPUT_A)) // 左移動
+		{
+			CharacterBase::Move_Left(&m_move_judge, &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		}
+		if (CheckHitKey(KEY_INPUT_D)) // 右移動
+		{
+			CharacterBase::Move_Right(&m_move_judge, &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		}
+
+
+		// 移動中ならアニメーションの変更と当たり判定の移動
+		if (m_check_move) {
+
+			anim_num = ANIM_RUN;  // 移動中なので走るアニメーションに
+			{                     // プレイヤー座標に当たり判定用のカプセルの位置を合わせる
+				m_hit_body_pos_top = m_pos;
+				m_hit_body_pos_top.y += 17.0f; // 高さを出す
+				m_hit_body_pos_under = m_pos;
+				m_hit_body_pos_under.y += 3.0f;
+			}
+		}
+		else {                           // どの移動キーも押されてなかったら
+			anim_num = ANIM_IDLE;        // アイドル状態にする
+			{                            // プレイヤー座標に当たり判定用のカプセルの位置を合わせる
+				m_hit_body_pos_top = m_pos;
+				m_hit_body_pos_top.y += 17.0f; // 高さを出す
+				m_hit_body_pos_under = m_pos;
+				m_hit_body_pos_under.y += 3.0f;
+
+			}
+		}
+
+		//=================================
+		// 近距離攻撃
+		//=================================
+		// マウスの左クリックまたはAボタンで近距離攻撃
+		if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_1) {
+			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+			attack_anim_attach[ATTACK_SHORT_NORMAL_2_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_SHORT_NORMAL_2_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
+			action_mode = ATTACK_ACTION;                    // 攻撃アクションに変更
+			attack_anim_pick = ATTACK_SHORT_NORMAL_2_ANIM;  // 近距離攻撃アクションに設定 
+			m_attack_judge = true;                           // 攻撃が始まるので攻撃中にしておく
+			break;
+		}
+		//=================================
+	    // 遠距離攻撃
+	    //=================================
+		// マウスの右クリック、または、Yボタンで遠距離攻撃
+		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_4) {
+			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+			attack_anim_attach[ATTACK_LONG_NORMAL_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_LONG_NORMAL_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
+			action_mode = ATTACK_ACTION;                 // 攻撃アクションに変更
+			attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 玉投げアクションに設定 
+			m_attack_judge = true;                        // 攻撃が始まるので攻撃中にしておく
+			break;
+		}
+
+		//=================================
+		// スライディング
+		//=================================
+		// スペースキークリック、または、Bボタンで遠距離攻撃
+		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_2) {
+			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+			attack_anim_attach[ATTACK_SLIDE_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_SLIDE_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
+			action_mode = ATTACK_ACTION;                 // 攻撃アクションに変更
+			attack_anim_pick = ATTACK_SLIDE_ANIM;        // スライディングアクションに設定 
+			m_attack_judge = true;                        // 攻撃が始まるので攻撃中にしておく
+			break;
+		}
+
+
+		//=================================
+		// 必殺技
+		//=================================
+		// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
+		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_6 && GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_5) {
+			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+			attack_anim_attach[ATTACK_SPECIAL_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_SPECIAL_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
+			action_mode = ATTACK_ACTION;                 // 攻撃アクションに変更
+			attack_anim_pick = ATTACK_SPECIAL_ANIM;      // 必殺技アクションに設定 
+			m_attack_judge = true;                        // 攻撃が始まるので攻撃中にしておく
+			break;
+		}
+
+		// アニメーション用のフレームカウントを進める
+		for (int i = 0; i < ANIM_MAX; ++i) {
+			anim_frame[i] += 1.0f;
+			if (anim_frame[i] >= anim_total[i]) {
+				anim_frame[i] = 0.0f;
+			}
+			// アニメーションの再生
+			// 使いたくないアニメーション
+			if (i != anim_num) {
+
+				anim_rate[i] -= 0.1f; // 割合を減らす
+			}
+			else {// 使いたいアニメーション		
+				anim_rate[i] += 0.1f; // 割合を増やす
+			}
+
+			anim_rate[i] = max(0.0f, min(anim_rate[i], 1.0f));                                    // 割合を0.0f ～ 1.0fにする（これをしないと踊り狂う） 
+			MV1SetAttachAnimTime(m_model, anim_attach[i], anim_frame[i]);  // そのフレームのアニメーションにする
+			MV1SetAttachAnimBlendRate(m_model, anim_attach[i], anim_rate[i]);   // それぞれにアニメーションの割合分再生します
+		}
+		break;
+
+	case ATTACK_ACTION: // 攻撃アクション
+		// アニメーションの再生
+		// 攻撃アニメーション用のフレームカウントを進める
+		attack_anim_frame[attack_anim_pick]++;
+		if (attack_anim_frame[attack_anim_pick] >= attack_anim_total[attack_anim_pick]) { // アニメーションが一周したら
+			attack_anim_frame[attack_anim_pick] = 0.0f;
+			attack_anim_attach[attack_anim_pick] = MV1DetachAnim(m_model, attack_anim_attach[attack_anim_pick]);  // 攻撃アニメーションをディタッチしておく
+			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
+			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
+			// 攻撃が終わったのでこうげきしていないようにする
+			// m_attack_judg = false;
+		}
+		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
+		break;
+	}
+
+
+	if (m_attack_judge) {
+
+		// 弾用の変数
+		if (lifespan_count >= 120.0f) {
+			bead_pos = new Vector3;
+			*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
+			bead_pos->y += 10.0f; // y座標をずらして空中に浮かべる
+		}
+		// 一旦前に飛ばす
+		bead_pos->x += 3 * sinf(TO_RADIAN(m_rot.y));
+		bead_pos->z += 3 * cosf(TO_RADIAN(m_rot.y));
+		lifespan_count--; // 弾が消えるまでのカウントを進める
+
+		// カウントが一定にまで減るか、当たり判定があったら
+		if (lifespan_count <= 0 || bead_hit_judg) {
+			delete bead_pos; // 弾の解放
+			bead_pos = NULL;
+			lifespan_count = 120.0f; // カウントのリセット
+			m_attack_judge = false; // 攻撃を終わらせておく
+		}
+	}
+
+	/*if (m_attack_judg) {
+		switch (attack_anim_pick)
+		{
+		case ATTACK_LONG_NORMAL_ANIM:
+
+			break;
+		}
+
+	}*/
+}
+void Player::move2(Vector3* camera_rot)
+{
+
+
+	// アクションモードの判断してそれに合った操作をするようにする
+	switch (action_mode)
+	{
+	case NORMAL_ACTION:        // 普通アクション 
+		m_check_move = false;  // 常にリセット
+
+		// 移動中はダッシュする
+		// ゲームパッドの入力状態をとる
+		//	ゲームパッドの左スティックの値を使って座標（ m_pos ）の値を変更
+		// 左ステックでプレイヤーの向きや座標の更新
+
+
+		clsDx();
+		// 計算がうまくいかなくて動かなくなる
+		// 移動宙に異変を検知
+		if (m_move_judge) {
+			// 当たっていた座標を帰す
+				// platyer_pos = befre;
+				// 移動前のプレイヤーとこのパメルの状況がドンなんかを見て横に戻すか縦に戻るすか
+				// 横が当たっていたら
+			if (before_mov.x + m_move_hit_box_size.x >= m_hit_other_pos.x - m_hit_other_size.x && before_mov.x - m_move_hit_box_size.x <= m_hit_other_pos.x + m_hit_other_size.x) {
+				// 縦方向だけ戻す
+				m_pos.z = before_mov.z;
+				printfDx("z\n");
+			}
+			if (before_mov.z + m_move_hit_box_size.z >= m_hit_other_pos.z - m_hit_other_size.z && before_mov.z - m_move_hit_box_size.z <= m_hit_other_pos.z + m_hit_other_size.z) {
+				// 縦方向だけ戻す
+				m_pos.x = before_mov.x;
+				printfDx("x\n");
+			}
+		}
+
+
+		// 移動中ならアニメーションの変更と当たり判定の移動
+		if (m_check_move) {
+
+			anim_num = ANIM_RUN;  // 移動中なので走るアニメーションに
+			{                     // プレイヤー座標に当たり判定用のカプセルの位置を合わせる
+				m_hit_body_pos_top = m_pos;
+				m_hit_body_pos_top.y += 17.0f; // 高さを出す
+				m_hit_body_pos_under = m_pos;
+				m_hit_body_pos_under.y += 3.0f;
+			}
+		}
+		else {                           // どの移動キーも押されてなかったら
+			anim_num = ANIM_IDLE;        // アイドル状態にする
+			{                            // プレイヤー座標に当たり判定用のカプセルの位置を合わせる
+				m_hit_body_pos_top = m_pos;
+				m_hit_body_pos_top.y += 17.0f; // 高さを出す
+				m_hit_body_pos_under = m_pos;
+				m_hit_body_pos_under.y += 3.0f;
+
+			}
+		}
+
+		//=================================
+		// 近距離攻撃
+		//=================================
+		// マウスの左クリックまたはAボタンで近距離攻撃
+		if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_1) {
+			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+			attack_anim_attach[ATTACK_SHORT_NORMAL_2_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_SHORT_NORMAL_2_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
+			action_mode = ATTACK_ACTION;                    // 攻撃アクションに変更
+			attack_anim_pick = ATTACK_SHORT_NORMAL_2_ANIM;  // 近距離攻撃アクションに設定 
+			m_attack_judge = true;                           // 攻撃が始まるので攻撃中にしておく
+			break;
+		}
+		//=================================
+		// 遠距離攻撃
+		//=================================
+		// マウスの右クリック、または、Yボタンで遠距離攻撃
+		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_4) {
+			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+			attack_anim_attach[ATTACK_LONG_NORMAL_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_LONG_NORMAL_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
+			action_mode = ATTACK_ACTION;                 // 攻撃アクションに変更
+			attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 玉投げアクションに設定 
+			m_attack_judge = true;                        // 攻撃が始まるので攻撃中にしておく
+			break;
+		}
+
+		//=================================
+		// スライディング
+		//=================================
+		// スペースキークリック、または、Bボタンで遠距離攻撃
+		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_2) {
+			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+			attack_anim_attach[ATTACK_SLIDE_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_SLIDE_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
+			action_mode = ATTACK_ACTION;                 // 攻撃アクションに変更
+			attack_anim_pick = ATTACK_SLIDE_ANIM;        // スライディングアクションに設定 
+			m_attack_judge = true;                        // 攻撃が始まるので攻撃中にしておく
+			break;
+		}
+
+
+		//=================================
+		// 必殺技
+		//=================================
+		// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
+		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_6 && GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_5) {
+			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+			attack_anim_attach[ATTACK_SPECIAL_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_SPECIAL_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
+			action_mode = ATTACK_ACTION;                 // 攻撃アクションに変更
+			attack_anim_pick = ATTACK_SPECIAL_ANIM;      // 必殺技アクションに設定 
+			m_attack_judge = true;                        // 攻撃が始まるので攻撃中にしておく
+			break;
+		}
+
+		// アニメーション用のフレームカウントを進める
+		for (int i = 0; i < ANIM_MAX; ++i) {
+			anim_frame[i] += 1.0f;
+			if (anim_frame[i] >= anim_total[i]) {
+				anim_frame[i] = 0.0f;
+			}
+			// アニメーションの再生
+			// 使いたくないアニメーション
+			if (i != anim_num) {
+
+				anim_rate[i] -= 0.1f; // 割合を減らす
+			}
+			else {// 使いたいアニメーション		
+				anim_rate[i] += 0.1f; // 割合を増やす
+			}
+
+			anim_rate[i] = max(0.0f, min(anim_rate[i], 1.0f));                                    // 割合を0.0f ～ 1.0fにする（これをしないと踊り狂う） 
+			MV1SetAttachAnimTime(m_model, anim_attach[i], anim_frame[i]);  // そのフレームのアニメーションにする
+			MV1SetAttachAnimBlendRate(m_model, anim_attach[i], anim_rate[i]);   // それぞれにアニメーションの割合分再生します
+		}
+		break;
+
+	case ATTACK_ACTION: // 攻撃アクション
+		// アニメーションの再生
+		// 攻撃アニメーション用のフレームカウントを進める
+		attack_anim_frame[attack_anim_pick]++;
+		if (attack_anim_frame[attack_anim_pick] >= attack_anim_total[attack_anim_pick]) { // アニメーションが一周したら
+			attack_anim_frame[attack_anim_pick] = 0.0f;
+			attack_anim_attach[attack_anim_pick] = MV1DetachAnim(m_model, attack_anim_attach[attack_anim_pick]);  // 攻撃アニメーションをディタッチしておく
+			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
+			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
+			// 攻撃が終わったのでこうげきしていないようにする
+			// m_attack_judg = false;
+		}
+		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
+		break;
+	}
+
+
+	if (m_attack_judge) {
+
+		// 弾用の変数
+		if (lifespan_count >= 120.0f) {
+			bead_pos = new Vector3;
+			*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
+			bead_pos->y += 10.0f; // y座標をずらして空中に浮かべる
+		}
+		// 一旦前に飛ばす
+		bead_pos->x += 3 * sinf(TO_RADIAN(m_rot.y));
+		bead_pos->z += 3 * cosf(TO_RADIAN(m_rot.y));
+		lifespan_count--; // 弾が消えるまでのカウントを進める
+
+		// カウントが一定にまで減るか、当たり判定があったら
+		if (lifespan_count <= 0 || bead_hit_judg) {
+			delete bead_pos; // 弾の解放
+			bead_pos = NULL;
+			lifespan_count = 120.0f; // カウントのリセット
+			m_attack_judge = false; // 攻撃を終わらせておく
+		}
+	}
+
+	/*if (m_attack_judg) {
+		switch (attack_anim_pick)
+		{
+		case ATTACK_LONG_NORMAL_ANIM:
+
+			break;
+		}
+
+	}*/
+}
+
+
+// 描画処理
+void Player::Draw()
+{
+
+	// 玉を描画する(今だけ)
+	if (bead_pos != NULL) {
+		DrawSphere3D(bead_pos->VGet(), 2.0f, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
+	}
+	DrawCapsule3D(m_hit_body_pos_top.VGet(), m_hit_body_pos_under.VGet(), m_hit_body_r, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), FALSE);
+
+	// 当たり判定を見えるようにする物
+	Vector3 draw_box_pos;
+	draw_box_pos = m_pos + m_move_hit_box_pos;
+	Vector3 draw_box_size;
+	draw_box_size = m_pos + m_move_hit_box_pos + m_move_hit_box_size;
+	DrawCube3D(draw_box_pos.VGet(), draw_box_size.VGet(), GetColor(0, 0, 0), GetColor(0, 0, 0), TRUE);
+
+	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z));                                                                // 描画するプレイヤーモデルの座標の設定
+	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z)));   // モデルの回転
+	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f));                                                                     // モデルの大きさ(10分の１のサイズ)
+	MV1DrawModel(m_model);                                                                                                          	// モデルの描画
+}
+
+
+// 終了処理
+void Player::Exit()
+{
+	MV1DeleteModel(m_model);       // モデルの削除
+	for (int i = 0; i < ANIM_MAX; i++) {  // アニメーションの削除
+		MV1DeleteModel(anim_model[i]);
+	}
+	// 攻撃アニメーションの削除
+	for (int i = 0; i < ATTACK_ANIM_MAX; i++) {
+		MV1DeleteModel(attack_anim_model[i]);
+	}
+
+	// 弾が解放されていなかったら解放する
+	if (bead_pos != NULL) {
+		delete bead_pos;
+	}
+}
+
+
