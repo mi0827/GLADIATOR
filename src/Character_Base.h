@@ -37,6 +37,7 @@ public:
 
 	// 当たり判定のあったとき当たった相手の情報をとってくる関数
 	void Get_other(float* hit_other_x,float* hit_other_z,float* hit_other_r); // カプセル、円
+
 	void Get_other(Vector3* hit_other_1, Vector3* hit_other_2);               // 立方体
 	//---------------
 	// 定数の定義
