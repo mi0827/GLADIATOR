@@ -2,6 +2,9 @@
 #include "GameMain.h"
 #include "Camera.h"
 
+//// gitが使える科の調査
+
+
 // プレイヤーからカメラまでの距離
 #define CAMERA_LENGTH 40.0f
 // カメラの回転スピード
