@@ -9,7 +9,10 @@ CharacterBase::CharacterBase()
 {
 }
 
+
+//---------------------------------------------------------------------------
 // 前移動
+//---------------------------------------------------------------------------
 void CharacterBase::Move_Front(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	//　画面奥：カメラのある方向の逆の方向
@@ -21,7 +24,9 @@ void CharacterBase::Move_Front(bool* m_move_judg, bool* m_check_move, Vector3* c
 	m_pos.z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
 }
 
+//---------------------------------------------------------------------------
 // 後ろ移動
+//---------------------------------------------------------------------------
 void CharacterBase::Move_Dehind(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	// 画面手前（カメラのある方向）
@@ -33,7 +38,9 @@ void CharacterBase::Move_Dehind(bool* m_move_judg, bool* m_check_move, Vector3* 
 	m_pos.z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
 }
 
+//---------------------------------------------------------------------------
 // 左移動
+//---------------------------------------------------------------------------
 void CharacterBase::Move_Left(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	// 画面から見て：左
@@ -45,7 +52,9 @@ void CharacterBase::Move_Left(bool* m_move_judg, bool* m_check_move, Vector3* ca
 	m_pos.z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
 }
 
+//---------------------------------------------------------------------------
 // 右移動
+//---------------------------------------------------------------------------
 void CharacterBase::Move_Right(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	// 画面から見て：右
@@ -57,7 +66,9 @@ void CharacterBase::Move_Right(bool* m_move_judg, bool* m_check_move, Vector3* c
 	m_pos.z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
 }
 
+//---------------------------------------------------------------------------
 // キャラクターの移動用関数(ゲームパッド用)
+//---------------------------------------------------------------------------
 void CharacterBase::Move_GamePad(bool* m_move_judg, bool* m_check_move, Vector3* mov, Vector3* camera_rot, const float* mov_speed)
 {
 	*m_check_move = true; // 動いていい
@@ -77,7 +88,9 @@ void CharacterBase::Move_GamePad(bool* m_move_judg, bool* m_check_move, Vector3*
 	
 }
 
+//---------------------------------------------------------------------------
 // キャラクターの壁擦り用関数
+//---------------------------------------------------------------------------
 void CharacterBase::Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* other_pos, Vector3* other_size)
 {
 	if (before_pos->x + hit_size->x >= other_pos->x -other_size->x && before_pos->x - hit_size->x <= other_pos->x +other_size->x) {
@@ -91,13 +104,113 @@ void CharacterBase::Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* ot
 	}
 }
 
-// 当たった相手の情報をもらう
+//---------------------------------------------------------------------------
+// 普通アニメーション変数のNew用関数
+//---------------------------------------------------------------------------
+void CharacterBase::Nomal_Anim_New(int ANIM_MAX)
+{
+	anim_model = new int[ANIM_MAX];   // アニメーションモデル
+	anim_attach = new int[ANIM_MAX];  // アタッチ用変数
+	anim_total = new float[ANIM_MAX]; // アニメーションが何フレームあるか
+	anim_rate = new float[ANIM_MAX];  // アニメーションのブレンド率
+	anim_frame = new float[ANIM_MAX]; // アニメーションの進めるフレーム
+	// アニメーションが何フレーム進んでいるか用の変数
+	// 最初は０から開始
+	for (int i = 0; i < ANIM_MAX; i++)
+	{
+		anim_frame[i] = 0.0f;
+	}
+}
+
+//---------------------------------------------------------------------------
+// 普通アニメーションの初期設定(アニメーションのアタッチから最初のブレンド率の調整までを行う)
+//---------------------------------------------------------------------------
+void CharacterBase::Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX)
+{
+	for (int i = 0; i < ANIM_MAX; i++)
+	{
+		anim_attach[i] = MV1AttachAnim(m_model, 1, anim_model[i]);             // モデルにアニメーションをアタッチ（つける）する
+		anim_total[i] = MV1GetAttachAnimTotalTime(m_model, anim_attach[i]);               // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		// 不必要なものにはブレンド率を0.0fにしておく（最初はアイドルにしておく）
+		if (i != ANIM_IDLE)  // アイドル以外のアニメーションをモデルから外す
+		{
+			anim_rate[i] = 0.0f;
+		}
+		else {
+			anim_rate[i] = 1.0f;
+		}
+	}
+}
+
+//---------------------------------------------------------------------------
+// 攻撃アニメーション変数のNew用関数
+//---------------------------------------------------------------------------
+void CharacterBase::Attack_Anim_New(int ATTACK_ANIM_MAX)
+{
+	attack_anim_model = new int[ATTACK_ANIM_MAX];   // アニメーションモデル
+	attack_anim_attach = new int[ATTACK_ANIM_MAX];  // アタッチ用変数
+	attack_anim_total = new float[ATTACK_ANIM_MAX]; // アニメーションが何フレームあるか
+	attack_anim_rate = new float[ATTACK_ANIM_MAX];  // アニメーションのブレンド率
+	attack_anim_frame = new float[ATTACK_ANIM_MAX]; // アニメーションの進めるフレーム
+	// アニメーションが何フレーム進んでいるか用の変数
+	// 最初は０から開始
+	for (int i = 0; i < ATTACK_ANIM_MAX; i++)
+	{
+		attack_anim_frame[i] = 0.0f;
+	}
+}
+
+//---------------------------------------------------------------------------
+// 攻撃アニメーションの初期設定(アタッチから最初のディタッチまでを行う)
+//---------------------------------------------------------------------------
+void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX)
+{
+	for (int i = 0; i < ATTACK_ANIM_MAX; i++)
+	{
+		attack_anim_attach[i] = MV1AttachAnim(m_model, 1, attack_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
+		attack_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		attack_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+	}
+	
+}
+
+//---------------------------------------------------------------------------
+// アニメーション用変数たちのdelete用関数
+//---------------------------------------------------------------------------
+void CharacterBase::Anim_Delete(int ANIM_MAX, int ATTACK_ANIM_MAX)
+{
+	for (int i = 0; i < ANIM_MAX; i++)
+	{
+		delete[] anim_model;
+		delete[] anim_attach;
+		delete[] anim_total;
+		delete[] anim_rate;
+		delete[] anim_frame;
+	}
+	for (int i = 0; i < ATTACK_ANIM_MAX; i++) {
+		delete[] attack_anim_model;
+		delete[] attack_anim_attach;
+		delete[] attack_anim_total;
+		delete[] attack_anim_rate;
+		delete[] attack_anim_frame;
+	}
+}
+
+void CharacterBase::Attack_Action()
+{
+}
+
+//---------------------------------------------------------------------------
+// 当たった相手の情報をもらう(カプセル, 円)
+//---------------------------------------------------------------------------
 void CharacterBase::Get_other(float* hit_other_x, float* hit_other_z, float* hit_other_r)
 {
 	m_hit_other_pos = { *hit_other_x,*hit_other_z,*hit_other_r };
 }
 
-// 当たった相手の情報をもらう
+//---------------------------------------------------------------------------
+// 当たった相手の情報をもらう(立方体)
+//---------------------------------------------------------------------------
 void CharacterBase::Get_other(Vector3* hit_other_pos, Vector3* hit_other_size)
 {
 	m_hit_other_pos = *hit_other_pos;   // 座標

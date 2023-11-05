@@ -14,12 +14,6 @@ Player::Player()
 	m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
 	before_mov.set(m_pos);                       // 最初は最初の座標を入れとく
 
-	// アニメーションが何フレーム進んでいるか用の変数
-	// 最初は０から開始
-	for (int i = 0; i < ANIM_MAX; i++)
-	{
-		anim_frame[i] = 0.0f;
-	}
 	anim_num = 0;                                     // 最初は０ばんのアニメーションをする
 	action_mode = 0;                                  // 最初は普通アニメーションモードにしておく
 	attack_anim_pick = -1;                            // 最初はなんのアニメーションも入っていない
@@ -34,12 +28,8 @@ Player::Player()
 	m_hit_body_pos_under.clear();                     // 下側
 	m_hit_body_r = 2.0f;                              // 半径
 	//======================
-	// 移動用のボックス
-	// m_move_hit_box_pos.clear();                                                          // パネルの座標 
-	m_move_hit_box_size.set(PANEL_HALF - 0.1, PANEL_HALF - 0.1, PANEL_HALF - 0.1);                // パネルの大きさ
-	// m_charcter_size.set(PANEL_HALF - 0.1, PANEL_HALF - 0.1, PANEL_HALF - 0.1 ); // キャラをボックスとしたときの大きさ（中心座標から一定分ずらす）
-																	// 毎フレーム移動前の座標を入れる
-
+	// 移動用のボックス                                                   
+	m_move_hit_box_size.set(PANEL_HALF - 0.1, PANEL_HALF - 0.1, PANEL_HALF - 0.1);    // パネルの大きさ
 
 	// 判断用、フラグ変数
 	m_move_judge = false;                              // 最初は動いてはいけない
@@ -53,40 +43,22 @@ void Player::Init()
 	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
 	// 普通アニメーションの初期化
 	// アニメーションの読み込み
+	CharacterBase::Nomal_Anim_New(ANIM_MAX);  // 普通アニメーションに必要な変数の配列を作る
 	anim_model[ANIM_IDLE] = MV1LoadModel("Data/Model/Player/Animation/Player_Idle.mv1"); // アイドル
 	anim_model[ANIM_RUN] = MV1LoadModel("Data/Model/Player/Animation/Player_Run.mv1");   // 走る
-	for (int i = 0; i < ANIM_MAX; i++)
-	{
-		anim_attach[i] = MV1AttachAnim(m_model, 1, anim_model[i]);             // モデルにアニメーションをアタッチ（つける）する
-		anim_total[i] = MV1GetAttachAnimTotalTime(m_model, anim_attach[i]);               // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		// 不必要なものにはブレンド率を0.0fにしておく（最初はアイドルにしておく）
-		if (i != ANIM_IDLE)  // アイドル以外のアニメーションをモデルから外す
-		{
-			anim_rate[i] = 0.0f;
-		}
-		else {
-			anim_rate[i] = 1.0f;
-		}
-	}
-
-	// 攻撃アニメーションの初期化
-	// アニメーションの読み込み
+	CharacterBase::Nomal_Anim_Init(ANIM_IDLE, ANIM_MAX); // 普通アニメーションの初期設定
+	
+    // 攻撃アニメーションの初期化
+    // アニメーションの読み込み
+	CharacterBase::Attack_Anim_New( ATTACK_ANIM_MAX); // 攻撃アニメーションに必要な変数の配列を作る
 	attack_anim_model[ATTACK_LONG_NORMAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/long_normal_attack.mv1");       // 遠距離普通攻撃
 	attack_anim_model[ATTACK_SHORT_NORMAL_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_1.mv1"); // 近距離攻撃１
 	attack_anim_model[ATTACK_SHORT_NORMAL_2_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_2.mv1"); // 近距離攻撃２
 	attack_anim_model[ATTACK_SLIDE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/slide.mv1");                          // スライディング
 	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/special_attack.mv1");               // 必殺技
-	for (int i = 0; i < ATTACK_ANIM_MAX; i++)
-	{
-		attack_anim_attach[i] = MV1AttachAnim(m_model, 1, attack_anim_model[i]);             // モデルにアニメーションをアタッチ（つける）する
-		attack_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		attack_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
-	}
-
-
+	CharacterBase::Attack_Anim_Init(ATTACK_ANIM_MAX); // 攻撃アニメーションの初期設定
+	
 	pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
-
-
 }
 
 // 更新処理
@@ -176,8 +148,8 @@ void Player::Update(Vector3* camera_rot)
 			break;
 		}
 		//=================================
-	    // 遠距離攻撃
-	    //=================================
+		// 遠距離攻撃
+		//=================================
 		// マウスの右クリック、または、Yボタンで遠距離攻撃
 		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_4) {
 			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
@@ -289,7 +261,7 @@ void Player::Update(Vector3* camera_rot)
 
 void Player::Move_Hit_Update()
 {
-	CharacterBase::Move_Hit(&before_mov, &m_move_hit_box_size, &m_hit_other_pos,&m_hit_other_size);
+	CharacterBase::Move_Hit(&before_mov, &m_move_hit_box_size, &m_hit_other_pos, &m_hit_other_size);
 }
 
 // 描画処理
@@ -323,6 +295,8 @@ void Player::Exit()
 	for (int i = 0; i < ANIM_MAX; i++) {  // アニメーションの削除
 		MV1DeleteModel(anim_model[i]);
 	}
+
+
 	// 攻撃アニメーションの削除
 	for (int i = 0; i < ATTACK_ANIM_MAX; i++) {
 		MV1DeleteModel(attack_anim_model[i]);
@@ -332,6 +306,9 @@ void Player::Exit()
 	if (bead_pos != NULL) {
 		delete bead_pos;
 	}
+
+	// アニメーション用変数たちのdelete
+	CharacterBase::Anim_Delete(ANIM_MAX, ATTACK_ANIM_MAX);
 }
 
 
