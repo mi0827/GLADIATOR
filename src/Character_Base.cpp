@@ -91,6 +91,7 @@ void CharacterBase::Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* ot
 	}
 }
 
+// “–‚½‚Á‚½‘Šè‚Ìî•ñ‚ğ‚à‚ç‚¤
 void CharacterBase::Get_other(float* hit_other_x, float* hit_other_z, float* hit_other_r)
 {
 	m_hit_other_pos = { *hit_other_x,*hit_other_z,*hit_other_r };

@@ -2,18 +2,15 @@
 #include "GameMain.h"
 #include "Camera.h"
 
-//// gitが使える科の調査
 
-
-// プレイヤーからカメラまでの距離
-#define CAMERA_LENGTH 40.0f
+constexpr float CAMERA_LENGTH = 40.0f;          // プレイヤーからカメラまでの距離
 // カメラの回転スピード
-#define MOUSE_CAMERA_ROT_SPEED	0.2f // マウス用
-#define PAD_CAMERA_ROT_SPEED 3.0f    // パッド用
-// カメラの上アングルの最大
-const float UP_ANGLE_MAX = 30.0f;
-// カメラの下アングルの最低（地面に埋まらない程度）
-const float LOWER_ANGLE = -10.0f;
+constexpr float MOUSE_CAMERA_ROT_SPEED = 0.2f;  // マウス用
+constexpr float PAD_CAMERA_ROT_SPEED = 3.0f;    // パッド用
+constexpr float UP_ANGLE_MAX = 30.0f;           // カメラの上アングルの最大
+constexpr float LOWER_ANGLE = -10.0f;           // カメラの下アングルの最低（地面に埋まらない程度）
+
+
 
 // コンストラクタ(初期化)
 Camera::Camera()
@@ -34,8 +31,21 @@ Camera::Camera()
 void Camera::Init()
 {
 
+
+
 }
 
+//---------------------------------------------------------------------------------
+//	// プレイ画面の初期設定
+//---------------------------------------------------------------------------------
+void Camera::PlayField_Init()
+{
+	
+		m_field_size.set(SCREEN_W / 2, SCREEN_H);                                                                     // 描画する画面のサイズの設定
+		m_screen_field = MakeScreen(m_field_size.x, m_field_size.y);                                    // 描画画面を書き込むための初期設定
+		SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 2.0f, -5.0f), VGet(0.0f, 0.0f, 1.0f));  // カメラの設定
+	
+}
 
 //---------------------------------------------------------------------------------
 //	更新処理
@@ -77,7 +87,7 @@ void Camera::Update(Vector3* player_pos)
 	// -32768 ～ 32767 を-1.0f　～　1.0fにします
 	rot /= 32768.0f;
 	// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
-	if (rot.GetLength() > 0.5f) {	
+	if (rot.GetLength() > 0.5f) {
 		m_rot += rot * PAD_CAMERA_ROT_SPEED;  // その移動ベクトル分座標移動
 	}
 
@@ -100,16 +110,51 @@ void Camera::Update(Vector3* player_pos)
 	// カメラの位置を見ている座標から一定の位置に再設定
 	m_pos = m_look + change_dir;
 }
+
+//---------------------------------------------------------------------------------
+//	描画前のカメラのセット
+//---------------------------------------------------------------------------------
+void Camera::Draw_Set()
+{
+	// ２：今から描画するもの場所をテクスチャに変更します（レンダーターゲットの切り替え）
+	SetDrawScreen(m_screen_field);
+	// ２－１：その書き込む領域をクリアする
+	ClearDrawScreen();
+	//	カメラの設定
+	SetCameraNearFar(0.1f, 3000.0f);
+	SetupCamera_Perspective(TO_RADIAN(45.0f));
+	// カメラ座標と見る座標を渡してカメラの設定
+	SetCameraPositionAndTarget_UpVecY(m_pos.VGet(), m_look.VGet());
+}
 //---------------------------------------------------------------------------------
 //	描画処理
 //---------------------------------------------------------------------------------
-void Camera::Draw()
+void Camera::Draw(int camera_No)
 {
-	// 座標と向きを渡してカメラの設定
-	// SetCameraPositionAndAngle(m_pos.VGet(), m_rot.x, m_rot.y, m_rot.z);
+	// ４：描画先をいつもの場所にする
+	SetDrawScreen(DX_SCREEN_BACK);
 
-	// カメラ座標と見る座標を渡してカメラの設定
-	SetCameraPositionAndTarget_UpVecY(m_pos.VGet(), m_look.VGet());
+	// PLAYER１か２によってカメラの描画位置が変わる
+
+	// プレイヤー１の場合
+	if (camera_No == 0) {
+		// ３Dが描画された画像を描画
+		DrawGraphF(m_field_pos.x, m_field_pos.y, m_screen_field, TRUE);
+		// どっちの画面が移っているのかがわかるように
+		DrawString(16, 16, "PLAYER 1", GetColor(255, 255, 255));
+		// 画像がわかりやすいように
+		DrawLineBox(m_field_pos.x, m_field_pos.y, m_field_pos.x + m_field_size.x, m_field_pos.y + m_field_size.y, GetColor(255, 255, 255));
+
+	}
+	// プレイヤー２の場合
+	else {
+		// ３Dが描画された画像を描画
+		DrawGraphF(m_field_pos.x + m_field_size.x, m_field_pos.y, m_screen_field, TRUE);
+		// どっちの画面が移っているのかがわかるように
+		DrawString(SCREEN_W / 2+ 16, 16, "PLAYER 2", GetColor(255, 255, 255));
+		// 画像がわかりやすいように
+		DrawLineBox(m_field_pos.x + m_field_size.x, m_field_pos.y, m_field_pos.x + m_field_size.x *2, m_field_pos.y + m_field_size.y, GetColor(0, 255, 255));
+	}
 
 }
 //---------------------------------------------------------------------------------

@@ -16,10 +16,14 @@
 #include "Object.h"
 
 // 各クラスのオブジェクト
+
+CharacterBase* player_objec[2];
+
 Player player;
 Player2 player2;
 Field field;
 Camera camera;
+Camera camera_2;
 
 // オブジェクトの数
 const int OBJECT_MAX = 1;
@@ -39,6 +43,11 @@ void GameInit()
 	field.Init();
 	player.Init();
 	player2.Init();
+
+	camera.PlayField_Init();
+	camera_2.PlayField_Init();
+
+
 
 	// どれだけずらすかの設定
 	for (int i = 0; i < OBJECT_MAX; ++i) {
@@ -73,6 +82,7 @@ void GameUpdate()
 	player2.Update(&camera.m_rot);
 	field.Update();
 	camera.Update(&player.m_pos);
+	camera_2.Update(&player2.m_pos);
 	for (int i = 0; i < OBJECT_MAX; ++i)
 	{
 		object[i]->Update();
@@ -101,14 +111,28 @@ void GameUpdate()
 void GameDraw()
 {
 	// 各クラスの描画処理
+	camera.Draw_Set(); // カメラの描画前設定（ ※ 描画処理の一番最初にすること）
 	field.Draw();
 	player.Draw();
 	player2.Draw();
-	camera.Draw();
+	
 	for (int i = 0; i < OBJECT_MAX; ++i)
 	{
 		object[i]->Draw();
 	}
+	camera.Draw(0); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
+
+
+	camera_2.Draw_Set();
+	field.Draw();
+	player.Draw();
+	player2.Draw();
+	for (int i = 0; i < OBJECT_MAX; ++i)
+	{
+		object[i]->Draw();
+	}
+
+	camera_2.Draw(1);
 }
 
 // 終了処理

@@ -59,6 +59,9 @@
     <ClCompile Include="src\Hit.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vector2.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Base.h">
@@ -92,6 +95,9 @@
       <Filter>ソース ファイル\Game\Object</Filter>
     </ClInclude>
     <ClInclude Include="src\Hit.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vector2.h">
       <Filter>ソース ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
