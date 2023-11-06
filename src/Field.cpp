@@ -1,7 +1,11 @@
 #include "WinMain.h"
 #include "GameMain.h"
 #include "Field.h"
+#include "Object.h"
 
+// フィールドのオブジェクトを置く座標 
+constexpr int MAP_W = 10;  // 縦
+constexpr int MAP_H = 10;  // 横
 
 //	初期化処理
 Field::Field()
@@ -18,9 +22,22 @@ void Field::Init()
 	m_model = MV1LoadModel("Data/Model/Field/ground.mv1");
 }
 
+void Field::Field_Init()
+{
+	for (int h = 0; h < MAP_H; h++) {
+		for (int w = 0; w < MAP_W; w++) {
+			map_num = MapData[h][w]; // マップデータに入っていいる番号の取得
+			if (map_num != 0) { 
+
+			}
+		}
+	}
+}
+
 //	更新処理
 void Field::Update()
 {
+	
 }
 
 //	描画処理

@@ -7,7 +7,9 @@
 #define PANEL_SIZE	5.0f              // パネルの大きさ
 #define PANEL_HALF	(PANEL_SIZE/2.0f) // パネルの半分の大きさ
 
+//---------------------------------------------------------------------------
 // コンストラクタ（初期化）
+//---------------------------------------------------------------------------
 Player::Player()
 {
 	m_pos.set(0.0f, 0.0f, -50.0f);           // 初期座標の設定
@@ -37,7 +39,9 @@ Player::Player()
 	bead_hit_judg = false;                            // なににもあたってない
 }
 
+//---------------------------------------------------------------------------
 // 初期処理
+//---------------------------------------------------------------------------
 void Player::Init()
 {
 	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
@@ -61,7 +65,9 @@ void Player::Init()
 	pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
 }
 
+//---------------------------------------------------------------------------
 // 更新処理
+//---------------------------------------------------------------------------
 void Player::Update(Vector3* camera_rot)
 {
 
@@ -259,12 +265,16 @@ void Player::Update(Vector3* camera_rot)
 	}*/
 }
 
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 void Player::Move_Hit_Update()
 {
 	CharacterBase::Move_Hit(&before_mov, &m_move_hit_box_size, &m_hit_other_pos, &m_hit_other_size);
 }
 
+//---------------------------------------------------------------------------
 // 描画処理
+//---------------------------------------------------------------------------
 void Player::Draw()
 {
 	// 玉を描画する(今だけ)
@@ -280,21 +290,22 @@ void Player::Draw()
 	draw_box_size = m_pos + m_move_hit_box_pos + m_move_hit_box_size;
 	DrawCube3D(draw_box_pos.VGet(), draw_box_size.VGet(), GetColor(0, 0, 0), GetColor(0, 0, 0), TRUE);
 
+	// プレイヤーの描画設定
 	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z));                                             // 描画するプレイヤーモデルの座標の設定
 	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z)));   // モデルの回転
 	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f));                                                         // モデルの大きさ(10分の１のサイズ)
 	MV1DrawModel(m_model);                                                                                // モデルの描画
 }
 
-
+//---------------------------------------------------------------------------
 // 終了処理
+//---------------------------------------------------------------------------
 void Player::Exit()
 {
 	MV1DeleteModel(m_model);       // モデルの削除
 	for (int i = 0; i < ANIM_MAX; i++) {  // アニメーションの削除
 		MV1DeleteModel(anim_model[i]);
 	}
-
 
 	// 攻撃アニメーションの削除
 	for (int i = 0; i < ATTACK_ANIM_MAX; i++) {
@@ -309,5 +320,3 @@ void Player::Exit()
 	// アニメーション用変数たちのdelete
 	CharacterBase::Anim_Delete(ANIM_MAX, ATTACK_ANIM_MAX);
 }
-
-
