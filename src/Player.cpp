@@ -267,7 +267,6 @@ void Player::Move_Hit_Update()
 // 描画処理
 void Player::Draw()
 {
-
 	// 玉を描画する(今だけ)
 	if (bead_pos != NULL) {
 		DrawSphere3D(bead_pos->VGet(), 2.0f, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
@@ -281,10 +280,10 @@ void Player::Draw()
 	draw_box_size = m_pos + m_move_hit_box_pos + m_move_hit_box_size;
 	DrawCube3D(draw_box_pos.VGet(), draw_box_size.VGet(), GetColor(0, 0, 0), GetColor(0, 0, 0), TRUE);
 
-	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z));                                                                // 描画するプレイヤーモデルの座標の設定
+	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z));                                             // 描画するプレイヤーモデルの座標の設定
 	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z)));   // モデルの回転
-	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f));                                                                     // モデルの大きさ(10分の１のサイズ)
-	MV1DrawModel(m_model);                                                                                                          	// モデルの描画
+	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f));                                                         // モデルの大きさ(10分の１のサイズ)
+	MV1DrawModel(m_model);                                                                                // モデルの描画
 }
 
 
