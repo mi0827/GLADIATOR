@@ -77,19 +77,19 @@ void Player2::Update(Vector3* camera_rot)
 		// 移動中はダッシュする
 		if (CheckHitKey(KEY_INPUT_UP)) // 上移動
 		{
-			CharacterBase::Move_Front(&m_move_judge, &m_check_move, camera_rot, &m_rot, &DASH_SPEED);
+			CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &DASH_SPEED);
 		}
 		if (CheckHitKey(KEY_INPUT_DOWN)) // 下移動
 		{
-			CharacterBase::Move_Dehind(&m_move_judge, &m_check_move, camera_rot, &m_rot, &DASH_SPEED);
+			CharacterBase::Move_Dehind(&m_check_move, camera_rot, &m_rot, &DASH_SPEED);
 		}
 		if (CheckHitKey(KEY_INPUT_LEFT)) // 左移動
 		{
-			CharacterBase::Move_Left(&m_move_judge, &m_check_move, camera_rot, &m_rot, &DASH_SPEED);
+			CharacterBase::Move_Left(&m_check_move, camera_rot, &m_rot, &DASH_SPEED);
 		}
 		if (CheckHitKey(KEY_INPUT_RIGHT)) // 右移動
 		{
-			CharacterBase::Move_Right(&m_move_judge, &m_check_move, camera_rot, &m_rot, &DASH_SPEED);
+			CharacterBase::Move_Right(&m_check_move, camera_rot, &m_rot, &DASH_SPEED);
 		}
 
 		// 十字キーのどれかが押されていたら動いてもよい

@@ -13,7 +13,7 @@ CharacterBase::CharacterBase()
 //---------------------------------------------------------------------------
 // 前移動
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Front(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Front( bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	//　画面奥：カメラのある方向の逆の方向
 	player_rot->y = camera_rot->y;
@@ -27,7 +27,7 @@ void CharacterBase::Move_Front(bool* m_move_judg, bool* m_check_move, Vector3* c
 //---------------------------------------------------------------------------
 // 後ろ移動
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Dehind(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Dehind(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	// 画面手前（カメラのある方向）
 	player_rot->y = camera_rot->y + 180.0f;
@@ -41,7 +41,7 @@ void CharacterBase::Move_Dehind(bool* m_move_judg, bool* m_check_move, Vector3* 
 //---------------------------------------------------------------------------
 // 左移動
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Left(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Left( bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	// 画面から見て：左
 	player_rot->y = camera_rot->y - 90;
@@ -55,7 +55,7 @@ void CharacterBase::Move_Left(bool* m_move_judg, bool* m_check_move, Vector3* ca
 //---------------------------------------------------------------------------
 // 右移動
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Right(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Right(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	// 画面から見て：右
 	player_rot->y = camera_rot->y + 90;
@@ -69,7 +69,7 @@ void CharacterBase::Move_Right(bool* m_move_judg, bool* m_check_move, Vector3* c
 //---------------------------------------------------------------------------
 // キャラクターの移動用関数(ゲームパッド用)
 //---------------------------------------------------------------------------
-void CharacterBase::Move_GamePad(bool* m_move_judg, bool* m_check_move, Vector3* mov, Vector3* camera_rot, const float* mov_speed)
+void CharacterBase::Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* camera_rot, const float* mov_speed)
 {
 	*m_check_move = true; // 動いていい
 	// 向いている方向に座標移動
@@ -201,6 +201,10 @@ void CharacterBase::Anim_Delete(int ANIM_MAX, int ATTACK_ANIM_MAX)
 //---------------------------------------------------------------------------
 void CharacterBase::Attack_Action()
 {
+	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, 1, attack_anim_model[attack_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
+	 
+	m_attack_judge = true;
 }
 
 //---------------------------------------------------------------------------

@@ -9,8 +9,12 @@ public:
 	//---------------
 	// 各関数の定義
 	Object();// コンストラクタ
+
+
+
 	void Init(float* i);        //　初期処理
 	void Update();		//	更新処理
+	void CreateObjects(); // オブジェクトを作る関数
 	void Draw();		//	描画処理
 	void Exit();		//	終了処理
 

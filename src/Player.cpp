@@ -97,25 +97,25 @@ void Player::Update(Vector3* camera_rot)
 		mov /= 32768.0f;
 		// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
 		if (mov.GetLength() > 0.5f) {
-			CharacterBase::Move_GamePad(&m_move_judge, &m_check_move, &mov, camera_rot, &MOVE_SPEED);
+			CharacterBase::Move_GamePad( &m_check_move, &mov, camera_rot, &MOVE_SPEED);
 		}
 
 		// WASDキーでプレイヤーの移動
 		if (CheckHitKey(KEY_INPUT_W)) // 上移動
 		{
-			CharacterBase::Move_Front(&m_move_judge, &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+			CharacterBase::Move_Front( &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 		}
 		if (CheckHitKey(KEY_INPUT_S)) // 下移動
 		{
-			CharacterBase::Move_Dehind(&m_move_judge, &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+			CharacterBase::Move_Dehind( &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 		}
 		if (CheckHitKey(KEY_INPUT_A)) // 左移動
 		{
-			CharacterBase::Move_Left(&m_move_judge, &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+			CharacterBase::Move_Left(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 		}
 		if (CheckHitKey(KEY_INPUT_D)) // 右移動
 		{
-			CharacterBase::Move_Right(&m_move_judge, &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+			CharacterBase::Move_Right( &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 		}
 
 
@@ -146,11 +146,9 @@ void Player::Update(Vector3* camera_rot)
 		//=================================
 		// マウスの左クリックまたはAボタンで近距離攻撃
 		if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_1) {
-			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
-			attack_anim_attach[ATTACK_SHORT_NORMAL_2_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_SHORT_NORMAL_2_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
-			action_mode = ATTACK_ACTION;                    // 攻撃アクションに変更
-			attack_anim_pick = ATTACK_SHORT_NORMAL_2_ANIM;  // 近距離攻撃アクションに設定 
-			m_attack_judge = true;                           // 攻撃が始まるので攻撃中にしておく
+			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
+			attack_anim_pick = ATTACK_SHORT_NORMAL_2_ANIM;  // 近距離攻撃アクションを設定
+			CharacterBase::Attack_Action();                 // 行いたい攻撃アニメーションをセット
 			break;
 		}
 		//=================================
@@ -158,11 +156,9 @@ void Player::Update(Vector3* camera_rot)
 		//=================================
 		// マウスの右クリック、または、Yボタンで遠距離攻撃
 		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_4) {
-			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
-			attack_anim_attach[ATTACK_LONG_NORMAL_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_LONG_NORMAL_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
-			action_mode = ATTACK_ACTION;                 // 攻撃アクションに変更
-			attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 玉投げアクションに設定 
-			m_attack_judge = true;                        // 攻撃が始まるので攻撃中にしておく
+			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
+			attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
+			CharacterBase::Attack_Action();
 			break;
 		}
 
@@ -171,11 +167,9 @@ void Player::Update(Vector3* camera_rot)
 		//=================================
 		// スペースキークリック、または、Bボタンで遠距離攻撃
 		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_2) {
-			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
-			attack_anim_attach[ATTACK_SLIDE_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_SLIDE_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
-			action_mode = ATTACK_ACTION;                 // 攻撃アクションに変更
-			attack_anim_pick = ATTACK_SLIDE_ANIM;        // スライディングアクションに設定 
-			m_attack_judge = true;                        // 攻撃が始まるので攻撃中にしておく
+			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
+			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
+			CharacterBase::Attack_Action();
 			break;
 		}
 
@@ -185,11 +179,9 @@ void Player::Update(Vector3* camera_rot)
 		//=================================
 		// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
 		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_6 && GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_5) {
-			anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
-			attack_anim_attach[ATTACK_SPECIAL_ANIM] = MV1AttachAnim(m_model, 1, attack_anim_model[ATTACK_SPECIAL_ANIM]);      	// 使いたいアニメーションをモデルにつけなおす
-			action_mode = ATTACK_ACTION;                 // 攻撃アクションに変更
-			attack_anim_pick = ATTACK_SPECIAL_ANIM;      // 必殺技アクションに設定 
-			m_attack_judge = true;                        // 攻撃が始まるので攻撃中にしておく
+			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
+			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 近距離攻撃アクションを設定
+			CharacterBase::Attack_Action();
 			break;
 		}
 

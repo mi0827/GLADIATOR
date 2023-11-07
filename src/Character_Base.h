@@ -20,17 +20,23 @@ public:
 	virtual void Draw() = 0;		//	描画処理
 	virtual void Exit() = 0;		//	終了処理
 
+	//---------------------------------------------------------------------------
+	// 移動用関数
+	// 引数
+	// １：今動いていいのか
+	// ２：いまは移動していいていいかの判断
+	//---------------------------------------------------------------------------
 	// 前移動
-	void Move_Front(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	void Move_Front(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 	// 後ろ移動
-	void Move_Dehind(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	void Move_Dehind(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 	// 左移動
-	void Move_Left(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	void Move_Left(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 	// 右移動
-	void Move_Right(bool* m_move_judg, bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	void Move_Right(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 
 	// キャラクターの移動用関数(ゲームパッド用)
-	void Move_GamePad(bool* m_move_judg, bool* m_check_move, Vector3* mov, Vector3* camera_rot, const float* mov_speed);
+	void Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* camera_rot, const float* mov_speed);
 
 	// キャラクターの壁擦り用関数
 	void Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* other_pos, Vector3* other_size);
@@ -38,7 +44,7 @@ public:
 	// 普通アニメーション変数のNew用関数
 	void Nomal_Anim_New(int ANIM_MAX);
 	// 普通アニメーションの初期設定
-	void Nomal_Anim_Init(int ANIM_IDLE,int ANIM_MAX);
+	void Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX);
 
 	// 攻撃アニメーション変数のNew用関数
 	void Attack_Anim_New(int ATTACK_ANIM_MAX);
@@ -53,7 +59,7 @@ public:
 
 
 	// 当たり判定のあったとき当たった相手の情報をとってくる関数
-	void Get_other(float* hit_other_x,float* hit_other_z,float* hit_other_r); // カプセル、円
+	void Get_other(float* hit_other_x, float* hit_other_z, float* hit_other_r); // カプセル、円
 
 	void Get_other(Vector3* hit_other_1, Vector3* hit_other_2);               // 立方体
 	//---------------
@@ -75,7 +81,7 @@ protected:
 	//---------------------------------------------------------------------------
 	int	m_model = 0;	  // 各キャラのモデルを入れる用の変数
 	int anim_num = 0;     // 各継承先のクラスでのアニメーションを切り替える用の変数
-	int action_mode;      // 今攻撃モードなのかを判断する用の変数
+	int action_mode;      // 今攻撃モードなのか普通モードなのかを判別するを判断する用の変数
 
 	//---------------------------------------------------------------------------
 	// 普通アニメーション読み込み用の配列
@@ -100,7 +106,7 @@ public:
 	//---------------------------------------------------------------------------
 	// 各キャラの当たり判定用変数
 	//---------------------------------------------------------------------------
-	
+
 	//---------------------------------------------------------------------------
 	// 当たり判定があったときの各処理の判断用変数
 	//---------------------------------------------------------------------------
