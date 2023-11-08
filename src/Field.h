@@ -34,9 +34,12 @@ public:
 	//---------------
 public:
 	
+	const int field_size_x = 50; 
+	const int field_size_y = 50;
+
 
 	// フィールドのオブジェクトを置く座標用の二次元配列
-	int* MapData;
+	// int* MapData;
 
 	// int* map_num; // mapデータに何番が入っていいるかを知るための変数
 

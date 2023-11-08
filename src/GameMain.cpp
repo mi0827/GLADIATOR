@@ -41,6 +41,7 @@ void GameInit()
 {
 	// 各クラスの初期設定
 	field.Init();
+	field.Field_Init();
 	player.Init();
 	player2.Init();
 
@@ -67,6 +68,7 @@ void GameInit()
 void GameUpdate()
 {
 	player.Update(&camera.m_rot);
+	// 立方体とプレイヤーのあたり判定
 	if (CheckBoxHit3D(player.m_pos, player.m_move_hit_box_size, object[0]->m_cube_hit_pos, object[0]->m_cube_size_half))
 	{
 		player.m_move_judge = true; // 移動に支障があるのでtrueを返す
@@ -87,24 +89,6 @@ void GameUpdate()
 	{
 		object[i]->Update();
 	}
-
-	// ここであたり判定をする
-
-	// 立方体同士の当たり判定( TRUE:当たっている FALSE:当たっていない )
-
-	
-
-	
-
-	// 弾とカプセルの当たり判定(今はカプセルがない)
-	//if (player.bead_pos != NULL) {
-	//	if (HitCheck_Sphere_Capsule(player.bead_pos->VGet(), 2, VGet(50.0f, 10.0f, 0.0f), VGet(50.0f, 100.0f, 0.0f), 40.0f)) {
-	//		player.bead_hit_judg = true; // 当たった
-	//	}
-	//	else {
-	//		player.bead_hit_judg = false; // 当たってない
-	//	}
-	//}
 }
 
 // 描画処理
@@ -144,8 +128,9 @@ void GameExit()
 	field.Exit();
 	camera.Exit();
 
-	for (int i = 0; i < OBJECT_MAX; ++i)
+	for (int h = 0; h < OBJECT_MAX; ++h)
 	{
+		for(int w = 0; w < OBJECT_MAX; w++)
 		object[i]->Exit();
 	}
 

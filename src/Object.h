@@ -13,6 +13,9 @@ public:
 
 
 	void Init(float* i);        //　初期処理
+	void GetScope(int* pos_x, int* pos_z); // オブジェクトを立てていいスペースをゲットする関数
+	void SetPos(); // 受け取ってきたスペースの中でランダムな位置セットする
+	
 	void Update();		//	更新処理
 	void CreateObjects(); // オブジェクトを作る関数
 	void Draw();		//	描画処理
@@ -21,6 +24,11 @@ public:
 	//---------------
 	// 変数の定義
 	//---------------
+public:
+
+	Vector3 scope_pos;
+
+
 private:
 	//-------------------------------------------------
 	// 円錐関連
