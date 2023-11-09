@@ -7,6 +7,8 @@
 #include <time.h> // 時間を使うのにいる
 #include <math.h> // サイン、コサインや平方根など、数学的な関数です。
 
+#include <vector>
+
 #pragma warning (disable : 4819)
 
 #include <d3d9.h>

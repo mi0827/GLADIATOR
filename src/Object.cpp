@@ -16,11 +16,7 @@ Object::Object()
 //---------------------------------------------------------------------------
 void Object::Init(float* i)
 {
-	// â~êçä÷åW
-	/*m_cone_top_pos.set(0.0f, 30.0f, *i);
-	m_cone_bottom_pos.set(0.0f, 0.0f, *i);
-	m_cone_r = 5.0f;
-	m_cone_color = GetColor(255, 255, 50);*/
+
 
 
 	// óßï˚ëÃä÷åW
@@ -42,7 +38,7 @@ void Object::GetScope(int* pos_x, int* pos_z)
 
 void Object::SetPos()
 {
-	m_cube_bottom_pos.set(0.0f, 0.0f, *i * 0);
+	//m_cube_bottom_pos.set(0.0f, 0.0f, *i * 0);
 }
 
 //---------------------------------------------------------------------------

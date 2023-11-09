@@ -128,11 +128,7 @@ void GameExit()
 	field.Exit();
 	camera.Exit();
 
-	for (int h = 0; h < OBJECT_MAX; ++h)
-	{
-		for(int w = 0; w < OBJECT_MAX; w++)
-		object[i]->Exit();
-	}
+	
 
 	// ‰Šúˆ—‚Å new ‚µ‚½‚Ì‚Å
 	// ‚±‚±‚Å‰ğ•ú‚µ‚Ä‚¨‚­

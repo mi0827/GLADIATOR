@@ -7,11 +7,12 @@
 constexpr int MAP_W = 10;  // 縦
 constexpr int MAP_H = 10;  // 横
 
+
 //	初期化処理
 Field::Field()
 {
 	// ここでフィールドモデルの読み込みをする
-	m_model =  MV1LoadModel("Data/Model/Field/ground.mv1");
+	m_model = MV1LoadModel("Data/Model/Field/ground.mv1");
 	m_pos.clear(); // 描画座標の設定
 	m_rot.clear(); // 回転量の設定
 }
@@ -20,9 +21,23 @@ void Field::Init()
 {
 	// ここでフィールドモデルの読み込みをする
 	m_model = MV1LoadModel("Data/Model/Field/ground.mv1");
+	int obj_max = Field_Init();
+	
+	// オブジェクトの初期化
+	for (int i = 0; i < obj_max; ++i) {
+		// ここでNEWする
+		
+		Object* p = new Object;
+
+		// さっき作った z_pos 分ずれるように引数にアドレスを渡す
+		p->Init(&z_pos[i]);
+
+		// 追加登録
+		objects.push_back(p);
+	}
 }
 
-void Field::Field_Init()
+int Field::Field_Init()
 {
 	// 1が壁０が何もない
 	// フィールドのオブジェクトを置く座標用の二次元配列
@@ -39,12 +54,23 @@ void Field::Field_Init()
 		{ 1,0,0,0,0,0,0,0,0,1 },
 		{ 1,1,1,1,1,1,1,1,1,1 },
 	};
+
+	// 何個のオブジェクトが必要か数える
+	int object_count=0;
+	for (int h = 0; h < MAP_H; h++) {
+		for (int w = 0; w < MAP_W; w++) {
+			if (MapData[h][w] == 1) {
+				object_count++;
+			}
+		}
+	}
+	return object_count;
 }
 
 //	更新処理
 void Field::Update()
 {
-	
+
 }
 
 //	描画処理
