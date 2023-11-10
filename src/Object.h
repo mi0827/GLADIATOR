@@ -12,15 +12,17 @@ public:
 
 
 
-	void Init(float* i);        //　初期処理
-	void GetScope(int* pos_x, int* pos_z); // オブジェクトを立てていいスペースをゲットする関数
-	void SetPos(); // 受け取ってきたスペースの中でランダムな位置セットする
+	void Init(); //　初期処理
+	void Field_Object_Init(const int m_field_size, int pos_x, int pos_z); // フィールドに奥オブジェクトの初期設定
 	
 	void Update();		//	更新処理
 	void CreateObjects(); // オブジェクトを作る関数
 	void Draw();		//	描画処理
 	void Exit();		//	終了処理
 
+
+	Vector3 Rand_Size_Cube(float m_field_size, float filed_pos_z, float filed_pos_x); // 立方体のサイズをランダムできめて返す関数
+	Vector3 Set_Cube_Bottom_Pos( float m_field_size, int pos_z, int pos_x, Vector3* field_pos); // 立方体の下の座標（元の座標）を返す関数
 	//---------------
 	// 変数の定義
 	//---------------

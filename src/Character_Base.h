@@ -29,7 +29,7 @@ public:
 	// ‘OˆÚ“®
 	void Move_Front(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 	// Œã‚ëˆÚ“®
-	void Move_Dehind(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	void Move_Dhindo(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 	// ¶ˆÚ“®
 	void Move_Left(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 	// ‰EˆÚ“®

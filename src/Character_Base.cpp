@@ -27,7 +27,7 @@ void CharacterBase::Move_Front( bool* m_check_move, Vector3* camera_rot, Vector3
 //---------------------------------------------------------------------------
 // 後ろ移動
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Dehind(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Dhindo(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	// 画面手前（カメラのある方向）
 	player_rot->y = camera_rot->y + 180.0f;

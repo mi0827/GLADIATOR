@@ -107,7 +107,7 @@ void Player::Update(Vector3* camera_rot)
 		}
 		if (CheckHitKey(KEY_INPUT_S)) // 下移動
 		{
-			CharacterBase::Move_Dehind( &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+			CharacterBase::Move_Dhindo( &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 		}
 		if (CheckHitKey(KEY_INPUT_A)) // 左移動
 		{
@@ -151,6 +151,7 @@ void Player::Update(Vector3* camera_rot)
 			CharacterBase::Attack_Action();                 // 行いたい攻撃アニメーションをセット
 			break;
 		}
+
 		//=================================
 		// 遠距離攻撃
 		//=================================
@@ -217,7 +218,7 @@ void Player::Update(Vector3* camera_rot)
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
 			// 攻撃が終わったのでこうげきしていないようにする
-			// m_attack_judg = false;
+			// m_attack_judge = false;
 		}
 		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
 		break;
@@ -246,7 +247,7 @@ void Player::Update(Vector3* camera_rot)
 		}
 	}
 
-	/*if (m_attack_judg) {
+	/*if (m_attack_judge) {
 		switch (attack_anim_pick)
 		{
 		case ATTACK_LONG_NORMAL_ANIM:

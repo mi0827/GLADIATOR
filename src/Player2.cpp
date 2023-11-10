@@ -81,7 +81,7 @@ void Player2::Update(Vector3* camera_rot)
 		}
 		if (CheckHitKey(KEY_INPUT_DOWN)) // â∫à⁄ìÆ
 		{
-			CharacterBase::Move_Dehind(&m_check_move, camera_rot, &m_rot, &DASH_SPEED);
+			CharacterBase::Move_Dhindo(&m_check_move, camera_rot, &m_rot, &DASH_SPEED);
 		}
 		if (CheckHitKey(KEY_INPUT_LEFT)) // ç∂à⁄ìÆ
 		{
