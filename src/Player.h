@@ -27,7 +27,7 @@ public:
 	//---------------
 	// 各関数の定義
 	Player(); // コンストラクタ
-	void Init() override;        //　初期処理
+	void Init(int player_num) override;        //　初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
 	void Update(Vector3* camera_rot) override;		//	更新処理
@@ -41,9 +41,7 @@ public:
 	// 変数の定義
 	//---------------
 private:
-	//int  action_mode; // 今どのモードなのかを判断する用の変数
-	// 移動中かどうか
-	//bool m_check_move;
+	
 
 	//---------------------------------
 	// アニメーション用の列挙体

@@ -5,7 +5,7 @@
 
 // キャラクター.h
 #include "Player.h"
-#include "Player2.h"
+#include "Ninja.h"
 // フィールド.h
 #include "Field.h"
 
@@ -15,117 +15,84 @@
 // オブジェクトクラス
 #include "Object.h"
 
+constexpr int PLAYER_MAX = 2; // プレイヤーの数、カメラの数も一緒
+
 // 各クラスのオブジェクト
 
-CharacterBase* player_objec[2];
+CharacterBase* players[2]; // キャラクターの二人呼ぶ用の配列 
+Camera* camera[2];         // キャラクタと同じ数
 
-Player player;
-Player2 player2;
 Field field;
-Camera camera;
-Camera camera_2;
-
-//// オブジェクトの数
-//const int OBJECT_MAX = 1;
-//
-//// オブジェクトクラス型のポインタはいてる　
-//Object* object[OBJECT_MAX];
-//
-//// オブジェクトの描画位置を微妙にずらすための配列変数
-//float z_pos[OBJECT_MAX];
-
-
 
 // 初期処理(各クラスのコンストラクタできないもの)
 void GameInit()
 {
+	players[0] = new Player;
+	players[1] = new Ninja;
+	camera[0] = new Camera;
+	camera[1] = new Camera;
 	// 各クラスの初期設定
 	field.Init();
 	field.Field_Init();
-	player.Init();
-	player2.Init();
+	players[0]->Init(0);
+	players[1]->Init(1);
 
-	camera.PlayField_Init();
-	camera_2.PlayField_Init();
+	for (int i = 0; i < PLAYER_MAX; i++) {
+		camera[i]->PlayField_Init();
+	}
 
-
-
-	//// どれだけずらすかの設定
-	//for (int i = 0; i < OBJECT_MAX; ++i) {
-	//	z_pos[i] = i * 20.0f;
-	//}
-
-	//// オブジェクトの初期化
-	//for (int i = 0; i < OBJECT_MAX; ++i) {
-	//	// ここでNEWする
-	//	object[i] = new Object;
-	//	// さっき作った z_pos 分ずれるように引数にアドレスを渡す
-	//	object[i]->Init(&z_pos[i]);
-	//}
 }
 
 // 更新処理
 void GameUpdate()
 {
-	player.Update(&camera.m_rot);
-	// 立方体とプレイヤーのあたり判定
-	for (int i = 0; i < field.obj_max; i++) {
-		if (CheckBoxHit3D(player.m_pos, player.m_move_hit_box_size, field.objects[i]->m_cube_hit_pos, field.objects[i]->m_cube_size_half))
-		{
-			player.m_move_judge = true; // 移動に支障があるのTureを返す
-			player.Get_other(&field.objects[i]->m_cube_hit_pos, &field.objects[i]->m_cube_size_half); // Playerに当たった相手の情報を渡する
-			player.Move_Hit_Update(); // 壁擦り用の関数
+	// キャラクターの移動（壁擦り）処理
+	for (int player = 0; player < PLAYER_MAX; player++) {
+		players[player]->Update(&camera[player]->m_rot);
+		// 立方体とプレイヤーのあたり判定
+		for (int i = 0; i < field.obj_max; i++) {
+			if (CheckBoxHit3D(players[player]->m_pos, players[player]->m_move_hit_box_size, field.objects[i]->m_cube_hit_pos, field.objects[i]->m_cube_size_half))
+			{
+				players[player]->m_move_judge = true; // 移動に支障があるのTureを返す
+				players[player]->Get_other(&field.objects[i]->m_cube_hit_pos, &field.objects[i]->m_cube_size_half); // Playerに当たった相手の情報を渡する
+				players[player]->Move_Hit_Update(); // 壁擦り用の関数
+			}
+			else {
+				players[player]->m_move_judge = false;
+			}
 		}
-		else {
-			player.m_move_judge = false;
-		}
-
 	}
+
 	// 各クラスの更新処理
-	player2.Update(&camera.m_rot);
-	field.Update();
-	camera.Update(&player.m_pos);
-	camera_2.Update(&player2.m_pos);
-	/*for (int i = 0; i < OBJECT_MAX; ++i)
+	field.Update();	
+	for (int i = 0; i < PLAYER_MAX; ++i)
 	{
-		object[i]->Update();
-	}*/
+		camera[i]->Update(&players[i]->m_pos);
+	}
 }
 
 // 描画処理
 void GameDraw()
 {
 	// 各クラスの描画処理
-	camera.Draw_Set(); // カメラの描画前設定（ ※ 描画処理の一番最初にすること）
-	field.Draw();
-	player.Draw();
-	player2.Draw();
-	
-	/*for (int i = 0; i < OBJECT_MAX; ++i)
-	{
-		object[i]->Draw();
-	}*/
-	camera.Draw(0); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
-
-
-	camera_2.Draw_Set();
-	field.Draw();
-	player.Draw();
-	player2.Draw();
-	/*for (int i = 0; i < OBJECT_MAX; ++i)
-	{
-		object[i]->Draw();
-	}*/
-
-	camera_2.Draw(1);
+	for (int i = 0; i < PLAYER_MAX; i++) {
+		camera[i]->Draw_Set();       // カメラの描画前設定（ ※ 描画処理の一番最初にすること）
+		field.Draw();
+		players[i]->Draw();
+		camera[i]->Draw(i); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
+	}
 }
 
 // 終了処理
 void GameExit()
 {
 	// 各クラスの終了処理
-	player.Exit();
-	player2.Exit();
+	for (int i = 0; i < PLAYER_MAX; i++) {
+		players[i]->Exit();
+		camera[i]->Exit();
+	}
 	field.Exit();
-	camera.Exit();
+	// newしていたクラスの解放
+	delete[] players;
+	delete[] camera;
 }

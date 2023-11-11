@@ -125,11 +125,11 @@ void CharacterBase::Nomal_Anim_New(int ANIM_MAX)
 //---------------------------------------------------------------------------
 // 普通アニメーションの初期設定(アニメーションのアタッチから最初のブレンド率の調整までを行う)
 //---------------------------------------------------------------------------
-void CharacterBase::Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX)
+void CharacterBase::Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX, int index)
 {
 	for (int i = 0; i < ANIM_MAX; i++)
 	{
-		anim_attach[i] = MV1AttachAnim(m_model, 1, anim_model[i]);             // モデルにアニメーションをアタッチ（つける）する
+		anim_attach[i] = MV1AttachAnim(m_model, index, anim_model[i]);             // モデルにアニメーションをアタッチ（つける）する
 		anim_total[i] = MV1GetAttachAnimTotalTime(m_model, anim_attach[i]);               // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
 		// 不必要なものにはブレンド率を0.0fにしておく（最初はアイドルにしておく）
 		if (i != ANIM_IDLE)  // アイドル以外のアニメーションをモデルから外す
@@ -163,11 +163,11 @@ void CharacterBase::Attack_Anim_New(int ATTACK_ANIM_MAX)
 //---------------------------------------------------------------------------
 // 攻撃アニメーションの初期設定(アタッチから最初のディタッチまでを行う)
 //---------------------------------------------------------------------------
-void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX)
+void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX , int index)
 {
 	for (int i = 0; i < ATTACK_ANIM_MAX; i++)
 	{
-		attack_anim_attach[i] = MV1AttachAnim(m_model, 1, attack_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
+		attack_anim_attach[i] = MV1AttachAnim(m_model, index, attack_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
 		attack_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
 		attack_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
@@ -199,10 +199,10 @@ void CharacterBase::Anim_Delete(int ANIM_MAX, int ATTACK_ANIM_MAX)
 //---------------------------------------------------------------------------
 // 攻撃にあったアニメーションさせる関数
 //---------------------------------------------------------------------------
-void CharacterBase::Attack_Action()
+void CharacterBase::Attack_Action(int index)
 {
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
-	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, 1, attack_anim_model[attack_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
+	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, index, attack_anim_model[attack_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
 	 
 	m_attack_judge = true;
 }
@@ -223,3 +223,4 @@ void CharacterBase::Get_other(Vector3* hit_other_pos, Vector3* hit_other_size)
 	m_hit_other_pos = *hit_other_pos;   // 座標
 	m_hit_other_size = *hit_other_size; // サイズ
 }
+

@@ -47,7 +47,7 @@ void Object::Field_Object_Init(const int m_field_size, int pos_z, int pos_x)
 	//=================================
 	// F‚Ìİ’è
 	//=================================
-	m_cube_color = GetColor(0, 0, 0);
+	m_cube_color = GetColor(0, 255, 0);
 
 	//=================================
 	// “–‚½‚è”»’è—p‚ÌÀ•W‚Ìİ’è

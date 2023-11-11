@@ -12,7 +12,7 @@ public:
 	//---------------
 	//virtual と = 0 しておくことで派生クラスでオーバーロードできる
 	CharacterBase();
-	virtual void Init() = 0;        //　初期処理
+	virtual void Init(int player_num) = 0;        //　初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
 	virtual void Update(Vector3* camera_rot) = 0;		//	更新処理
@@ -44,18 +44,18 @@ public:
 	// 普通アニメーション変数のNew用関数
 	void Nomal_Anim_New(int ANIM_MAX);
 	// 普通アニメーションの初期設定
-	void Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX);
+	void Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX,int index);
 
 	// 攻撃アニメーション変数のNew用関数
 	void Attack_Anim_New(int ATTACK_ANIM_MAX);
 	// 攻撃アニメーションの初期設定
-	void Attack_Anim_Init(int ATTACK_ANIM_MAX);
+	void Attack_Anim_Init(int ATTACK_ANIM_MAX, int index);
 
 	// アニメーション変数をdeleteする用の関数
 	void Anim_Delete(int ANIM_MAX, int ATTACK_ANIM_MAX);
 
 	// 攻撃にあったアニメーションさせる関数
-	void Attack_Action();
+	void Attack_Action(int index);
 
 
 	// 当たり判定のあったとき当たった相手の情報をとってくる関数
@@ -127,7 +127,7 @@ public:
 	//---------------------------------------------------------------------------
 	Vector3 m_move_hit_box_pos;  // キャラの足の下にパネルのようにして使う
 	Vector3 m_move_hit_box_size; // パネルサイズ
-	Vector3 m_charcter_size;     // プレイヤーをボックスとしたときの大きさ(中心座標からPANEL_HA+L)
+	Vector3 m_character_size;     // プレイヤーをボックスとしたときの大きさ(中心座標からPANEL_HAL)
 
 protected:
 	//---------------------------------------------------------------------------

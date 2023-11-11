@@ -12,7 +12,7 @@
 //---------------------------------------------------------------------------
 Player::Player()
 {
-	m_pos.set(0.0f, 0.0f, -50.0f);           // 初期座標の設定
+	m_pos.set(0.0f, 0.0f, 0.0f);             // 初期座標の設定
 	m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
 	before_mov.set(m_pos);                       // 最初は最初の座標を入れとく
 
@@ -42,7 +42,7 @@ Player::Player()
 //---------------------------------------------------------------------------
 // 初期処理
 //---------------------------------------------------------------------------
-void Player::Init()
+void Player::Init(int player_num)
 {
 	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
 	// 普通アニメーションの初期化
@@ -50,19 +50,28 @@ void Player::Init()
 	CharacterBase::Nomal_Anim_New(ANIM_MAX);  // 普通アニメーションに必要な変数の配列を作る
 	anim_model[ANIM_IDLE] = MV1LoadModel("Data/Model/Player/Animation/Player_Idle.mv1"); // アイドル
 	anim_model[ANIM_RUN] = MV1LoadModel("Data/Model/Player/Animation/Player_Run.mv1");   // 走る
-	CharacterBase::Nomal_Anim_Init(ANIM_IDLE, ANIM_MAX); // 普通アニメーションの初期設定
-	
-    // 攻撃アニメーションの初期化
-    // アニメーションの読み込み
-	CharacterBase::Attack_Anim_New( ATTACK_ANIM_MAX); // 攻撃アニメーションに必要な変数の配列を作る
+	CharacterBase::Nomal_Anim_Init(ANIM_IDLE, ANIM_MAX, 1); // 普通アニメーションの初期設定
+
+	// 攻撃アニメーションの初期化
+	// アニメーションの読み込み
+	CharacterBase::Attack_Anim_New(ATTACK_ANIM_MAX); // 攻撃アニメーションに必要な変数の配列を作る
 	attack_anim_model[ATTACK_LONG_NORMAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/long_normal_attack.mv1");       // 遠距離普通攻撃
 	attack_anim_model[ATTACK_SHORT_NORMAL_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_1.mv1"); // 近距離攻撃１
 	attack_anim_model[ATTACK_SHORT_NORMAL_2_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_2.mv1"); // 近距離攻撃２
 	attack_anim_model[ATTACK_SLIDE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/slide.mv1");                          // スライディング
 	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/special_attack.mv1");               // 必殺技
-	CharacterBase::Attack_Anim_Init(ATTACK_ANIM_MAX); // 攻撃アニメーションの初期設定
-	
+	CharacterBase::Attack_Anim_Init(ATTACK_ANIM_MAX, 1); // 攻撃アニメーションの初期設定
+
 	pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
+
+	if (player_num == 0) {
+		m_pos.set(0.0f, 0.0f, -50.0f);           // 初期座標の設定
+		m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
+	}
+	else {
+		m_pos.set(0.0f, 0.0f, 500.0f);            // 初期座標の設定
+		m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
+	}
 }
 
 //---------------------------------------------------------------------------
@@ -70,9 +79,7 @@ void Player::Init()
 //---------------------------------------------------------------------------
 void Player::Update(Vector3* camera_rot)
 {
-
 	before_mov = m_pos; // 移動される前に入れ替えとく
-
 
 	// アクションモードの判断してそれに合った操作をするようにする
 	switch (action_mode)
@@ -97,17 +104,17 @@ void Player::Update(Vector3* camera_rot)
 		mov /= 32768.0f;
 		// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
 		if (mov.GetLength() > 0.5f) {
-			CharacterBase::Move_GamePad( &m_check_move, &mov, camera_rot, &MOVE_SPEED);
+			CharacterBase::Move_GamePad(&m_check_move, &mov, camera_rot, &MOVE_SPEED);
 		}
 
 		// WASDキーでプレイヤーの移動
 		if (CheckHitKey(KEY_INPUT_W)) // 上移動
 		{
-			CharacterBase::Move_Front( &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+			CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 		}
 		if (CheckHitKey(KEY_INPUT_S)) // 下移動
 		{
-			CharacterBase::Move_Dhindo( &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+			CharacterBase::Move_Dhindo(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 		}
 		if (CheckHitKey(KEY_INPUT_A)) // 左移動
 		{
@@ -115,7 +122,7 @@ void Player::Update(Vector3* camera_rot)
 		}
 		if (CheckHitKey(KEY_INPUT_D)) // 右移動
 		{
-			CharacterBase::Move_Right( &m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+			CharacterBase::Move_Right(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 		}
 
 
@@ -147,8 +154,9 @@ void Player::Update(Vector3* camera_rot)
 		// マウスの左クリックまたはAボタンで近距離攻撃
 		if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_1) {
 			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
-			attack_anim_pick = ATTACK_SHORT_NORMAL_2_ANIM;  // 近距離攻撃アクションを設定
-			CharacterBase::Attack_Action();                 // 行いたい攻撃アニメーションをセット
+			attack_anim_pick = ATTACK_SHORT_NORMAL_1_ANIM;  // 近距離攻撃アクションを設定
+			CharacterBase::Attack_Action(1);                 // 行いたい攻撃アニメーションをセット
+
 			break;
 		}
 
@@ -157,9 +165,9 @@ void Player::Update(Vector3* camera_rot)
 		//=================================
 		// マウスの右クリック、または、Yボタンで遠距離攻撃
 		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_4) {
-			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
+			action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
-			CharacterBase::Attack_Action();
+			CharacterBase::Attack_Action(1);              // 行いたい攻撃アニメーションをセット
 			break;
 		}
 
@@ -168,9 +176,9 @@ void Player::Update(Vector3* camera_rot)
 		//=================================
 		// スペースキークリック、または、Bボタンで遠距離攻撃
 		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_2) {
-			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
+			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
-			CharacterBase::Attack_Action();
+			CharacterBase::Attack_Action(1);        // 行いたい攻撃アニメーションをセット
 			break;
 		}
 
@@ -180,9 +188,9 @@ void Player::Update(Vector3* camera_rot)
 		//=================================
 		// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
 		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_6 && GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_5) {
-			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
+			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 近距離攻撃アクションを設定
-			CharacterBase::Attack_Action();
+			CharacterBase::Attack_Action(1);          // 行いたい攻撃アニメーションをセット
 			break;
 		}
 
@@ -247,18 +255,11 @@ void Player::Update(Vector3* camera_rot)
 		}
 	}
 
-	/*if (m_attack_judge) {
-		switch (attack_anim_pick)
-		{
-		case ATTACK_LONG_NORMAL_ANIM:
 
-			break;
-		}
-
-	}*/
 }
 
 //---------------------------------------------------------------------------
+// プレイヤーの移動用当たり判定（壁擦り）
 //---------------------------------------------------------------------------
 void Player::Move_Hit_Update()
 {
