@@ -86,7 +86,7 @@ void Ninja::Update(Vector3* camera_rot)
 		// ゲームパッドの情報を取得（XINPUT の情報）
 		XINPUT_STATE input;
 		// ゲームパッドの情報を丸ごと取得
-		GetJoypadXInputState(DX_INPUT_PAD1, &input);
+		GetJoypadXInputState(DX_INPUT_PAD2, &input);
 
 
 		// 左スティックの値を設定

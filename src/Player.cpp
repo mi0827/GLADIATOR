@@ -56,7 +56,7 @@ void Player::Init(int player_num)
 	// アニメーションの読み込み
 	CharacterBase::Attack_Anim_New(ATTACK_ANIM_MAX); // 攻撃アニメーションに必要な変数の配列を作る
 	attack_anim_model[ATTACK_LONG_NORMAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/long_normal_attack.mv1");       // 遠距離普通攻撃
-	attack_anim_model[ATTACK_SHORT_NORMAL_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_1.mv1"); // 近距離攻撃１
+	attack_anim_model[ATTACK_SHORT_NORMAL_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch.mv1"); // 近距離攻撃１
 	attack_anim_model[ATTACK_SHORT_NORMAL_2_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_2.mv1"); // 近距離攻撃２
 	attack_anim_model[ATTACK_SLIDE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/slide.mv1");                          // スライディング
 	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/special_attack.mv1");               // 必殺技
@@ -95,8 +95,6 @@ void Player::Update(Vector3* camera_rot)
 		XINPUT_STATE input;
 		// ゲームパッドの情報を丸ごと取得
 		GetJoypadXInputState(DX_INPUT_PAD1, &input);
-
-
 		// 左スティックの値を設定
 		mov.x = input.ThumbLX;
 		mov.z = input.ThumbLY;
@@ -182,7 +180,6 @@ void Player::Update(Vector3* camera_rot)
 			break;
 		}
 
-
 		//=================================
 		// 必殺技
 		//=================================
@@ -234,7 +231,6 @@ void Player::Update(Vector3* camera_rot)
 
 
 	if (m_attack_judge) {
-
 		// 弾用の変数
 		if (lifespan_count >= 120.0f) {
 			bead_pos = new Vector3;
@@ -245,7 +241,6 @@ void Player::Update(Vector3* camera_rot)
 		bead_pos->x += 3 * sinf(TO_RADIAN(m_rot.y));
 		bead_pos->z += 3 * cosf(TO_RADIAN(m_rot.y));
 		lifespan_count--; // 弾が消えるまでのカウントを進める
-
 		// カウントが一定にまで減るか、当たり判定があったら
 		if (lifespan_count <= 0 || bead_hit_judg) {
 			delete bead_pos; // 弾の解放
@@ -275,14 +270,23 @@ void Player::Draw()
 	if (bead_pos != NULL) {
 		DrawSphere3D(bead_pos->VGet(), 2.0f, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 	}
+
+	// プレイヤー自身の当たり判定
 	DrawCapsule3D(m_hit_body_pos_top.VGet(), m_hit_body_pos_under.VGet(), m_hit_body_r, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), FALSE);
 
 	// 当たり判定を見えるようにする物
-	Vector3 draw_box_pos;
-	draw_box_pos = m_pos + m_move_hit_box_pos;
-	Vector3 draw_box_size;
-	draw_box_size = m_pos + m_move_hit_box_pos + m_move_hit_box_size;
-	DrawCube3D(draw_box_pos.VGet(), draw_box_size.VGet(), GetColor(0, 0, 0), GetColor(0, 0, 0), TRUE);
+	Vector3 draw_pos;
+	// 向いている方向に座標を設定（今はパンチに位置）
+	draw_pos.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 13, m_pos.z + 8 * cosf(TO_RADIAN(m_rot.y)));
+	float draw_sphere_size = 1.0f;
+	DrawSphere3D(draw_pos.VGet(), draw_sphere_size, 8, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
+
+	// 当たり判定を見えるようにする物
+	Vector3 draw_pos_2;
+	// 向いている方向に座標を設定（今はスライドに位置）
+	draw_pos_2.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y)));
+	float draw_sphere_size_2 = 1.0f;
+	DrawSphere3D(draw_pos_2.VGet(), draw_sphere_size_2, 8, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
 
 	// プレイヤーの描画設定
 	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z));                                             // 描画するプレイヤーモデルの座標の設定

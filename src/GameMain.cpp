@@ -62,6 +62,18 @@ void GameUpdate()
 			}
 		}
 	}
+	// プレイヤーとプレイヤーの移動あたり判定
+	for (int i = 0; i < field.obj_max; i++) {
+		if (CheckBoxHit3D(players[0]->m_pos, players[0]->m_move_hit_box_size, players[1]->m_pos, players[1]->m_move_hit_box_size))
+		{
+			players[0]->m_move_judge = true; // 移動に支障があるのTureを返す
+			players[0]->Get_other(&players[1]->m_pos, &players[1]->m_move_hit_box_size); // Playerに当たった相手の情報を渡する
+			players[0]->Move_Hit_Update(); // 壁擦り用の関数
+		}
+		else {
+			players[0]->m_move_judge = false;
+		}
+	}
 
 	// 各クラスの更新処理
 	field.Update();	
@@ -78,7 +90,10 @@ void GameDraw()
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		camera[i]->Draw_Set();       // カメラの描画前設定（ ※ 描画処理の一番最初にすること）
 		field.Draw();
-		players[i]->Draw();
+		// プレイヤ―を用がさせるための配列
+		for (int j = 0; j < PLAYER_MAX; j++) {
+			players[j]->Draw();
+		}
 		camera[i]->Draw(i); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
 	}
 }
