@@ -23,12 +23,16 @@ Player::Player()
 
 	//------------------------------
 	// 当たり判定用変数
-
 	//=============
 	// カプセル
 	m_hit_body_pos_top.clear();                       // 上側
 	m_hit_body_pos_under.clear();                     // 下側
 	m_hit_body_r = 2.0f;                              // 半径
+
+	// あたり判定用
+	m_hit_attack_pos_top.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 13, m_pos.z + 8 * cosf(TO_RADIAN(m_rot.y)));
+	m_hit_attack_pos_under.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 12.7, m_pos.z + 6 * cosf(TO_RADIAN(m_rot.y)));
+	m_hit_attack_r = 1.0f;
 	//======================
 	// 移動用のボックス                                                   
 	m_move_hit_box_size.set(PANEL_HALF - 0.1, PANEL_HALF - 0.1, PANEL_HALF - 0.1);    // パネルの大きさ
@@ -37,6 +41,9 @@ Player::Player()
 	m_move_judge = false;                              // 最初は動いてはいけない
 	m_attack_judge = false;                            // 攻撃していない
 	bead_hit_judg = false;                            // なににもあたってない
+
+	m_hp_pos.set(10, 32);         // HPバーの描画位置初期化
+	m_hp_count.set(HP_MAX, 32 + 30);   // HPの計算用の初期化
 }
 
 //---------------------------------------------------------------------------
@@ -275,24 +282,25 @@ void Player::Draw()
 	DrawCapsule3D(m_hit_body_pos_top.VGet(), m_hit_body_pos_under.VGet(), m_hit_body_r, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), FALSE);
 
 	// 当たり判定を見えるようにする物
-	Vector3 draw_pos;
 	// 向いている方向に座標を設定（今はパンチに位置）
-	draw_pos.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 13, m_pos.z + 8 * cosf(TO_RADIAN(m_rot.y)));
-	float draw_sphere_size = 1.0f;
-	DrawSphere3D(draw_pos.VGet(), draw_sphere_size, 8, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
-
+	m_hit_attack_pos_top.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 13, m_pos.z + 8 * cosf(TO_RADIAN(m_rot.y)));
+	m_hit_attack_pos_under.set(m_pos.x + 6 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 12.7, m_pos.z + 6 * cosf(TO_RADIAN(m_rot.y)));
+	DrawCapsule3D(m_hit_attack_pos_top.VGet(), m_hit_attack_pos_under.VGet(), m_hit_attack_r, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
 	// 当たり判定を見えるようにする物
 	Vector3 draw_pos_2;
+	Vector3 draw_pos_under_2;
 	// 向いている方向に座標を設定（今はスライドに位置）
-	draw_pos_2.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y)));
+	draw_pos_2.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 1, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y)));
+	draw_pos_under_2.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y)));
 	float draw_sphere_size_2 = 1.0f;
-	DrawSphere3D(draw_pos_2.VGet(), draw_sphere_size_2, 8, GetColor(0, 255, 0), GetColor(0, 255, 0), FALSE);
+	DrawCapsule3D(draw_pos_2.VGet(), draw_pos_under_2.VGet(), draw_sphere_size_2, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
 
 	// プレイヤーの描画設定
 	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z));                                             // 描画するプレイヤーモデルの座標の設定
 	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z)));   // モデルの回転
 	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f));                                                         // モデルの大きさ(10分の１のサイズ)
 	MV1DrawModel(m_model);                                                                                // モデルの描画
+	
 }
 
 //---------------------------------------------------------------------------

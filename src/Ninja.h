@@ -18,7 +18,7 @@ class Ninja : public CharacterBase
 	// 定数
 	//---------------
 private:
-	
+
 	const float MOVE_SPEED = 3.0f; // 走る用のスピード
 
 public:
@@ -32,13 +32,14 @@ public:
 	// カメラがどの方向にあるのかを情報として使う
 	void Update(Vector3* camera_rot) override;		//	更新処理
 	void Move_Hit_Update()override;
+	
 	void Draw()override;		//	描画処理
 	void Exit()override;		//	終了処理
 	//---------------
 	// 変数の定義
 	//---------------
 private:
-	
+
 
 	//---------------------------------
 	// アニメーション用の列挙体

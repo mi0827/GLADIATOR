@@ -99,23 +99,25 @@ void Ninja::Update(Vector3* camera_rot)
 			CharacterBase::Move_GamePad(&m_check_move, &mov, camera_rot, &MOVE_SPEED);
 		}
 
-		// WASDキーでプレイヤーの移動
-		if (CheckHitKey(KEY_INPUT_W)) // 上移動
-		{
-			CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		}
-		if (CheckHitKey(KEY_INPUT_S)) // 下移動
-		{
-			CharacterBase::Move_Dhindo(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		}
-		if (CheckHitKey(KEY_INPUT_A)) // 左移動
-		{
-			CharacterBase::Move_Left(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		}
-		if (CheckHitKey(KEY_INPUT_D)) // 右移動
-		{
-			CharacterBase::Move_Right(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		}
+		// 移動をいまはやめておく
+
+		//// WASDキーでプレイヤーの移動
+		//if (CheckHitKey(KEY_INPUT_W)) // 上移動
+		//{
+		//	CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		//}
+		//if (CheckHitKey(KEY_INPUT_S)) // 下移動
+		//{
+		//	CharacterBase::Move_Dhindo(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		//}
+		//if (CheckHitKey(KEY_INPUT_A)) // 左移動
+		//{
+		//	CharacterBase::Move_Left(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		//}
+		//if (CheckHitKey(KEY_INPUT_D)) // 右移動
+		//{
+		//	CharacterBase::Move_Right(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		//}
 
 
 		// 移動中ならアニメーションの変更と当たり判定の移動
@@ -255,6 +257,8 @@ void  Ninja::Move_Hit_Update()
 {
 	CharacterBase::Move_Hit(&before_mov, &m_move_hit_box_size, &m_hit_other_pos, &m_hit_other_size);
 }
+
+
 
 // 描画処理
 void Ninja::Draw()

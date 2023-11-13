@@ -7,18 +7,21 @@
 class CharacterBase : public Base
 {
 public:
+
+#define HP_MAX 350 // HPの最大値
 	//---------------
 	// 関数の定義
 	//---------------
 	//virtual と = 0 しておくことで派生クラスでオーバーロードできる
 	CharacterBase();
-	virtual void Init(int player_num) = 0;        //　初期処理
+	virtual void Init(int player_num) = 0;        // 初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
-	virtual void Update(Vector3* camera_rot) = 0;		//	更新処理
+	virtual void Update(Vector3* camera_rot) = 0;		// 更新処理
 	virtual void Move_Hit_Update() = 0; // 壁擦り用の関数
-	virtual void Draw() = 0;		//	描画処理
-	virtual void Exit() = 0;		//	終了処理
+	
+	virtual void Draw() = 0;		    // 描画処理
+	virtual void Exit() = 0;		    // 終了処理
 
 	//---------------------------------------------------------------------------
 	// 移動用関数
@@ -44,7 +47,7 @@ public:
 	// 普通アニメーション変数のNew用関数
 	void Nomal_Anim_New(int ANIM_MAX);
 	// 普通アニメーションの初期設定
-	void Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX,int index);
+	void Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX, int index);
 
 	// 攻撃アニメーション変数のNew用関数
 	void Attack_Anim_New(int ATTACK_ANIM_MAX);
@@ -130,10 +133,11 @@ public:
 	Vector3 m_character_size;    // プレイヤーをボックスとしたときの大きさ(中心座標からPANEL_HAL)
 
 	//---------------------------------------------------------------------------
-	// 攻撃時の当たり判定用変数（球型）
+	// 攻撃時の当たり判定用変数（カプセル）
 	//---------------------------------------------------------------------------
-	Vector3 m_attack_hit; // 座標
-	float m_attack_hit_r; // 半径
+	Vector3 m_hit_attack_pos_top;     // カプセルの上側 
+	Vector3 m_hit_attack_pos_under;   // 下側
+	float m_hit_attack_r = 0;         // 半径
 protected:
 	//---------------------------------------------------------------------------
 	// 移動に関する物
@@ -143,4 +147,10 @@ protected:
 public:
 	Vector3 before_mov;   // 毎フレーム移動前の座標をいれる用の変数
 
+	//---------------------------------------------------------------------------
+	// キャラクターのステータス用の変数
+	//---------------------------------------------------------------------------
+	// キャラクターの体力
+	Vector2 m_hp_pos; // 描画座標
+	Vector2 m_hp_count; // 計算用
 };
