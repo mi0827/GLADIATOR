@@ -40,11 +40,11 @@ void Camera::Init()
 //---------------------------------------------------------------------------------
 void Camera::PlayField_Init()
 {
-	
-		m_field_size.set(SCREEN_W / 2, SCREEN_H);                                                                     // 描画する画面のサイズの設定
-		m_screen_field = MakeScreen(m_field_size.x, m_field_size.y);                                    // 描画画面を書き込むための初期設定
-		SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 2.0f, -5.0f), VGet(0.0f, 0.0f, 1.0f));  // カメラの設定
-	
+
+	m_field_size.set(SCREEN_W / 2, SCREEN_H);                                                                      // 描画する画面のサイズの設定
+	m_screen_field = MakeScreen(m_field_size.x, m_field_size.y);                                             // 描画画面を書き込むための初期設定
+	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 2.0f, -5.0f), VGet(0.0f, 0.0f, 1.0f));  // カメラの設定
+
 }
 
 //---------------------------------------------------------------------------------
@@ -151,9 +151,9 @@ void Camera::Draw(int camera_No)
 		// ３Dが描画された画像を描画
 		DrawGraphF(m_field_pos.x + m_field_size.x, m_field_pos.y, m_screen_field, TRUE);
 		// どっちの画面が移っているのかがわかるように
-		DrawString(SCREEN_W / 2+ 16, 16, "PLAYER 2", GetColor(255, 255, 255));
+		DrawString(SCREEN_W / 2 + 16, 16, "PLAYER 2", GetColor(255, 255, 255));
 		// 画像がわかりやすいように
-		DrawLineBox(m_field_pos.x + m_field_size.x, m_field_pos.y, m_field_pos.x + m_field_size.x *2, m_field_pos.y + m_field_size.y, GetColor(0, 255, 255));
+		DrawLineBox(m_field_pos.x + m_field_size.x, m_field_pos.y, m_field_pos.x + m_field_size.x * 2, m_field_pos.y + m_field_size.y, GetColor(0, 255, 255));
 	}
 
 }

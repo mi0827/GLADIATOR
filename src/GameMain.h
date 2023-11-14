@@ -22,4 +22,4 @@ void Move_Hit();
 // 攻撃のあたり判定を行う関数
 void Attack_Hit();
 // キャラクターのステータス描画処理
-void Draw_Staus();
+void Draw_Status();

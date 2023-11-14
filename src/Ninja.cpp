@@ -34,6 +34,9 @@ Ninja::Ninja()
 	m_move_judge = false;                              // 最初は動いてはいけない
 	m_attack_judge = false;                            // 攻撃していない
 	bead_hit_judg = false;                            // なににもあたってない
+
+	m_hp_pos.set(10, 32);         // HPバーの描画位置初期化
+	m_hp_count.set(HP_MAX, 32 + 30);   // HPの計算用の初期化
 }
 
 // 初期処理
@@ -258,6 +261,10 @@ void  Ninja::Move_Hit_Update()
 	CharacterBase::Move_Hit(&before_mov, &m_move_hit_box_size, &m_hit_other_pos, &m_hit_other_size);
 }
 
+//---------------------------------------------------------------------------
+// ステータス描画処理
+//---------------------------------------------------------------------------
+// CharacterBase::Draw_Status();
 
 
 // 描画処理
@@ -281,6 +288,9 @@ void Ninja::Draw()
 	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z)));   // モデルの回転
 	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f));                                                         // モデルの大きさ(10分の１のサイズ)
 	MV1DrawModel(m_model);
+
+
+
 }
 
 

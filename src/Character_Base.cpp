@@ -3,17 +3,72 @@
 #include "Base.h"
 #include "Character_Base.h"
 
- 
+
 
 CharacterBase::CharacterBase()
 {
 }
 
+//---------------------------------------------------------------------------
+// ステータスを描画する用の関数
+//---------------------------------------------------------------------------
+void CharacterBase::Draw_Status()
+{
+
+	DrawBox(m_hp_pos.x, m_hp_pos.y, m_hp_count.x, m_hp_count.y, GetColor(0, 255, 0), TRUE);
+	DrawLineBox(m_hp_pos.x, m_hp_pos.y, HP_MAX, m_hp_count.y, GetColor(255, 255, 255));
+}
+
+//---------------------------------------------------------------------------
+// プレイヤーの移動をする関数
+//---------------------------------------------------------------------------
+void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+{
+	// 移動中はダッシュする
+		// ゲームパッドの入力状態をとる
+		//	ゲームパッドの左スティックの値を使って座標（ m_pos ）の値を変更
+		// 左ステックでプレイヤーの向きや座標の更新
+		// ゲームパッドの情報を取得（XINPUT の情報）
+	XINPUT_STATE input;
+	// ゲームパッドの情報を丸ごと取得
+	GetJoypadXInputState(DX_INPUT_PAD1, &input);
+	// 左スティックの値を設定
+	mov.x = input.ThumbLX;
+	mov.z = input.ThumbLY;
+	// -32768 ～ 32767 を-1.0f　～　1.0fにします
+	mov /= 32768.0f;
+	// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
+	if (mov.GetLength() > 0.5f) {
+		CharacterBase::Move_GamePad(m_check_move, &mov, camera_rot, mov_speed);
+	}
+
+	// WASDキーでプレイヤーの移動
+	if (CheckHitKey(KEY_INPUT_W)) // 上移動
+	{
+		Move_Front(m_check_move, camera_rot,  player_rot, mov_speed);
+	}
+	if (CheckHitKey(KEY_INPUT_S)) // 下移動
+	{
+		Move_Dhindo(m_check_move, camera_rot, player_rot, mov_speed);
+	}
+	if (CheckHitKey(KEY_INPUT_A)) // 左移動
+	{
+		Move_Left(m_check_move, camera_rot, player_rot, mov_speed);
+	}
+	if (CheckHitKey(KEY_INPUT_D)) // 右移動
+	{
+		Move_Right(m_check_move, camera_rot, player_rot, mov_speed);
+	}
+
+}
+
+
+
 
 //---------------------------------------------------------------------------
 // 前移動
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Front( bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Front(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	//　画面奥：カメラのある方向の逆の方向
 	player_rot->y = camera_rot->y;
@@ -41,7 +96,7 @@ void CharacterBase::Move_Dhindo(bool* m_check_move, Vector3* camera_rot, Vector3
 //---------------------------------------------------------------------------
 // 左移動
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Left( bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Left(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	// 画面から見て：左
 	player_rot->y = camera_rot->y - 90;
@@ -74,18 +129,18 @@ void CharacterBase::Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* came
 	*m_check_move = true; // 動いていい
 	// 向いている方向に座標移動
 	// 当たり判定がある時は座標移動をしない
-	
+
 		//	そのベクトルを回転させるための行列を作成します。
-		MATRIX mat_y = MGetRotY(TO_RADIAN(camera_rot->y));
-		//	その行列を使ってベクトルを回転させます。
-		*mov = GetVector3VTransform(*mov, mat_y);
-		// 移動ベクトルのｘｚの多胎から向きを求めます
-		m_rot.y = TO_DEGREE(atan2f(mov->x, mov->z));
-		// 移動ベクトルの大きさを PLAYER_MOV_SPEED のおおきさにします
-		mov->SetLength(*mov_speed);
-		// その移動ベクトル分座標移動
-		m_pos += *mov;
-	
+	MATRIX mat_y = MGetRotY(TO_RADIAN(camera_rot->y));
+	//	その行列を使ってベクトルを回転させます。
+	*mov = GetVector3VTransform(*mov, mat_y);
+	// 移動ベクトルのｘｚの多胎から向きを求めます
+	m_rot.y = TO_DEGREE(atan2f(mov->x, mov->z));
+	// 移動ベクトルの大きさを PLAYER_MOV_SPEED のおおきさにします
+	mov->SetLength(*mov_speed);
+	// その移動ベクトル分座標移動
+	m_pos += *mov;
+
 }
 
 //---------------------------------------------------------------------------
@@ -93,12 +148,12 @@ void CharacterBase::Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* came
 //---------------------------------------------------------------------------
 void CharacterBase::Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* other_pos, Vector3* other_size)
 {
-	if (before_pos->x + hit_size->x >= other_pos->x -other_size->x && before_pos->x - hit_size->x <= other_pos->x +other_size->x) {
+	if (before_pos->x + hit_size->x >= other_pos->x - other_size->x && before_pos->x - hit_size->x <= other_pos->x + other_size->x) {
 		// 縦方向だけ戻す
 		m_pos.z = before_pos->z;
-		
+
 	}
-	if (before_pos->z + hit_size->z >= other_pos->z -other_size->z && before_pos->z - hit_size->z <= other_pos->z +other_size->z) {
+	if (before_pos->z + hit_size->z >= other_pos->z - other_size->z && before_pos->z - hit_size->z <= other_pos->z + other_size->z) {
 		// 縦方向だけ戻す
 		m_pos.x = before_pos->x;
 	}
@@ -163,7 +218,7 @@ void CharacterBase::Attack_Anim_New(int ATTACK_ANIM_MAX)
 //---------------------------------------------------------------------------
 // 攻撃アニメーションの初期設定(アタッチから最初のディタッチまでを行う)
 //---------------------------------------------------------------------------
-void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX , int index)
+void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX, int index)
 {
 	for (int i = 0; i < ATTACK_ANIM_MAX; i++)
 	{
@@ -171,7 +226,7 @@ void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX , int index)
 		attack_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
 		attack_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
-	
+
 }
 
 //---------------------------------------------------------------------------
@@ -203,7 +258,7 @@ void CharacterBase::Attack_Action(int index)
 {
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
 	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, index, attack_anim_model[attack_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
-	 
+
 	m_attack_judge = true;
 }
 

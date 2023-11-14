@@ -67,6 +67,7 @@ void GameDraw()
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		camera[i]->Draw_Set();       // カメラの描画前設定（ ※ 描画処理の一番最初にすること）
 		field.Draw();
+		players[i]->Draw_Status();
 		// プレイヤ―を描画させるための配列
 		for (int j = 0; j < PLAYER_MAX; j++) {
 			players[j]->Draw();
@@ -74,7 +75,6 @@ void GameDraw()
 		camera[i]->Draw(i); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
 	}
 
-	Draw_Staus();
 
 }
 
@@ -145,17 +145,18 @@ void Attack_Hit()
 		players[1]->m_hit_body_pos_top.VGet(), players[1]->m_hit_body_pos_under.VGet(), players[1]->m_hit_body_r))
 	{
 		players[1]->m_pos.z += 5;
+		players[0]->m_hp_count.x -= 50;
 	}
 }
 
 //---------------------------------------------------------------------------
 // キャラクターのステータス描画処理
 //---------------------------------------------------------------------------
-void Draw_Staus()
+void Draw_Status()
 {
 	DrawBox(players[0]->m_hp_pos.x, players[0]->m_hp_pos.y, players[0]->m_hp_count.x, players[0]->m_hp_count.y, GetColor(0, 255, 0), TRUE);
 	DrawLineBox(players[0]->m_hp_pos.x, players[0]->m_hp_pos.y, HP_MAX, players[0]->m_hp_count.y, GetColor(255, 255, 255));
 
-	DrawBox(SCREEN_W / 2 + players[0]->m_hp_pos.x, players[0]->m_hp_pos.y, SCREEN_W / 2 + players[0]->m_hp_count.x, players[0]->m_hp_count.y, GetColor(0, 255, 0), TRUE);
-	DrawLineBox(SCREEN_W / 2 + players[0]->m_hp_pos.x, players[0]->m_hp_pos.y, SCREEN_W / 2 +  HP_MAX, players[0]->m_hp_count.y, GetColor(255, 255, 255));	
+	DrawBox(SCREEN_W / 2 + players[1]->m_hp_pos.x, players[1]->m_hp_pos.y, SCREEN_W / 2 + players[1]->m_hp_count.x, players[1]->m_hp_count.y, GetColor(0, 255, 0), TRUE);
+	DrawLineBox(SCREEN_W / 2 + players[1]->m_hp_pos.x, players[1]->m_hp_pos.y, SCREEN_W / 2 + HP_MAX, players[1]->m_hp_count.y, GetColor(255, 255, 255));
 }

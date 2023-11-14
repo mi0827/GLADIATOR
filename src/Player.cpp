@@ -94,43 +94,44 @@ void Player::Update(Vector3* camera_rot)
 	case NORMAL_ACTION:        // 普通アクション 
 		m_check_move = false;  // 常にリセット
 
-		// 移動中はダッシュする
-		// ゲームパッドの入力状態をとる
-		//	ゲームパッドの左スティックの値を使って座標（ m_pos ）の値を変更
-		// 左ステックでプレイヤーの向きや座標の更新
-		// ゲームパッドの情報を取得（XINPUT の情報）
-		XINPUT_STATE input;
-		// ゲームパッドの情報を丸ごと取得
-		GetJoypadXInputState(DX_INPUT_PAD1, &input);
-		// 左スティックの値を設定
-		mov.x = input.ThumbLX;
-		mov.z = input.ThumbLY;
-		// -32768 ～ 32767 を-1.0f　～　1.0fにします
-		mov /= 32768.0f;
-		// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
-		if (mov.GetLength() > 0.5f) {
-			CharacterBase::Move_GamePad(&m_check_move, &mov, camera_rot, &MOVE_SPEED);
-		}
+		//// 移動中はダッシュする
+		//// ゲームパッドの入力状態をとる
+		////	ゲームパッドの左スティックの値を使って座標（ m_pos ）の値を変更
+		//// 左ステックでプレイヤーの向きや座標の更新
+		//// ゲームパッドの情報を取得（XINPUT の情報）
+		//XINPUT_STATE input;
+		//// ゲームパッドの情報を丸ごと取得
+		//GetJoypadXInputState(DX_INPUT_PAD1, &input);
+		//// 左スティックの値を設定
+		//mov.x = input.ThumbLX;
+		//mov.z = input.ThumbLY;
+		//// -32768 ～ 32767 を-1.0f　～　1.0fにします
+		//mov /= 32768.0f;
+		//// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
+		//if (mov.GetLength() > 0.5f) {
+		//	CharacterBase::Move_GamePad(&m_check_move, &mov, camera_rot, &MOVE_SPEED);
+		//}
 
-		// WASDキーでプレイヤーの移動
-		if (CheckHitKey(KEY_INPUT_W)) // 上移動
-		{
-			CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		}
-		if (CheckHitKey(KEY_INPUT_S)) // 下移動
-		{
-			CharacterBase::Move_Dhindo(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		}
-		if (CheckHitKey(KEY_INPUT_A)) // 左移動
-		{
-			CharacterBase::Move_Left(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		}
-		if (CheckHitKey(KEY_INPUT_D)) // 右移動
-		{
-			CharacterBase::Move_Right(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		}
+		//// WASDキーでプレイヤーの移動
+		//if (CheckHitKey(KEY_INPUT_W)) // 上移動
+		//{
+		//	CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		//}
+		//if (CheckHitKey(KEY_INPUT_S)) // 下移動
+		//{
+		//	CharacterBase::Move_Dhindo(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		//}
+		//if (CheckHitKey(KEY_INPUT_A)) // 左移動
+		//{
+		//	CharacterBase::Move_Left(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		//}
+		//if (CheckHitKey(KEY_INPUT_D)) // 右移動
+		//{
+		//	CharacterBase::Move_Right(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		//}
 
-
+		CharacterBase::Move_Player(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
+		
 		// 移動中ならアニメーションの変更と当たり判定の移動
 		if (m_check_move) {
 
@@ -269,6 +270,12 @@ void Player::Move_Hit_Update()
 }
 
 //---------------------------------------------------------------------------
+// ステータス描画処理
+//---------------------------------------------------------------------------
+// CharacterBase::Draw_Status(); //ステータス描画処理
+
+
+//---------------------------------------------------------------------------
 // 描画処理
 //---------------------------------------------------------------------------
 void Player::Draw()
@@ -300,7 +307,6 @@ void Player::Draw()
 	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z)));   // モデルの回転
 	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f));                                                         // モデルの大きさ(10分の１のサイズ)
 	MV1DrawModel(m_model);                                                                                // モデルの描画
-	
 }
 
 //---------------------------------------------------------------------------
