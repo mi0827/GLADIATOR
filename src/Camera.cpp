@@ -40,11 +40,9 @@ void Camera::Init()
 //---------------------------------------------------------------------------------
 void Camera::PlayField_Init()
 {
-
 	m_field_size.set(SCREEN_W / 2, SCREEN_H);                                                                      // 描画する画面のサイズの設定
 	m_screen_field = MakeScreen(m_field_size.x, m_field_size.y);                                             // 描画画面を書き込むための初期設定
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 2.0f, -5.0f), VGet(0.0f, 0.0f, 1.0f));  // カメラの設定
-
 }
 
 //---------------------------------------------------------------------------------

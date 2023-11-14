@@ -42,7 +42,6 @@ void GameInit()
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		camera[i]->PlayField_Init();
 	}
-
 }
 
 // 更新処理
@@ -74,8 +73,6 @@ void GameDraw()
 		}
 		camera[i]->Draw(i); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
 	}
-
-
 }
 
 // 終了処理

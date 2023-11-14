@@ -36,7 +36,7 @@ Ninja::Ninja()
 	bead_hit_judg = false;                            // なににもあたってない
 
 	m_hp_pos.set(10, 32);         // HPバーの描画位置初期化
-	m_hp_count.set(HP_MAX, 32 + 30);   // HPの計算用の初期化
+	m_hp_count.set(0, 32 + 30);   // HPの計算用の初期化
 }
 
 // 初期処理

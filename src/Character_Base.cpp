@@ -9,14 +9,26 @@ CharacterBase::CharacterBase()
 {
 }
 
+
+//---------------------------------------------------------------------------
+// ステータスを更新関数
+//---------------------------------------------------------------------------
+void CharacterBase::Update_Status()
+{
+	// HPバーが振り切れないようにする
+	if (-HP_MAX >= m_hp_count.x) {
+		m_hp_count.x = -HP_MAX;
+	}
+}
+
 //---------------------------------------------------------------------------
 // ステータスを描画する用の関数
 //---------------------------------------------------------------------------
 void CharacterBase::Draw_Status()
 {
-
-	DrawBox(m_hp_pos.x, m_hp_pos.y, m_hp_count.x, m_hp_count.y, GetColor(0, 255, 0), TRUE);
-	DrawLineBox(m_hp_pos.x, m_hp_pos.y, HP_MAX, m_hp_count.y, GetColor(255, 255, 255));
+	// HPバーの描画
+	DrawBox(m_hp_pos.x, m_hp_pos.y, HP_MAX + m_hp_pos.x + m_hp_count.x, m_hp_count.y, GetColor(0, 255, 0), TRUE);
+	DrawLineBox(m_hp_pos.x, m_hp_pos.y, HP_MAX + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));
 }
 
 //---------------------------------------------------------------------------
@@ -41,11 +53,10 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 	if (mov.GetLength() > 0.5f) {
 		CharacterBase::Move_GamePad(m_check_move, &mov, camera_rot, mov_speed);
 	}
-
 	// WASDキーでプレイヤーの移動
 	if (CheckHitKey(KEY_INPUT_W)) // 上移動
 	{
-		Move_Front(m_check_move, camera_rot,  player_rot, mov_speed);
+		Move_Front(m_check_move, camera_rot, player_rot, mov_speed);
 	}
 	if (CheckHitKey(KEY_INPUT_S)) // 下移動
 	{
@@ -59,11 +70,7 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 	{
 		Move_Right(m_check_move, camera_rot, player_rot, mov_speed);
 	}
-
 }
-
-
-
 
 //---------------------------------------------------------------------------
 // 前移動
@@ -129,8 +136,7 @@ void CharacterBase::Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* came
 	*m_check_move = true; // 動いていい
 	// 向いている方向に座標移動
 	// 当たり判定がある時は座標移動をしない
-
-		//	そのベクトルを回転させるための行列を作成します。
+	//	そのベクトルを回転させるための行列を作成します。
 	MATRIX mat_y = MGetRotY(TO_RADIAN(camera_rot->y));
 	//	その行列を使ってベクトルを回転させます。
 	*mov = GetVector3VTransform(*mov, mat_y);
@@ -140,7 +146,6 @@ void CharacterBase::Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* came
 	mov->SetLength(*mov_speed);
 	// その移動ベクトル分座標移動
 	m_pos += *mov;
-
 }
 
 //---------------------------------------------------------------------------
@@ -151,7 +156,6 @@ void CharacterBase::Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* ot
 	if (before_pos->x + hit_size->x >= other_pos->x - other_size->x && before_pos->x - hit_size->x <= other_pos->x + other_size->x) {
 		// 縦方向だけ戻す
 		m_pos.z = before_pos->z;
-
 	}
 	if (before_pos->z + hit_size->z >= other_pos->z - other_size->z && before_pos->z - hit_size->z <= other_pos->z + other_size->z) {
 		// 縦方向だけ戻す
@@ -226,7 +230,6 @@ void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX, int index)
 		attack_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
 		attack_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
-
 }
 
 //---------------------------------------------------------------------------

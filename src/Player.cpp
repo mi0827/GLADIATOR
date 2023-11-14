@@ -43,7 +43,7 @@ Player::Player()
 	bead_hit_judg = false;                            // なににもあたってない
 
 	m_hp_pos.set(10, 32);         // HPバーの描画位置初期化
-	m_hp_count.set(HP_MAX, 32 + 30);   // HPの計算用の初期化
+	m_hp_count.set(0, 32 + 30);   // HPの計算用の初期化
 }
 
 //---------------------------------------------------------------------------
@@ -63,13 +63,13 @@ void Player::Init(int player_num)
 	// アニメーションの読み込み
 	CharacterBase::Attack_Anim_New(ATTACK_ANIM_MAX); // 攻撃アニメーションに必要な変数の配列を作る
 	attack_anim_model[ATTACK_LONG_NORMAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/long_normal_attack.mv1");       // 遠距離普通攻撃
-	attack_anim_model[ATTACK_SHORT_NORMAL_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch.mv1"); // 近距離攻撃１
+	attack_anim_model[ATTACK_SHORT_NORMAL_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch.mv1");                 // 近距離攻撃１
 	attack_anim_model[ATTACK_SHORT_NORMAL_2_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_2.mv1"); // 近距離攻撃２
 	attack_anim_model[ATTACK_SLIDE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/slide.mv1");                          // スライディング
 	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/special_attack.mv1");               // 必殺技
 	CharacterBase::Attack_Anim_Init(ATTACK_ANIM_MAX, 1); // 攻撃アニメーションの初期設定
 
-	pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
+	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
 
 	if (player_num == 0) {
 		m_pos.set(0.0f, 0.0f, -50.0f);           // 初期座標の設定
@@ -94,47 +94,11 @@ void Player::Update(Vector3* camera_rot)
 	case NORMAL_ACTION:        // 普通アクション 
 		m_check_move = false;  // 常にリセット
 
-		//// 移動中はダッシュする
-		//// ゲームパッドの入力状態をとる
-		////	ゲームパッドの左スティックの値を使って座標（ m_pos ）の値を変更
-		//// 左ステックでプレイヤーの向きや座標の更新
-		//// ゲームパッドの情報を取得（XINPUT の情報）
-		//XINPUT_STATE input;
-		//// ゲームパッドの情報を丸ごと取得
-		//GetJoypadXInputState(DX_INPUT_PAD1, &input);
-		//// 左スティックの値を設定
-		//mov.x = input.ThumbLX;
-		//mov.z = input.ThumbLY;
-		//// -32768 ～ 32767 を-1.0f　～　1.0fにします
-		//mov /= 32768.0f;
-		//// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
-		//if (mov.GetLength() > 0.5f) {
-		//	CharacterBase::Move_GamePad(&m_check_move, &mov, camera_rot, &MOVE_SPEED);
-		//}
-
-		//// WASDキーでプレイヤーの移動
-		//if (CheckHitKey(KEY_INPUT_W)) // 上移動
-		//{
-		//	CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		//}
-		//if (CheckHitKey(KEY_INPUT_S)) // 下移動
-		//{
-		//	CharacterBase::Move_Dhindo(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		//}
-		//if (CheckHitKey(KEY_INPUT_A)) // 左移動
-		//{
-		//	CharacterBase::Move_Left(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		//}
-		//if (CheckHitKey(KEY_INPUT_D)) // 右移動
-		//{
-		//	CharacterBase::Move_Right(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		//}
-
+		// 移動処理
 		CharacterBase::Move_Player(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 		
 		// 移動中ならアニメーションの変更と当たり判定の移動
 		if (m_check_move) {
-
 			anim_num = ANIM_RUN;  // 移動中なので走るアニメーションに
 			{                     // プレイヤー座標に当たり判定用のカプセルの位置を合わせる
 				m_hit_body_pos_top = m_pos;
@@ -150,7 +114,6 @@ void Player::Update(Vector3* camera_rot)
 				m_hit_body_pos_top.y += 17.0f; // 高さを出す
 				m_hit_body_pos_under = m_pos;
 				m_hit_body_pos_under.y += 3.0f;
-
 			}
 		}
 
@@ -237,7 +200,6 @@ void Player::Update(Vector3* camera_rot)
 		break;
 	}
 
-
 	if (m_attack_judge) {
 		// 弾用の変数
 		if (lifespan_count >= 120.0f) {
@@ -258,7 +220,7 @@ void Player::Update(Vector3* camera_rot)
 		}
 	}
 
-
+	CharacterBase::Update_Status();
 }
 
 //---------------------------------------------------------------------------
@@ -273,7 +235,6 @@ void Player::Move_Hit_Update()
 // ステータス描画処理
 //---------------------------------------------------------------------------
 // CharacterBase::Draw_Status(); //ステータス描画処理
-
 
 //---------------------------------------------------------------------------
 // 描画処理
