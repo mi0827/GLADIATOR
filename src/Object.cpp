@@ -49,7 +49,7 @@ void Object::Field_Object_Init(const int m_field_size, int pos_z, int pos_x)
 	//=================================
 	// 色の設定
 	//=================================
-	m_cube_color = GetColor(0, 255, 0);
+	m_cube_color = GetColor(25, 25, 25);
 
 	//=================================
 	// 当たり判定用の座標の設定
@@ -57,8 +57,6 @@ void Object::Field_Object_Init(const int m_field_size, int pos_z, int pos_x)
 	// 当たり判定用に描画用の立方体の中心に座標を置いたバージョン
 	m_cube_hit_pos.set(m_cube_bottom_pos.x + m_cube_size_half.x, m_cube_bottom_pos.y + m_cube_size_half.y, m_cube_bottom_pos.z + m_cube_size_half.z);
 }
-
-
 
 //---------------------------------------------------------------------------
 // 更新処理
@@ -78,8 +76,10 @@ void Object::CreateObjects()
 //---------------------------------------------------------------------------
 void Object::Draw()
 {
+	SetUseLighting(FALSE);
 	// 立方体の描画
 	DrawCube3D(m_cube_top_pos.VGet(), m_cube_bottom_pos.VGet(), m_cube_color, m_cube_color, TRUE);
+	SetUseLighting(TRUE);
 }
 
 //---------------------------------------------------------------------------

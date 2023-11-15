@@ -16,8 +16,9 @@ CharacterBase::CharacterBase()
 void CharacterBase::Update_Status()
 {
 	// HPÉoÅ[Ç™êUÇËêÿÇÍÇ»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
-	if (-HP_MAX >= m_hp_count.x) {
-		m_hp_count.x = -HP_MAX;
+	// HPÇ™ÇOÇ…Ç»Ç¡ÇΩÇÁ
+	if (0>= m_hp_count.x) {
+		m_hp_count.x = 0;
 	}
 }
 
@@ -27,7 +28,7 @@ void CharacterBase::Update_Status()
 void CharacterBase::Draw_Status()
 {
 	// HPÉoÅ[ÇÃï`âÊ
-	DrawBox(m_hp_pos.x, m_hp_pos.y, HP_MAX + m_hp_pos.x + m_hp_count.x, m_hp_count.y, GetColor(0, 255, 0), TRUE);
+	DrawBox(m_hp_pos.x, m_hp_pos.y,  m_hp_pos.x + m_hp_count.x, m_hp_count.y, GetColor(0, 255, 0), TRUE);
 	DrawLineBox(m_hp_pos.x, m_hp_pos.y, HP_MAX + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));
 }
 

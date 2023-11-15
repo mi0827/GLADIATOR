@@ -37,7 +37,7 @@ private:
 	Vector3 m_cone_top_pos;    // 円錐の頂点座標
 	Vector3 m_cone_bottom_pos; // 円錐の底辺の中心座標
 	float   m_cone_r;          // 円錐の中心座標
-	float   m_cone_color;      // 色 
+	int   m_cone_color;      // 色 
 
 public:
 	//--------------------------
@@ -47,5 +47,5 @@ public:
 	Vector3 m_cube_hit_pos;     // 当たり判定用の座標（cubeの中心から当たり判定をとるため）
 	Vector3 m_cube_size;        // サイズ
 	Vector3 m_cube_size_half;   // サイズの半分のサイズ（cubeの中心から当たり判定をとるため）
-	float   m_cube_color;       // 色
+	int   m_cube_color;       // 色
 };

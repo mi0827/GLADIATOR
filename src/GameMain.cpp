@@ -66,11 +66,12 @@ void GameDraw()
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		camera[i]->Draw_Set();       // カメラの描画前設定（ ※ 描画処理の一番最初にすること）
 		field.Draw();
-		players[i]->Draw_Status();
+		
 		// プレイヤ―を描画させるための配列
 		for (int j = 0; j < PLAYER_MAX; j++) {
 			players[j]->Draw();
 		}
+		players[i]->Draw_Status();
 		camera[i]->Draw(i); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
 	}
 }
