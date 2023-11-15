@@ -219,7 +219,7 @@ void Player::Update(Vector3* camera_rot)
 			m_attack_judge = false; // 攻撃を終わらせておく
 		}
 	}
-
+	// ステータスの更新処理
 	CharacterBase::Update_Status();
 }
 
@@ -245,7 +245,6 @@ void Player::Draw()
 	if (bead_pos != NULL) {
 		DrawSphere3D(bead_pos->VGet(), 2.0f, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 	}
-
 	// プレイヤー自身の当たり判定
 	DrawCapsule3D(m_hit_body_pos_top.VGet(), m_hit_body_pos_under.VGet(), m_hit_body_r, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), FALSE);
 
@@ -264,10 +263,10 @@ void Player::Draw()
 	DrawCapsule3D(draw_pos_2.VGet(), draw_pos_under_2.VGet(), draw_sphere_size_2, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
 
 	// プレイヤーの描画設定
-	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z));                                             // 描画するプレイヤーモデルの座標の設定
-	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z)));   // モデルの回転
-	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f));                                                         // モデルの大きさ(10分の１のサイズ)
-	MV1DrawModel(m_model);                                                                                // モデルの描画
+	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z)); // 描画するプレイヤーモデルの座標の設定
+	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z))); // モデルの回転
+	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f)); // モデルの大きさ(10分の１のサイズ)
+	MV1DrawModel(m_model); // モデルの描画
 }
 
 //---------------------------------------------------------------------------

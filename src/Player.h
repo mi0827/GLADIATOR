@@ -27,14 +27,14 @@ public:
 	//---------------
 	// 各関数の定義
 	Player(); // コンストラクタ
-	void Init(int player_num) override;        //　初期処理
+	void Init(int player_num) override;         // 初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
-	void Update(Vector3* camera_rot) override;		//	更新処理
+	void Update(Vector3* camera_rot) override;  // 更新処理
 	void Move_Hit_Update()override;
 	
-	void Draw() override;		//	描画処理
-	void Exit() override;		//	終了処理
+	void Draw() override;		// 描画処理
+	void Exit() override;		//終了処理
 
 
 	//---------------

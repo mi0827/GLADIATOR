@@ -17,7 +17,7 @@ void CharacterBase::Update_Status()
 {
 	// HPバーが振り切れないようにする
 	// HPが０になったら
-	if (0>= m_hp_count.x) {
+	if (0 >= m_hp_count.x) {
 		m_hp_count.x = 0;
 	}
 }
@@ -28,7 +28,7 @@ void CharacterBase::Update_Status()
 void CharacterBase::Draw_Status()
 {
 	// HPバーの描画
-	DrawBox(m_hp_pos.x, m_hp_pos.y,  m_hp_pos.x + m_hp_count.x, m_hp_count.y, GetColor(0, 255, 0), TRUE);
+	DrawBox(m_hp_pos.x, m_hp_pos.y, m_hp_pos.x + m_hp_count.x, m_hp_count.y, GetColor(0, 255, 0), TRUE);
 	DrawLineBox(m_hp_pos.x, m_hp_pos.y, HP_MAX + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));
 }
 
@@ -281,5 +281,18 @@ void CharacterBase::Get_other(Vector3* hit_other_pos, Vector3* hit_other_size)
 {
 	m_hit_other_pos = *hit_other_pos;   // 座標
 	m_hit_other_size = *hit_other_size; // サイズ
+}
+
+//---------------------------------------------------------------------------
+// 当たり判定を作る関数
+//---------------------------------------------------------------------------
+void CharacterBase::Attack_Hit_New(Vector3* pot_pos, Vector3* under_pos)
+{
+	hit_pos_pot;
+	hit_pos_under;
+	// 当たり判定を見えるようにする物
+	// 向いている方向に座標を設定（今はパンチに位置）
+	m_hit_attack_pos_top.set(m_pos.x + pot_pos->x * sinf(TO_RADIAN(m_rot.y)), m_pos.y + pot_pos->y, m_pos.z + pot_pos->z * cosf(TO_RADIAN(m_rot.y)));
+	m_hit_attack_pos_under.set(m_pos.x + under_pos->x * sinf(TO_RADIAN(m_rot.y)), m_pos.y + under_pos->y, m_pos.z + under_pos->z * cosf(TO_RADIAN(m_rot.y)));
 }
 
