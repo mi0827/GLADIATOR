@@ -44,7 +44,8 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 		// ゲームパッドの情報を取得（XINPUT の情報）
 	XINPUT_STATE input;
 	// ゲームパッドの情報を丸ごと取得
-	GetJoypadXInputState(DX_INPUT_PAD1, &input);
+	//GetJoypadXInputState(DX_INPUT_PAD1, &input);
+	GetJoypadXInputState(pad_no, &input);
 	// 左スティックの値を設定
 	mov.x = input.ThumbLX;
 	mov.z = input.ThumbLY;
@@ -52,7 +53,7 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 	mov /= 32768.0f;
 	// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
 	if (mov.GetLength() > 0.5f) {
-		CharacterBase::Move_GamePad(m_check_move, &mov, camera_rot, mov_speed);
+		Move_GamePad(m_check_move, &mov, camera_rot, mov_speed);
 	}
 	// WASDキーでプレイヤーの移動
 	if (CheckHitKey(KEY_INPUT_W)) // 上移動
@@ -238,21 +239,23 @@ void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX, int index)
 //---------------------------------------------------------------------------
 void CharacterBase::Anim_Delete(int ANIM_MAX, int ATTACK_ANIM_MAX)
 {
-	for (int i = 0; i < ANIM_MAX; i++)
-	{
-		delete[] anim_model;
-		delete[] anim_attach;
-		delete[] anim_total;
-		delete[] anim_rate;
-		delete[] anim_frame;
-	}
-	for (int i = 0; i < ATTACK_ANIM_MAX; i++) {
-		delete[] attack_anim_model;
-		delete[] attack_anim_attach;
-		delete[] attack_anim_total;
-		delete[] attack_anim_rate;
-		delete[] attack_anim_frame;
-	}
+	//for (int i = 0; i < ANIM_MAX; i++)
+	//{
+	//}
+	//for (int i = 0; i < ATTACK_ANIM_MAX; i++) {
+	//}
+
+	delete[] anim_model;
+	delete[] anim_attach;
+	delete[] anim_total;
+	delete[] anim_rate;
+	delete[] anim_frame;
+
+	delete[] attack_anim_model;
+	delete[] attack_anim_attach;
+	delete[] attack_anim_total;
+	delete[] attack_anim_rate;
+	delete[] attack_anim_frame;
 }
 
 //---------------------------------------------------------------------------

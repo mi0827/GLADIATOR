@@ -32,7 +32,7 @@ public:
 	// カメラがどの方向にあるのかを情報として使う
 	void Update(Vector3* camera_rot) override;  // 更新処理
 	void Move_Hit_Update()override;
-	
+
 	void Draw() override;		// 描画処理
 	void Exit() override;		//終了処理
 
@@ -41,7 +41,7 @@ public:
 	// 変数の定義
 	//---------------
 private:
-	
+
 
 	//---------------------------------
 	// アニメーション用の列挙体
@@ -64,18 +64,60 @@ private:
 
 		ATTACK_ANIM_MAX // 攻撃アニメーションの数
 	};
-	
 
+
+public:
 	// bead 関連
 	//------------------------------------
 	// 弾が消えるまでのカウント用変数
-	float lifespan_count = 120.0f;
+	float lifespan_count = NULL;
 
 public:
+	// 近接攻撃にの当たり判定用の構造体
+	struct Hit_capsule_data
+	{
+		Vector3 hit_top;   // トップの座標
+		Vector3 hit_under; // アンダーの座標
+		float hit_r;       // 半径
+		float fit_anim_frame;  // アニメーションのフレーム(ここで出す)
+	};
 
-	// 弾が何かにあたったか
+	Hit_capsule_data hit_areas[ATTACK_ANIM_MAX] =
+	{
+		 { Vector3(8, 1, 10), // トップ
+		   Vector3(8, 0, 10),     // アンダー
+		   1.0f,   // 半径
+		   18.000, // フレーム
+		 }	//遠距離普通攻撃
+		,{
+			Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 1, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))), // トップ
+		   Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))),     // アンダー
+		   1.0f,   // 半径
+		   18.000, // フレーム}	// 
+		}
+		,{Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 1, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))), // トップ
+		   Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))),     // アンダー
+		   1.0f,   // 半径
+		   18.000, // フレーム} //
+		}
+		,{Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 1, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))), // トップ
+		   Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))),     // アンダー
+		   1.0f,   // 半径
+		   18.000, // フレーム} // 
+		}
+		,{Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 1, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))), // トップ
+		   Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))),     // アンダー
+		   1.0f,   // 半径
+		   18.000, // フレーム} //
+		}
+	};
+	Hit_capsule_data now_hit_area;
+
+
+		// 弾が何かにあたったか
 	bool bead_hit_judg;
 	// 弾変数
-	Vector3* bead_pos = 0;
-	
+	Vector3* bead_pos = 0; // 座標
+	float bead_r = 0;      // 半径
+
 };

@@ -44,4 +44,10 @@ private:
 	// マウスの移動量用の変数
 	float m_mouse_move_x; // X座標の移動量
 	float m_mouse_move_y; // Y座標の移動量
+public:
+	int pad_no = 0;				// 何番のパッドを使っているのか
+	void SetPadNo(int no)
+	{
+		pad_no = no;
+	}
 };

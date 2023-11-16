@@ -38,10 +38,17 @@ void GameInit()
 	field.Field_Init();
 	players[0]->Init(0);
 	players[1]->Init(1);
+	// ゲームパッドの設定
+	players[0]->SetPadNo(DX_INPUT_PAD1);
+	players[1]->SetPadNo(DX_INPUT_PAD2);
+
 
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		camera[i]->PlayField_Init();
 	}
+	// ゲームパッドの設定
+	camera[0]->SetPadNo(DX_INPUT_PAD1);
+	camera[1]->SetPadNo(DX_INPUT_PAD2);
 }
 
 // 更新処理
@@ -86,8 +93,13 @@ void GameExit()
 	}
 	field.Exit();
 	// newしていたクラスの解放
-	delete[] players;
-	delete[] camera;
+	for (int i = 0; i < PLAYER_MAX; i++) {
+		delete players[i];
+		players[i] = nullptr;
+		delete camera[i];
+		camera[i] = nullptr;
+	}
+	
 }
 
 

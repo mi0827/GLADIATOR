@@ -76,7 +76,7 @@ void Camera::Update(Vector3* player_pos)
 	// ゲームパッドの情報を取得（XINPUT の情報）
 	XINPUT_STATE input;
 	// ゲームパッドの情報を丸ごと取得
-	GetJoypadXInputState(DX_INPUT_PAD1, &input);
+	GetJoypadXInputState(pad_no, &input);
 	// 移動用ベクトル用変数
 	Vector3 rot;
 	// 左スティックの値を設定

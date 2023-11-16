@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// ７：ウィンドウタイトルの文字列の設定
 	SetMainWindowText("GLADIATOR");
 	// ８：背景の塗りつぶしの色を設定
-	SetBackgroundColor(100, 100, 100);
+	SetBackgroundColor(157,190,221);
 
 
 	SetDoubleStartValidFlag(TRUE); // 何かわからない

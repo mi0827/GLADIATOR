@@ -69,6 +69,9 @@ void Ninja::Init(int player_num)
 		m_pos.set(0.0f, 0.0f, 500.0f);            // 初期座標の設定
 		m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 	}
+
+	//// 仮
+	//SetPadNo(DX_INPUT_PAD1);
 }
 
 // 更新処理
@@ -89,7 +92,8 @@ void Ninja::Update(Vector3* camera_rot)
 		// ゲームパッドの情報を取得（XINPUT の情報）
 		XINPUT_STATE input;
 		// ゲームパッドの情報を丸ごと取得
-		GetJoypadXInputState(DX_INPUT_PAD2, &input);
+		//GetJoypadXInputState(DX_INPUT_PAD2, &input);
+		GetJoypadXInputState(pad_no, &input);
 
 
 		// 左スティックの値を設定
@@ -103,24 +107,8 @@ void Ninja::Update(Vector3* camera_rot)
 		}
 
 		// 移動をいまはやめておく
-
-		//// WASDキーでプレイヤーの移動
-		//if (CheckHitKey(KEY_INPUT_W)) // 上移動
-		//{
-		//	CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		//}
-		//if (CheckHitKey(KEY_INPUT_S)) // 下移動
-		//{
-		//	CharacterBase::Move_Dhindo(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		//}
-		//if (CheckHitKey(KEY_INPUT_A)) // 左移動
-		//{
-		//	CharacterBase::Move_Left(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		//}
-		//if (CheckHitKey(KEY_INPUT_D)) // 右移動
-		//{
-		//	CharacterBase::Move_Right(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		//}
+        // 移動処理
+		CharacterBase::Move_Player(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 
 
 		// 移動中ならアニメーションの変更と当たり判定の移動
@@ -149,7 +137,7 @@ void Ninja::Update(Vector3* camera_rot)
 		// 近距離攻撃
 		//=================================
 		// マウスの左クリックまたはAボタンで近距離攻撃
-		if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_1) {
+		if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(pad_no) & PAD_INPUT_1) {
 			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SHORT_NORMAL_1_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);                 // 行いたい攻撃アニメーションをセット
@@ -161,7 +149,7 @@ void Ninja::Update(Vector3* camera_rot)
 		// 遠距離攻撃
 		//=================================
 		// マウスの右クリック、または、Yボタンで遠距離攻撃
-		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_4) {
+		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(pad_no) & PAD_INPUT_4) {
 			action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);              // 行いたい攻撃アニメーションをセット
@@ -172,7 +160,7 @@ void Ninja::Update(Vector3* camera_rot)
 		// スライディング
 		//=================================
 		// スペースキークリック、または、Bボタンで遠距離攻撃
-		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_2) {
+		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(pad_no) & PAD_INPUT_2) {
 			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);        // 行いたい攻撃アニメーションをセット
@@ -184,7 +172,7 @@ void Ninja::Update(Vector3* camera_rot)
 		// 必殺技
 		//=================================
 		// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
-		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_6 && GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_5) {
+		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(pad_no) & PAD_INPUT_6 && GetJoypadInputState(pad_no) & PAD_INPUT_5) {
 			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);          // 行いたい攻撃アニメーションをセット
@@ -251,6 +239,8 @@ void Ninja::Update(Vector3* camera_rot)
 			m_attack_judge = false; // 攻撃を終わらせておく
 		}
 	}
+	// ステータスの更新処理
+	CharacterBase::Update_Status();
 }
 
 //---------------------------------------------------------------------------

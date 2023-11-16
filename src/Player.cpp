@@ -96,7 +96,7 @@ void Player::Update(Vector3* camera_rot)
 
 		// 移動処理
 		CharacterBase::Move_Player(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-		
+
 		// 移動中ならアニメーションの変更と当たり判定の移動
 		if (m_check_move) {
 			anim_num = ANIM_RUN;  // 移動中なので走るアニメーションに
@@ -121,7 +121,7 @@ void Player::Update(Vector3* camera_rot)
 		// 近距離攻撃
 		//=================================
 		// マウスの左クリックまたはAボタンで近距離攻撃
-		if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_1) {
+		if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(pad_no) & PAD_INPUT_1) {
 			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SHORT_NORMAL_1_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(1);                 // 行いたい攻撃アニメーションをセット
@@ -133,7 +133,7 @@ void Player::Update(Vector3* camera_rot)
 		// 遠距離攻撃
 		//=================================
 		// マウスの右クリック、または、Yボタンで遠距離攻撃
-		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_4) {
+		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(pad_no) & PAD_INPUT_4) {
 			action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(1);              // 行いたい攻撃アニメーションをセット
@@ -144,7 +144,7 @@ void Player::Update(Vector3* camera_rot)
 		// スライディング
 		//=================================
 		// スペースキークリック、または、Bボタンで遠距離攻撃
-		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_2) {
+		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(pad_no) & PAD_INPUT_2) {
 			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(1);        // 行いたい攻撃アニメーションをセット
@@ -155,7 +155,7 @@ void Player::Update(Vector3* camera_rot)
 		// 必殺技
 		//=================================
 		// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
-		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_6 && GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_5) {
+		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(pad_no) & PAD_INPUT_6 && GetJoypadInputState(pad_no) & PAD_INPUT_5) {
 			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(1);          // 行いたい攻撃アニメーションをセット
@@ -201,23 +201,57 @@ void Player::Update(Vector3* camera_rot)
 	}
 
 	if (m_attack_judge) {
-		// 弾用の変数
-		if (lifespan_count >= 120.0f) {
-			bead_pos = new Vector3;
-			*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
-			bead_pos->y += 10.0f; // y座標をずらして空中に浮かべる
+		switch (attack_anim_pick)
+		{
+		case ATTACK_LONG_NORMAL_ANIM:
+			// カウントがからだったら
+			if (lifespan_count == NULL) {
+				lifespan_count = 120.0f; // カウントのセット
+			}
+			// 弾用の変数
+			if (lifespan_count >= 120.0f) {
+				bead_pos = new Vector3;
+				*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
+				bead_pos->y += 10.0f; // y座標をずらして空中に浮かべる
+				bead_r = 2.0f;        // 半径の設定
+			}
+			// 一旦前に飛ばす
+			bead_pos->x += 3 * sinf(TO_RADIAN(m_rot.y));
+			bead_pos->z += 3 * cosf(TO_RADIAN(m_rot.y));
+			lifespan_count--; // 弾が消えるまでのカウントを進める
+			// カウントが一定にまで減るか、当たり判定があったら
+			if (lifespan_count <= 0 || bead_hit_judg) {
+				delete bead_pos; // 弾の解放
+				bead_pos = NULL;
+				lifespan_count = NULL; // 次のために空にしておく
+				m_attack_judge = false; // 攻撃を終わらせておく
+			}
+			break;
+		case ATTACK_SPECIAL_ANIM:
+			// カウントがからだったら
+			if (lifespan_count == NULL) {
+				lifespan_count = 240.0f; // カウントのセット
+			}
+			// 弾用の変数
+			if (lifespan_count >= 240.0f) {
+				bead_pos = new Vector3;
+				*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
+
+				// 座標の設定
+				bead_pos->set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 300, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
+				bead_r = 100.0f;        // 半径の設定
+			}
+			bead_pos->y--;
+			lifespan_count--; // 弾が消えるまでのカウントを進める
+			// カウントが一定にまで減るか、当たり判定があったら
+			if (lifespan_count <= 0 || bead_hit_judg) {
+				delete bead_pos; // 弾の解放
+				bead_pos = NULL;
+				lifespan_count = NULL; // 次のために空にしておく
+				m_attack_judge = false; // 攻撃を終わらせておく
+			}
 		}
-		// 一旦前に飛ばす
-		bead_pos->x += 3 * sinf(TO_RADIAN(m_rot.y));
-		bead_pos->z += 3 * cosf(TO_RADIAN(m_rot.y));
-		lifespan_count--; // 弾が消えるまでのカウントを進める
-		// カウントが一定にまで減るか、当たり判定があったら
-		if (lifespan_count <= 0 || bead_hit_judg) {
-			delete bead_pos; // 弾の解放
-			bead_pos = NULL;
-			lifespan_count = 120.0f; // カウントのリセット
-			m_attack_judge = false; // 攻撃を終わらせておく
-		}
+
 	}
 	// ステータスの更新処理
 	CharacterBase::Update_Status();
@@ -243,14 +277,17 @@ void Player::Draw()
 {
 	// 玉を描画する(今だけ)
 	if (bead_pos != NULL) {
-		DrawSphere3D(bead_pos->VGet(), 2.0f, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
+		DrawSphere3D(bead_pos->VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 	}
 	// プレイヤー自身の当たり判定
 	DrawCapsule3D(m_hit_body_pos_top.VGet(), m_hit_body_pos_under.VGet(), m_hit_body_r, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), FALSE);
 
+
+	now_hit_area = hit_areas[ATTACK_LONG_NORMAL_ANIM];
 	// 当たり判定を見えるようにする物
 	// 向いている方向に座標を設定（今はパンチに位置）
-	m_hit_attack_pos_top.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 13, m_pos.z + 8 * cosf(TO_RADIAN(m_rot.y)));
+	//hit_areas[ATTACK_LONG_NORMAL_ANIM].hit_top = Vector3();
+	m_hit_attack_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area.hit_top.x, m_pos.y + 13, m_pos.z + 8 * cosf(TO_RADIAN(m_rot.y)));
 	m_hit_attack_pos_under.set(m_pos.x + 6 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 12.7, m_pos.z + 6 * cosf(TO_RADIAN(m_rot.y)));
 	DrawCapsule3D(m_hit_attack_pos_top.VGet(), m_hit_attack_pos_under.VGet(), m_hit_attack_r, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
 	// 当たり判定を見えるようにする物
