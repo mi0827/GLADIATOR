@@ -73,6 +73,18 @@ public:
 	float lifespan_count = NULL;
 
 public:
+	// それぞれの攻撃ダメージの設定
+	int attack_damage[ATTACK_ANIM_MAX]
+	{
+		20,  // 遠距離攻撃
+		30,  // 近距離攻撃１
+		30,  // 近距離攻撃２
+		10,  // スライディング
+		150, // 必殺技
+	};
+
+
+
 	// 近接攻撃にの当たり判定用の構造体
 	struct Hit_capsule_data
 	{
@@ -84,37 +96,46 @@ public:
 
 	Hit_capsule_data hit_areas[ATTACK_ANIM_MAX] =
 	{
-		 { Vector3(8, 1, 10), // トップ
-		   Vector3(8, 0, 10),     // アンダー
-		   1.0f,   // 半径
-		   18.000, // フレーム
-		 }	//遠距離普通攻撃
+		//遠距離普通攻撃
+		 { Vector3(0,0,0), // トップ
+		   Vector3(0,0,0), // アンダー
+		   0.0f,   // 半径
+		   0.0,    // フレーム
+		 }
+		 // 近距離攻撃１
 		,{
-			Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 1, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))), // トップ
-		   Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))),     // アンダー
+		   Vector3(8,   13, 8), // トップ
+		   Vector3(6, 12.7, 6), // アンダー
 		   1.0f,   // 半径
-		   18.000, // フレーム}	// 
+		   18.000, // フレーム}	
 		}
-		,{Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 1, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))), // トップ
-		   Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))),     // アンダー
+		// 近距離攻撃2
+		,{
+		   Vector3(0,0,0), // トップ
+		   Vector3(0,0,0), // アンダー
+		   0.0f,   // 半径
+		   0.000, // フレーム} //
+		}
+		// スライディング
+		,{
+		   Vector3(8,1,10), // トップ
+		   Vector3(8,0,10),     // アンダー
+		   1.0f,   // 半径
+		   0.000, // フレーム} // 
+		}
+		// 必殺技
+		,{
+		   Vector3(0,0,0), // トップ
+		   Vector3(0,0,0),     // アンダー
 		   1.0f,   // 半径
 		   18.000, // フレーム} //
 		}
-		,{Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 1, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))), // トップ
-		   Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))),     // アンダー
-		   1.0f,   // 半径
-		   18.000, // フレーム} // 
-		}
-		,{Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 1, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))), // トップ
-		   Vector3(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y, m_pos.z + 10 * cosf(TO_RADIAN(m_rot.y))),     // アンダー
-		   1.0f,   // 半径
-		   18.000, // フレーム} //
-		}
+
 	};
 	Hit_capsule_data now_hit_area;
 
 
-		// 弾が何かにあたったか
+	// 弾が何かにあたったか
 	bool bead_hit_judg;
 	// 弾変数
 	Vector3* bead_pos = 0; // 座標

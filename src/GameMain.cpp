@@ -56,7 +56,7 @@ void GameUpdate()
 {
 
 	Move_Hit(); // キャラクターの移動時のあたり判定実行用
-	Attack_Hit(); // 
+	Attack_Hit(); // 当たり判定を見る関数
 
 	// 各クラスの更新処理
 	field.Update();
@@ -155,7 +155,7 @@ void Attack_Hit()
 		players[1]->m_hit_body_pos_top.VGet(), players[1]->m_hit_body_pos_under.VGet(), players[1]->m_hit_body_r))
 	{
 		players[1]->m_pos.z += 5;
-		players[0]->m_hp_count.x -= 50;
+		players[1]->m_hp_count.x -= players[0]->attack_damage[players[0]->];
 	}
 }
 

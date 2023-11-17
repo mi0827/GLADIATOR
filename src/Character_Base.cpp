@@ -265,8 +265,7 @@ void CharacterBase::Attack_Action(int index)
 {
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
 	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, index, attack_anim_model[attack_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
-
-	m_attack_judge = true;
+	m_attack_judge = true; // 攻撃中にする
 }
 
 //---------------------------------------------------------------------------
