@@ -155,7 +155,7 @@ void Attack_Hit()
 		players[1]->m_hit_body_pos_top.VGet(), players[1]->m_hit_body_pos_under.VGet(), players[1]->m_hit_body_r))
 	{
 		players[1]->m_pos.z += 5;
-		players[1]->m_hp_count.x -= players[0]->attack_damage[players[0]->];
+		players[1]->m_hp_count.x -= 50;//players[0]->attack_damage[players[0]->];
 	}
 }
 

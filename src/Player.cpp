@@ -183,7 +183,6 @@ void Player::Update(Vector3* camera_rot)
 			MV1SetAttachAnimBlendRate(m_model, anim_attach[i], anim_rate[i]);   // それぞれにアニメーションの割合分再生します
 		}
 		break;
-
 	case ATTACK_ACTION: // 攻撃アクション
 		// アニメーションの再生
 		// 攻撃アニメーション用のフレームカウントを進める
@@ -231,29 +230,35 @@ void Player::Update(Vector3* camera_rot)
 
 	case ATTACK_SHORT_NORMAL_1_ANIM: // 近距離普通攻撃１ (当たり判定の作成)
 		if (m_attack_judge) { // 攻撃フラグが上がっていたら
-			now_hit_area = hit_areas[ATTACK_SHORT_NORMAL_1_ANIM];
-			if (attack_anim_frame[ATTACK_SHORT_NORMAL_1_ANIM] == now_hit_area.fit_anim_frame) {
+			now_hit_area = &hit_areas[ATTACK_SHORT_NORMAL_1_ANIM];
+			if (attack_anim_frame[ATTACK_SHORT_NORMAL_1_ANIM] == now_hit_area->hit_anim_frame) {
 				// 当たり判定を見えるようにする物
 				// 向いている方向に座標を設定（今はパンチに位置）
-				m_hit_attack_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area.hit_top.x, m_pos.y + now_hit_area.hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area.hit_top.z);
-				m_hit_attack_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area.hit_under.x, m_pos.y + now_hit_area.hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area.hit_under.z);
+				m_hit_attack_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
+				m_hit_attack_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
 			}
 			else {
-				/*if (now_hit_area != NULL) {
+				if (now_hit_area != NULL)
 					now_hit_area = NULL;
-				}*/
+
 			}
 		}
 		break;
 
+
 	case ATTACK_SLIDE_ANIM: // スライディング（当たり判定の作成）
 		if (m_attack_judge) { // 攻撃フラグが上がっていたら
-			now_hit_area = hit_areas[ATTACK_SLIDE_ANIM]; // 構造体を触りやすくするために違う変数に入れておく
+			*now_hit_area = hit_areas[ATTACK_SLIDE_ANIM]; // 構造体を触りやすくするために違う変数に入れておく
 			// 当たり判定を見えるようにする物
 			// 向いている方向に座標を設定（今はパンチに位置）
-			if (attack_anim_frame[ATTACK_SLIDE_ANIM] == now_hit_area.fit_anim_frame) {
-				m_hit_attack_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area.hit_top.x, m_pos.y + now_hit_area.hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area.hit_top.z);
-				m_hit_attack_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area.hit_under.x, m_pos.y + now_hit_area.hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area.hit_under.z);
+			if (attack_anim_frame[ATTACK_SLIDE_ANIM] == now_hit_area->hit_anim_frame) {
+				m_hit_attack_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
+				m_hit_attack_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
+			}
+			else {
+				if (!now_hit_area)
+					now_hit_area = nullptr;
+
 			}
 		}
 		break;
@@ -344,7 +349,10 @@ void Player::Exit()
 	if (bead_pos != NULL) {
 		delete bead_pos;
 	}
-
+	// 攻撃用あたり判定が解放されていなかったら
+	if (!now_hit_area) {
+		now_hit_area = nullptr;
+	}
 	// アニメーション用変数たちのdelete
 	CharacterBase::Anim_Delete(ANIM_MAX, ATTACK_ANIM_MAX);
 }

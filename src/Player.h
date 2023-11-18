@@ -91,7 +91,7 @@ public:
 		Vector3 hit_top;   // トップの座標
 		Vector3 hit_under; // アンダーの座標
 		float hit_r;       // 半径
-		float fit_anim_frame;  // アニメーションのフレーム(ここで出す)
+		float hit_anim_frame;  // アニメーションのフレーム(ここで出す)
 	};
 
 	Hit_capsule_data hit_areas[ATTACK_ANIM_MAX] =
@@ -132,7 +132,8 @@ public:
 		}
 
 	};
-	Hit_capsule_data now_hit_area;
+	Hit_capsule_data* now_hit_area;
+
 
 
 	// 弾が何かにあたったか
