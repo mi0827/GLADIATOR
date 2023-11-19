@@ -54,7 +54,7 @@ void GameInit()
 // 更新処理
 void GameUpdate()
 {
-
+	
 	Move_Hit(); // キャラクターの移動時のあたり判定実行用
 	Attack_Hit(); // 当たり判定を見る関数
 
@@ -63,7 +63,15 @@ void GameUpdate()
 	for (int i = 0; i < PLAYER_MAX; ++i)
 	{
 		camera[i]->Update(&players[i]->m_pos);
+		
 	}
+	/*for (int i = 0; i < PLAYER_MAX; ++i)
+	{
+		for (int j = 0; j < field.obj_max; j++) {
+			camera[i]->Hit_Object(&field.objects[j]->m_cube_hit_pos, &field.objects[j]->m_cube_size_half);
+		}
+
+	}*/
 }
 
 // 描画処理

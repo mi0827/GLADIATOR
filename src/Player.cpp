@@ -40,7 +40,7 @@ Player::Player()
 	// 判断用、フラグ変数
 	m_move_judge = false;                              // 最初は動いてはいけない
 	m_attack_judge = false;                            // 攻撃していない
-	bead_hit_judg = false;                            // なににもあたってない
+	bead_hit_judg = false;                             // なににもあたってない
 
 	m_hp_pos.set(10, 32);         // HPバーの描画位置初期化
 	m_hp_count.set(HP_MAX, 32 + 30);   // HPの計算用の初期化
@@ -52,22 +52,7 @@ Player::Player()
 void Player::Init(int player_num)
 {
 	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
-	// 普通アニメーションの初期化
-	// アニメーションの読み込み
-	CharacterBase::Nomal_Anim_New(ANIM_MAX);  // 普通アニメーションに必要な変数の配列を作る
-	anim_model[ANIM_IDLE] = MV1LoadModel("Data/Model/Player/Animation/Player_Idle.mv1"); // アイドル
-	anim_model[ANIM_RUN] = MV1LoadModel("Data/Model/Player/Animation/Player_Run.mv1");   // 走る
-	CharacterBase::Nomal_Anim_Init(ANIM_IDLE, ANIM_MAX, 1); // 普通アニメーションの初期設定
-
-	// 攻撃アニメーションの初期化
-	// アニメーションの読み込み
-	CharacterBase::Attack_Anim_New(ATTACK_ANIM_MAX); // 攻撃アニメーションに必要な変数の配列を作る
-	attack_anim_model[ATTACK_LONG_NORMAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/long_normal_attack.mv1");       // 遠距離普通攻撃
-	attack_anim_model[ATTACK_SHORT_NORMAL_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch.mv1");                 // 近距離攻撃１
-	attack_anim_model[ATTACK_SHORT_NORMAL_2_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_2.mv1"); // 近距離攻撃２
-	attack_anim_model[ATTACK_SLIDE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/slide.mv1");                          // スライディング
-	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/special_attack.mv1");               // 必殺技
-	CharacterBase::Attack_Anim_Init(ATTACK_ANIM_MAX, 1); // 攻撃アニメーションの初期設定
+	Animation_Init(); //< アニメーションの設定
 
 	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
 
@@ -79,6 +64,42 @@ void Player::Init(int player_num)
 		m_pos.set(0.0f, 0.0f, 500.0f);            // 初期座標の設定
 		m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 	}
+}
+
+//---------------------------------------------------------------------------
+// アニメーション用の初期処理
+//---------------------------------------------------------------------------
+void Player::Animation_Init()
+{
+	// 普通アニメーションの初期化
+	CharacterBase::Nomal_Anim_New(ANIM_MAX);  // 普通アニメーションに必要な変数の配列を作る
+	anim_model[ANIM_IDLE] = MV1LoadModel("Data/Model/Player/Animation/Idle.mv1"); // アイドル
+	anim_model[ANIM_RUN] = MV1LoadModel("Data/Model/Player/Animation/Player_Run.mv1");   // 走る
+	CharacterBase::Nomal_Anim_Init(ANIM_IDLE, ANIM_MAX, 1); // 普通アニメーションの初期設定
+
+
+	// 攻撃アニメーションの初期化
+	CharacterBase::Attack_Anim_New(ATTACK_ANIM_MAX); //< 攻撃アニメーションに必要な変数の配列を作る
+	attack_anim_model[ATTACK_LONG_NORMAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/long_normal_attack.mv1");       // 遠距離普通攻撃
+	attack_anim_model[ATTACK_SHORT_NORMAL_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch.mv1");                 // 近距離攻撃１
+	attack_anim_model[ATTACK_SHORT_NORMAL_2_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_2.mv1"); // 近距離攻撃２
+	attack_anim_model[ATTACK_SLIDE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/slide.mv1");                          // スライディング
+	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/special_attack.mv1");               // 必殺技
+	CharacterBase::Attack_Anim_Init(ATTACK_ANIM_MAX, 1); //< 攻撃アニメーションの初期設定
+
+	// ダメージアニメーションの初期化
+	CharacterBase::Damage_Anim_New(DAMAGE_ANIM_MAX); //< ダメージアニメーションに必要な変数の配列を作る
+	damage_anim_model[DAMAGE_ANIM] = MV1LoadModel("Data/Model/Animation/TakeDamage/damage1.mv1");     //< ダメージ食らった時
+	damage_anim_model[DAMAGE_ANIM_1] = MV1LoadModel("Data/Model/Animation/TakeDamage/damage2.mv1");   //< ダメージ食らった時２
+	damage_anim_model[DAMAGE_ANIM_2] = MV1LoadModel("Data/Model/Animation/TakeDamage/SweepFall.mv1"); //< 吹き飛ぶアニメーション
+	damage_anim_model[DAMAGE_ANIM_3] = MV1LoadModel("Data/Model/Animation/TakeDamage/GettingUp.mv1"); //< 起き上がるアニメーション
+	damage_anim_model[DAMAGE_ANIM] = MV1LoadModel("Data/Model/Animation/TakeDamage/damage1..mv1");
+	CharacterBase::Damage_Anim_Init(DAMAGE_ANIM_MAX, 1); //< ダメージアニメーションの初期化
+
+	// ガードアニメーションの設定
+	CharacterBase::Block_Anim_New(BLOCK_ANIM_MAX);
+	block_anim_model[BLOCK_ANIM] = MV1LoadModel("Data/Model/Animation/Block/block.mv1");
+	CharacterBase::Block_Anim_Init(BLOCK_ANIM_MAX, 1);
 }
 
 //---------------------------------------------------------------------------
@@ -157,11 +178,21 @@ void Player::Update(Vector3* camera_rot)
 		// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
 		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(pad_no) & PAD_INPUT_6 && GetJoypadInputState(pad_no) & PAD_INPUT_5) {
 			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
-			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 近距離攻撃アクションを設定
+			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 必殺攻撃アクションを設定
 			CharacterBase::Attack_Action(1);   // 行いたい攻撃アニメーションをセット
 			break;
 		}
 
+		//=================================
+		// ガード
+		//=================================
+		// または、Xボタンで遠距離攻撃
+		if ( GetJoypadInputState(pad_no) & PAD_INPUT_3) {
+			action_mode = BLOCK_ACTION;           // モデルのアクションを攻撃に変更
+			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
+			CharacterBase::Attack_Action(1);        // 行いたい攻撃アニメーションをセット
+			break;
+		}
 		// アニメーション用のフレームカウントを進める
 		for (int i = 0; i < ANIM_MAX; ++i) {
 			anim_frame[i] += 1.0f;
@@ -198,6 +229,16 @@ void Player::Update(Vector3* camera_rot)
 		}
 		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
 		break;
+	case BLOCK_ACTION:
+
+
+		break;
+
+
+	case DAMAGE_ACTION:
+
+
+		break;
 	}
 
 
@@ -228,11 +269,13 @@ void Player::Update(Vector3* camera_rot)
 		}
 		break;
 
+
 	case ATTACK_SHORT_NORMAL_1_ANIM: // 近距離普通攻撃１ (当たり判定の作成)
 		if (m_attack_judge) { // 攻撃フラグが上がっていたら
 			now_hit_area = &hit_areas[ATTACK_SHORT_NORMAL_1_ANIM];
 			if (attack_anim_frame[ATTACK_SHORT_NORMAL_1_ANIM] == now_hit_area->hit_anim_frame) {
 				attack_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
 				// 当たり判定を見えるようにする物
 				// 向いている方向に座標を設定（今はパンチに位置）
 				m_hit_attack_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
@@ -248,7 +291,9 @@ void Player::Update(Vector3* camera_rot)
 
 	case ATTACK_SLIDE_ANIM: // スライディング（当たり判定の作成）
 		if (m_attack_judge) { // 攻撃フラグが上がっていたら
-			*now_hit_area = hit_areas[ATTACK_SLIDE_ANIM]; // 構造体を触りやすくするために違う変数に入れておく
+			now_hit_area = &hit_areas[ATTACK_SLIDE_ANIM]; // 構造体を触りやすくするために違う変数に入れておく
+			attack_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
 			// 当たり判定を見えるようにする物
 			// 向いている方向に座標を設定（今はパンチに位置）
 			if (attack_anim_frame[ATTACK_SLIDE_ANIM] == now_hit_area->hit_anim_frame) {
@@ -256,9 +301,7 @@ void Player::Update(Vector3* camera_rot)
 				m_hit_attack_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
 			}
 			else {
-				if (!now_hit_area)
-					now_hit_area = nullptr;
-
+				attack_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
 			}
 		}
 		break;
@@ -354,5 +397,5 @@ void Player::Exit()
 		now_hit_area = nullptr;
 	}
 	// アニメーション用変数たちのdelete
-	CharacterBase::Anim_Delete(ANIM_MAX, ATTACK_ANIM_MAX);
+	CharacterBase::Anim_Delete();
 }

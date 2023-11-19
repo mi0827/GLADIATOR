@@ -15,7 +15,8 @@ public:
 	//---------------
 	//virtual と = 0 しておくことで派生クラスでオーバーロードできる
 	CharacterBase();
-	virtual void Init(int player_num) = 0;        // 初期処理
+	virtual void Init(int player_num) = 0; // 初期処理
+	virtual void Animation_Init() = 0;     // アニメーション用の初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
 	virtual void Update(Vector3* camera_rot) = 0;		// 更新処理
@@ -64,8 +65,18 @@ public:
 	// 攻撃アニメーションの初期設定
 	void Attack_Anim_Init(int ATTACK_ANIM_MAX, int index);
 
+	// ダメージアニメーション用の変数のNew用関数
+	void Damage_Anim_New(int DAMAGE_ANIM_MAX);
+	// ダメージアニメーションの初期設定
+	void Damage_Anim_Init(int DAMAGE_ANIM_MAX, int index);
+
+	// ガードアニメーション用の変数のNew用関数
+	void Block_Anim_New(int DAMAGE_ANIM_MAX);
+	// ガードアニメーションの初期設定
+	void Block_Anim_Init(int DAMAGE_ANIM_MAX, int index);
+
 	// アニメーション変数をdeleteする用の関数
-	void Anim_Delete(int ANIM_MAX, int ATTACK_ANIM_MAX);
+	void Anim_Delete();
 
 	// 攻撃にあったアニメーションさせる関数
 	void Attack_Action(int index);
@@ -108,8 +119,8 @@ protected:
 	// 普通アニメーション読み込み用の配列
 	//---------------------------------------------------------------------------
 	int* anim_model;    // アニメーションモデル
-	int* anim_attach;   //モデルにアニメーションをアタッチする用の配列（アタッチ番号を取得する）
-	float* anim_total;  //アニメーションが何フレーム科を取得、それを保存する用の配列
+	int* anim_attach;   // モデルにアニメーションをアタッチする用の配列（アタッチ番号を取得する）
+	float* anim_total;  // アニメーションが何フレーム科を取得、それを保存する用の配列
 	float* anim_rate;	// それぞれのアニメーションがどのくらうのわりあいになるか（0.0f ~ 1.0f）
 	float* anim_frame;  // アニメーションが何フレーム進んでいるのか
 
@@ -122,6 +133,25 @@ protected:
 	float* attack_anim_rate;  // それぞれの攻撃アニメーションがどのくらうのわりあいになるか（0.0f ~ 1.0f）
 	float* attack_anim_frame; // 攻撃アニメーションが何フレーム進んでいるのか
 	int attack_anim_pick;     // どのアニメーションをしているのかを判断する用
+
+	//---------------------------------------------------------------------------
+	// ガードアニメーション用変数
+	//---------------------------------------------------------------------------
+	int* block_anim_model;    // アニメーションモデル
+	int* block_anim_attach;   // モデルにアニメーションをアタッチする用の配列（アタッチ番号を取得する）
+	float* block_anim_total;  // アニメーションが何フレーム科を取得、それを保存する用の配列
+	float* block_anim_rate;	  // それぞれのアニメーションがどのくらうのわりあいになるか（0.0f ~ 1.0f）
+	float* block_anim_frame;  // アニメーションが何フレーム進んでいるのか
+
+	//---------------------------------------------------------------------------
+	// ダメージ（受けた時の）アニメーション用変数
+	//---------------------------------------------------------------------------
+	int* damage_anim_model;    // アニメーションモデル
+	int* damage_anim_attach;   // モデルにアニメーションをアタッチする用の配列（アタッチ番号を取得する）
+	float* damage_anim_total;  // アニメーションが何フレーム科を取得、それを保存する用の配列
+	float* damage_anim_rate;   // それぞれのアニメーションがどのくらうのわりあいになるか（0.0f ~ 1.0f）
+	float* damage_anim_frame;  // アニメーションが何フレーム進んでいるのか
+
 
 public:
 	//---------------------------------------------------------------------------

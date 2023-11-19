@@ -9,7 +9,9 @@ class Player : public CharacterBase
 	enum ActionMode
 	{
 		NORMAL_ACTION, // アイドルや走るアニメーションをしている
-		ATTACK_ACTION // 攻撃アクション
+		ATTACK_ACTION, // 攻撃アクション
+		BLOCK_ACTION,  // ガードアクション
+		DAMAGE_ACTION  // ダメージアクション
 	};
 
 	//---------------
@@ -28,10 +30,11 @@ public:
 	// 各関数の定義
 	Player(); // コンストラクタ
 	void Init(int player_num) override;         // 初期処理
+	void Animation_Init()override;              // アニメーション用の初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
 	void Update(Vector3* camera_rot) override;  // 更新処理
-	void Move_Hit_Update()override;
+	void Move_Hit_Update()override; // プレイヤーの移動用当たり判定更新処理
 
 	void Draw() override;		// 描画処理
 	void Exit() override;		//終了処理
@@ -65,6 +68,25 @@ private:
 		ATTACK_ANIM_MAX // 攻撃アニメーションの数
 	};
 
+	// ダメージアニメーション用の列挙体
+	enum DAMAGE_ANIM
+	{
+		DAMAGE_ANIM,     //< ダメージを受けた時のアニメーション
+		DAMAGE_ANIM_1,   //< ダメージを受けた時のアニメーション
+		DAMAGE_ANIM_2,   //< 吹き飛ぶアニメーション
+		DAMAGE_ANIM_3,   //< 起き上がるアニメーション
+		DAMAGE_ANIM_END, //< 最後負けた時のアニメーション
+
+		DAMAGE_ANIM_MAX  // ダメージアニメーションの数
+	};
+
+	// ガードアニメーション用の列挙体　
+	enum BLOCK_ANIM
+	{
+		BLOCK_ANIM,
+
+		BLOCK_ANIM_MAX 
+	};
 
 public:
 	// bead 関連
@@ -132,6 +154,7 @@ public:
 		}
 
 	};
+
 	Hit_capsule_data* now_hit_area;
 
 

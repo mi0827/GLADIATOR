@@ -43,6 +43,28 @@ Ninja::Ninja()
 void Ninja::Init(int player_num)
 {
 	m_model = MV1LoadModel("Data/Model/Ninja/Ninja.mv1");   // プレイヤーモデルの読み込み
+	Animation_Init(); //< アニメーションの設定
+
+	//pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
+
+	if (player_num == 0) {
+		m_pos.set(0.0f, 0.0f, -50.0f);           // 初期座標の設定
+		m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
+	}
+	else {
+		m_pos.set(0.0f, 0.0f, 500.0f);            // 初期座標の設定
+		m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
+	}
+
+	//// 仮
+	//SetPadNo(DX_INPUT_PAD1);
+}
+
+//---------------------------------------------------------------------------
+// アニメーション用の初期処理
+//---------------------------------------------------------------------------
+void Ninja::Animation_Init()
+{
 	// 普通アニメーションの初期化
 	// アニメーションの読み込み
 	CharacterBase::Nomal_Anim_New(ANIM_MAX);  // 普通アニメーションに必要な変数の配列を作る
@@ -58,20 +80,6 @@ void Ninja::Init(int player_num)
 	attack_anim_model[ATTACK_SLIDE_ANIM] = MV1LoadModel("Data/Model/Ninja/Animation/Attack/slide.mv1");                          // スライディング
 	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Ninja/Animation/Attack/special_attack.mv1");               // 必殺技
 	CharacterBase::Attack_Anim_Init(ATTACK_ANIM_MAX, 0); // 攻撃アニメーションの初期設定
-
-	pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
-
-	if (player_num == 0) {
-		m_pos.set(0.0f, 0.0f, -50.0f);           // 初期座標の設定
-		m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
-	}
-	else {
-		m_pos.set(0.0f, 0.0f, 500.0f);            // 初期座標の設定
-		m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
-	}
-
-	//// 仮
-	//SetPadNo(DX_INPUT_PAD1);
 }
 
 // 更新処理
@@ -303,5 +311,5 @@ void Ninja::Exit()
 	}
 
 	// アニメーション用変数たちのdelete
-	CharacterBase::Anim_Delete(ANIM_MAX, ATTACK_ANIM_MAX);
+	CharacterBase::Anim_Delete();
 }

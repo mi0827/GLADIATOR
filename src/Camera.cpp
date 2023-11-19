@@ -9,22 +9,26 @@ constexpr float MOUSE_CAMERA_ROT_SPEED = 0.2f;  // マウス用
 constexpr float PAD_CAMERA_ROT_SPEED = 3.0f;    // パッド用
 constexpr float UP_ANGLE_MAX = 30.0f;           // カメラの上アングルの最大
 constexpr float LOWER_ANGLE = -10.0f;           // カメラの下アングルの最低（地面に埋まらない程度）
-
+constexpr float BOX_SIZE = 4.0f;                   // ボックスのサイズ
+constexpr float BOX_SIZE_HALF = (BOX_SIZE / 2.0f); // 半数のサイズ
 
 
 // コンストラクタ(初期化)
 Camera::Camera()
 {
-	// カメラ座標の初期設定
+	//! カメラ座標の初期設定
 	m_pos.set(0.0f, 0.0f, -20.0f);
-	// カメラの向きは全部０度で開始
+	//! カメラの向きは全部０度で開始
 	m_rot.set(0.0f, 0.0f, 0.0f);
-	// カメラが見る座標
+	//! カメラが見る座標
 	m_look.set(0.0f, 0.0f, 0.0f); // すべて０．０ｆで初期化
 
-	// マウスの移動量の初期化最小は0.0fから
+	//! マウスの移動量の初期化最小は0.0fから
 	m_mouse_move_x = 0.0f;
 	m_mouse_move_y = 0.0f;
+	//! パネルの大きさ(カメラを中心として扱うため半分の大きさを使う)
+	hit_box_size.set(BOX_SIZE_HALF - 0.1, BOX_SIZE_HALF - 0.1, BOX_SIZE_HALF - 0.1);   
+	before_pos.set(m_pos); //< 移動前の座標の設定
 }
 
 // 初期処理
@@ -50,6 +54,7 @@ void Camera::PlayField_Init()
 //---------------------------------------------------------------------------------
 void Camera::Update(Vector3* player_pos)
 {
+	before_pos.set(m_pos); //< 移動前の座標の設定
 	// プレイヤーの後ろに付いて動く
 	m_look.set(player_pos->x, player_pos->y + 10.0f, player_pos->z);
 	// マウスの移動量
@@ -107,6 +112,24 @@ void Camera::Update(Vector3* player_pos)
 
 	// カメラの位置を見ている座標から一定の位置に再設定
 	m_pos = m_look + change_dir;
+}
+
+
+//---------------------------------------------------------------------------------
+// カメラが壁に埋まらないようにする(うまくいかない)
+//---------------------------------------------------------------------------------
+void Camera::Hit_Object(Vector3* obj_pos, Vector3* obj_size)
+{
+	if (before_pos.x + hit_box_size.x >= obj_pos->x - obj_size->x && before_pos.x - hit_box_size.x <= obj_pos->x + obj_size->x) {
+	
+		m_pos.z = before_pos.z;
+		m_pos.x = before_pos.x;
+	}
+	if (before_pos.z + hit_box_size.z >= obj_pos->z - obj_size->z && before_pos.z - hit_box_size.z <= obj_pos->z + obj_size->z) {
+		
+		m_pos.z = before_pos.z;
+		m_pos.x = before_pos.x;
+	}
 }
 
 //---------------------------------------------------------------------------------

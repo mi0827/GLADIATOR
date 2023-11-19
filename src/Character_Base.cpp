@@ -182,7 +182,6 @@ void CharacterBase::Nomal_Anim_New(int ANIM_MAX)
 		anim_frame[i] = 0.0f;
 	}
 }
-
 //---------------------------------------------------------------------------
 // 普通アニメーションの初期設定(アニメーションのアタッチから最初のブレンド率の調整までを行う)
 //---------------------------------------------------------------------------
@@ -220,7 +219,6 @@ void CharacterBase::Attack_Anim_New(int ATTACK_ANIM_MAX)
 		attack_anim_frame[i] = 0.0f;
 	}
 }
-
 //---------------------------------------------------------------------------
 // 攻撃アニメーションの初期設定(アタッチから最初のディタッチまでを行う)
 //---------------------------------------------------------------------------
@@ -235,27 +233,98 @@ void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX, int index)
 }
 
 //---------------------------------------------------------------------------
+// ダメージアニメーション変数のNew用関数
+//---------------------------------------------------------------------------
+void CharacterBase::Damage_Anim_New(int DAMAGE_ANIM_MAX)
+{
+	damage_anim_model = new int[DAMAGE_ANIM_MAX];   // アニメーションモデル
+	damage_anim_attach = new int[DAMAGE_ANIM_MAX];  // アタッチ用変数
+	damage_anim_total = new float[DAMAGE_ANIM_MAX]; // アニメーションが何フレームあるか
+	damage_anim_rate = new float[DAMAGE_ANIM_MAX];  // アニメーションのブレンド率
+	damage_anim_frame = new float[DAMAGE_ANIM_MAX]; // アニメーションの進めるフレーム
+	// アニメーションが何フレーム進んでいるか用の変数
+	// 最初は０から開始
+	for (int i = 0; i < DAMAGE_ANIM_MAX; i++)
+	{
+		attack_anim_frame[i] = 0.0f;
+	}
+}
+//---------------------------------------------------------------------------
+// ダメージアニメーションの初期設定(アタッチから最初のディタッチまでを行う)
+//---------------------------------------------------------------------------
+void CharacterBase::Damage_Anim_Init(int DAMAGE_ANIM_MAX, int index)
+{
+	for (int i = 0; i < DAMAGE_ANIM_MAX; i++)
+	{
+		damage_anim_attach[i] = MV1AttachAnim(m_model, index, attack_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
+		damage_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		damage_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+	}
+}
+
+
+//---------------------------------------------------------------------------
+// ガードアニメーション変数のNew用関数
+//---------------------------------------------------------------------------
+void CharacterBase::Block_Anim_New(int BLOCK_ANIM_MAX)
+{
+	block_anim_model = new int[BLOCK_ANIM_MAX];   // アニメーションモデル
+	block_anim_attach = new int[BLOCK_ANIM_MAX];  // アタッチ用変数
+	block_anim_total = new float[BLOCK_ANIM_MAX]; // アニメーションが何フレームあるか
+	block_anim_rate = new float[BLOCK_ANIM_MAX];  // アニメーションのブレンド率
+	block_anim_frame = new float[BLOCK_ANIM_MAX]; // アニメーションの進めるフレーム
+	// アニメーションが何フレーム進んでいるか用の変数
+	// 最初は０から開始
+	for (int i = 0; i < BLOCK_ANIM_MAX; i++)
+	{
+		block_anim_frame[i] = 0.0f;
+	}
+}
+//---------------------------------------------------------------------------
+// ガードアニメーションの初期設定(アタッチから最初のディタッチまでを行う)
+//---------------------------------------------------------------------------
+void CharacterBase::Block_Anim_Init(int BLOCK_ANIM_MAX, int index)
+{
+	for (int i = 0; i < BLOCK_ANIM_MAX; i++)
+	{
+		damage_anim_attach[i] = MV1AttachAnim(m_model, index, attack_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
+		damage_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		damage_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+	}
+}
+
+
+//---------------------------------------------------------------------------
 // アニメーション用変数たちのdelete用関数
 //---------------------------------------------------------------------------
-void CharacterBase::Anim_Delete(int ANIM_MAX, int ATTACK_ANIM_MAX)
+void CharacterBase::Anim_Delete()
 {
-	//for (int i = 0; i < ANIM_MAX; i++)
-	//{
-	//}
-	//for (int i = 0; i < ATTACK_ANIM_MAX; i++) {
-	//}
-
+	//! 普通アニメーション 
 	delete[] anim_model;
 	delete[] anim_attach;
 	delete[] anim_total;
 	delete[] anim_rate;
 	delete[] anim_frame;
-
+	// 攻撃アニメーション
 	delete[] attack_anim_model;
 	delete[] attack_anim_attach;
 	delete[] attack_anim_total;
 	delete[] attack_anim_rate;
 	delete[] attack_anim_frame;
+	// ダメージアニメーション
+	delete[] damage_anim_model;
+	delete[] damage_anim_attach;
+	delete[] damage_anim_total;
+	delete[] damage_anim_rate;
+	delete[] damage_anim_frame;
+	// ガードアニメーション
+	delete block_anim_model;
+	delete block_anim_attach;
+	delete block_anim_total;
+	delete block_anim_rate;
+	delete block_anim_frame;
+
+
 }
 
 //---------------------------------------------------------------------------

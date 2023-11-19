@@ -21,10 +21,11 @@ public:
 	// プレイヤーの情報を受け取る形にします
 	// 今回はプレイヤーのｎ後ろにカメラをお嫌いの出
 	// プレイヤーの座標と向きを受け取れるようにします
-	void Update(Vector3* player_pos);		//	更新処理
-	void Draw_Set();    // 描画処理の前にカメラ、画面のセット
-	void Draw(int camera_No);		//	描画処理
-	void Exit();		//	終了処理
+	void Update(Vector3* player_pos); // 更新処理
+	void Hit_Object(Vector3* obj_pos, Vector3* obj_size); // カメラが壁に埋まらないようにする
+	void Draw_Set();                  // 描画処理の前にカメラ、画面のセット
+	void Draw(int camera_No);		  // 画処理
+	void Exit();		              // 終了処理
 
 	//---------------
 	// 変数の定義
@@ -44,6 +45,8 @@ private:
 	// マウスの移動量用の変数
 	float m_mouse_move_x; // X座標の移動量
 	float m_mouse_move_y; // Y座標の移動量
+	Vector3 before_pos;   // 毎フレーム移動前の座標をいれる用の変数
+	Vector3 hit_box_size; // 壁との当たり判定用の変数
 public:
 	int pad_no = 0;				// 何番のパッドを使っているのか
 	void SetPadNo(int no)

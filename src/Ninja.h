@@ -28,6 +28,7 @@ public:
 	// 各関数の定義
 	Ninja(); // コンストラクタ
 	void Init(int player_num)override;        //　初期処理
+	void Animation_Init()override;              // アニメーション用の初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
 	void Update(Vector3* camera_rot) override;		//	更新処理
