@@ -151,11 +151,13 @@ void Move_Hit()
 //---------------------------------------------------------------------------
 void Attack_Hit()
 {
-	if (HitCheck_Capsule_Capsule(players[0]->m_hit_attack_pos_top.VGet(), players[0]->m_hit_body_pos_under.VGet(), players[0]->m_hit_attack_r,
-		players[1]->m_hit_body_pos_top.VGet(), players[1]->m_hit_body_pos_under.VGet(), players[1]->m_hit_body_r))
-	{
-		players[1]->m_pos.z += 5;
-		players[1]->m_hp_count.x -= 50;//players[0]->attack_damage[players[0]->];
+	if (players[0]->attack_hit_flag) {
+		if (HitCheck_Capsule_Capsule(players[0]->m_hit_attack_pos_top.VGet(), players[0]->m_hit_body_pos_under.VGet(), players[0]->m_hit_attack_r,
+			players[1]->m_hit_body_pos_top.VGet(), players[1]->m_hit_body_pos_under.VGet(), players[1]->m_hit_body_r))
+		{
+			players[1]->m_pos.z += 5;
+			players[1]->m_hp_count.x -= 50;//players[0]->attack_damage[players[0]->];
+		}
 	}
 }
 

@@ -232,16 +232,16 @@ void Player::Update(Vector3* camera_rot)
 		if (m_attack_judge) { // 攻撃フラグが上がっていたら
 			now_hit_area = &hit_areas[ATTACK_SHORT_NORMAL_1_ANIM];
 			if (attack_anim_frame[ATTACK_SHORT_NORMAL_1_ANIM] == now_hit_area->hit_anim_frame) {
+				attack_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
 				// 当たり判定を見えるようにする物
 				// 向いている方向に座標を設定（今はパンチに位置）
 				m_hit_attack_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
 				m_hit_attack_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
 			}
 			else {
-				if (now_hit_area != NULL)
-					now_hit_area = NULL;
-
+				attack_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
 			}
+
 		}
 		break;
 
