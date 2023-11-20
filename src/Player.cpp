@@ -77,7 +77,6 @@ void Player::Animation_Init()
 	anim_model[ANIM_RUN] = MV1LoadModel("Data/Model/Player/Animation/Player_Run.mv1");   // 走る
 	CharacterBase::Nomal_Anim_Init(ANIM_IDLE, ANIM_MAX, 1); // 普通アニメーションの初期設定
 
-
 	// 攻撃アニメーションの初期化
 	CharacterBase::Attack_Anim_New(ATTACK_ANIM_MAX); //< 攻撃アニメーションに必要な変数の配列を作る
 	attack_anim_model[ATTACK_LONG_NORMAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/long_normal_attack.mv1");       // 遠距離普通攻撃
@@ -89,17 +88,17 @@ void Player::Animation_Init()
 
 	// ダメージアニメーションの初期化
 	CharacterBase::Damage_Anim_New(DAMAGE_ANIM_MAX); //< ダメージアニメーションに必要な変数の配列を作る
-	damage_anim_model[DAMAGE_ANIM] = MV1LoadModel("Data/Model/Animation/TakeDamage/damage1.mv1");     //< ダメージ食らった時
-	damage_anim_model[DAMAGE_ANIM_1] = MV1LoadModel("Data/Model/Animation/TakeDamage/damage2.mv1");   //< ダメージ食らった時２
-	damage_anim_model[DAMAGE_ANIM_2] = MV1LoadModel("Data/Model/Animation/TakeDamage/SweepFall.mv1"); //< 吹き飛ぶアニメーション
-	damage_anim_model[DAMAGE_ANIM_3] = MV1LoadModel("Data/Model/Animation/TakeDamage/GettingUp.mv1"); //< 起き上がるアニメーション
-	damage_anim_model[DAMAGE_ANIM] = MV1LoadModel("Data/Model/Animation/TakeDamage/damage1..mv1");
+	damage_anim_model[DAMAGE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/damage1.mv1");     //< ダメージ食らった時
+	damage_anim_model[DAMAGE_ANIM_1] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/damage2.mv1");   //< ダメージ食らった時２
+	damage_anim_model[DAMAGE_ANIM_2] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/SweepFall.mv1"); //< 吹き飛ぶアニメーション
+	damage_anim_model[DAMAGE_ANIM_3] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/GettingUp.mv1"); //< 起き上がるアニメーション
+	damage_anim_model[DAMAGE_ANIM_END] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/die.mv1");
 	CharacterBase::Damage_Anim_Init(DAMAGE_ANIM_MAX, 1); //< ダメージアニメーションの初期化
 
-	// ガードアニメーションの設定
-	CharacterBase::Block_Anim_New(BLOCK_ANIM_MAX);
-	block_anim_model[BLOCK_ANIM] = MV1LoadModel("Data/Model/Animation/Block/block.mv1");
-	CharacterBase::Block_Anim_Init(BLOCK_ANIM_MAX, 1);
+	//// ガードアニメーションの設定
+	//CharacterBase::Block_Anim_New(BLOCK_ANIM_MAX);
+	//block_anim_model[BLOCK_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Block/block.mv1");
+	//CharacterBase::Block_Anim_Init(BLOCK_ANIM_MAX, 1);
 }
 
 //---------------------------------------------------------------------------
@@ -187,12 +186,14 @@ void Player::Update(Vector3* camera_rot)
 		// ガード
 		//=================================
 		// または、Xボタンで遠距離攻撃
-		if ( GetJoypadInputState(pad_no) & PAD_INPUT_3) {
+		if (PushHitKey(KEY_INPUT_LSHIFT) || GetJoypadInputState(pad_no) & PAD_INPUT_3) {
 			action_mode = BLOCK_ACTION;           // モデルのアクションを攻撃に変更
-			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
-			CharacterBase::Attack_Action(1);        // 行いたい攻撃アニメーションをセット
+			block_anim_pick = BLOCK_ANIM;  // ガードアクションを設定
+			CharacterBase::Block_Action(1);        // 行いたい攻撃アニメーションをセット
 			break;
 		}
+
+
 		// アニメーション用のフレームカウントを進める
 		for (int i = 0; i < ANIM_MAX; ++i) {
 			anim_frame[i] += 1.0f;
@@ -230,8 +231,19 @@ void Player::Update(Vector3* camera_rot)
 		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
 		break;
 	case BLOCK_ACTION:
-
-
+		// アニメーションの再生
+		// ガードアニメーション用のフレームカウントを進める
+		block_anim_frame[block_anim_pick]++;
+		if (block_anim_frame[block_anim_pick] >= block_anim_total[block_anim_pick]) { // アニメーションが一周したら
+			block_anim_frame[block_anim_pick] = 0.0f;
+			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);  // 攻撃アニメーションをディタッチしておく
+			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
+			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
+			// 攻撃が終わったのでこうげきしていないようにする
+			//m_attack_judge = false;
+			block_anim_pick = BLOCK_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
+		}
+		MV1SetAttachAnimTime(m_model, block_anim_attach[block_anim_pick], block_anim_frame[block_anim_pick]); // アニメーションの再生
 		break;
 
 

@@ -64,27 +64,31 @@ public:
 	void Attack_Anim_New(int ATTACK_ANIM_MAX);
 	// 攻撃アニメーションの初期設定
 	void Attack_Anim_Init(int ATTACK_ANIM_MAX, int index);
+	// 攻撃にあったアニメーションさせる関数
+	void Attack_Action(int index);
 
 	// ダメージアニメーション用の変数のNew用関数
 	void Damage_Anim_New(int DAMAGE_ANIM_MAX);
 	// ダメージアニメーションの初期設定
 	void Damage_Anim_Init(int DAMAGE_ANIM_MAX, int index);
+	// 攻撃にあったアニメーションさせる関数
+	void Damage_Action(int index);
 
 	// ガードアニメーション用の変数のNew用関数
 	void Block_Anim_New(int DAMAGE_ANIM_MAX);
 	// ガードアニメーションの初期設定
 	void Block_Anim_Init(int DAMAGE_ANIM_MAX, int index);
-
+	// 攻撃にあったアニメーションさせる関数
+	void Block_Action(int index);
 	// アニメーション変数をdeleteする用の関数
 	void Anim_Delete();
 
-	// 攻撃にあったアニメーションさせる関数
-	void Attack_Action(int index);
+	
 
 	// 当たり判定のあったとき当たった相手の情報をとってくる関数
 	void Get_other(float* hit_other_x, float* hit_other_z, float* hit_other_r); // カプセル、円
 
-	void Get_other(Vector3* hit_other_1, Vector3* hit_other_2);               // 立方体
+	void Get_other(Vector3* hit_other_1, Vector3* hit_other_2);                 // 立方体
 
 	// 当たり判定を作る関数
 	void Attack_Hit_New(Vector3* pot_pos, Vector3* under_pos);
@@ -142,6 +146,7 @@ protected:
 	float* block_anim_total;  // アニメーションが何フレーム科を取得、それを保存する用の配列
 	float* block_anim_rate;	  // それぞれのアニメーションがどのくらうのわりあいになるか（0.0f ~ 1.0f）
 	float* block_anim_frame;  // アニメーションが何フレーム進んでいるのか
+	int block_anim_pick;      // どのアニメーションをしているのかを判断する用
 
 	//---------------------------------------------------------------------------
 	// ダメージ（受けた時の）アニメーション用変数
@@ -151,7 +156,7 @@ protected:
 	float* damage_anim_total;  // アニメーションが何フレーム科を取得、それを保存する用の配列
 	float* damage_anim_rate;   // それぞれのアニメーションがどのくらうのわりあいになるか（0.0f ~ 1.0f）
 	float* damage_anim_frame;  // アニメーションが何フレーム進んでいるのか
-
+	int damage_anim_pick;      // どのアニメーションをしているかを判断する用の変数
 
 public:
 	//---------------------------------------------------------------------------
@@ -159,11 +164,18 @@ public:
 	//---------------------------------------------------------------------------
 	bool attack_hit_flag; //< あたり判定を行てよいかのフラグ
 	
+
+	//---------------------------------------------------------------------------
+	// 各アクション判断用変数
+	//---------------------------------------------------------------------------
+	bool m_attack_judge;       // 今攻撃中なのかの判断 
+	bool m_damage_judge;       // 今ダメージを受けているのか
+	bool m_block_judge;        // 今ガード中なのか
+
 	//---------------------------------------------------------------------------
 	// 当たり判定があったときの各処理の判断用変数
 	//---------------------------------------------------------------------------
 	bool m_move_judge;         // いまは移動していいていいかの判断
-	bool m_attack_judge;       // 今攻撃中なのかの判断 
 	Vector3 m_hit_other_pos;   // 当たり判定があった相手の座標を入れる
 	Vector3 m_hit_other_size;  // 当たり判定があった相手のサイズを入れる（立方体の場合）
 

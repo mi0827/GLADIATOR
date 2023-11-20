@@ -231,6 +231,16 @@ void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX, int index)
 		attack_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
 }
+//---------------------------------------------------------------------------
+// 攻撃にあったアニメーションさせる関数
+//---------------------------------------------------------------------------
+void CharacterBase::Attack_Action(int index)
+{
+	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, index, attack_anim_model[attack_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
+	m_attack_judge = true; // 攻撃中にする
+}
+
 
 //---------------------------------------------------------------------------
 // ダメージアニメーション変数のNew用関数
@@ -246,7 +256,7 @@ void CharacterBase::Damage_Anim_New(int DAMAGE_ANIM_MAX)
 	// 最初は０から開始
 	for (int i = 0; i < DAMAGE_ANIM_MAX; i++)
 	{
-		attack_anim_frame[i] = 0.0f;
+		damage_anim_frame[i] = 0.0f;
 	}
 }
 //---------------------------------------------------------------------------
@@ -256,10 +266,19 @@ void CharacterBase::Damage_Anim_Init(int DAMAGE_ANIM_MAX, int index)
 {
 	for (int i = 0; i < DAMAGE_ANIM_MAX; i++)
 	{
-		damage_anim_attach[i] = MV1AttachAnim(m_model, index, attack_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
-		damage_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		damage_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+		damage_anim_attach[i] = MV1AttachAnim(m_model, index, damage_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
+		damage_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, damage_anim_model[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		damage_anim_attach[i] = MV1DetachAnim(m_model, damage_anim_model[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
+}
+//---------------------------------------------------------------------------
+// ダメージアニメーションにあったアニメーションさせる関数
+//---------------------------------------------------------------------------
+void CharacterBase::Damage_Action(int index)
+{
+	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+	damage_anim_attach[damage_anim_pick] = MV1AttachAnim(m_model, index, damage_anim_model[damage_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
+	m_damage_judge = true; // 攻撃中にする
 }
 
 
@@ -287,10 +306,19 @@ void CharacterBase::Block_Anim_Init(int BLOCK_ANIM_MAX, int index)
 {
 	for (int i = 0; i < BLOCK_ANIM_MAX; i++)
 	{
-		damage_anim_attach[i] = MV1AttachAnim(m_model, index, attack_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
-		damage_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		damage_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+		block_anim_attach[i] = MV1AttachAnim(m_model, index, block_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
+		block_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, block_anim_model[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		block_anim_attach[i] = MV1DetachAnim(m_model, block_anim_model[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
+}
+//---------------------------------------------------------------------------
+// ガードアニメーションにあったアニメーションさせる関数
+//---------------------------------------------------------------------------
+void CharacterBase::Block_Action(int index)
+{
+	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+	block_anim_attach[block_anim_pick] = MV1AttachAnim(m_model, index, block_anim_model[block_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
+	m_block_judge = true; // 攻撃中にする
 }
 
 
@@ -318,23 +346,11 @@ void CharacterBase::Anim_Delete()
 	delete[] damage_anim_rate;
 	delete[] damage_anim_frame;
 	// ガードアニメーション
-	delete block_anim_model;
-	delete block_anim_attach;
-	delete block_anim_total;
-	delete block_anim_rate;
-	delete block_anim_frame;
-
-
-}
-
-//---------------------------------------------------------------------------
-// 攻撃にあったアニメーションさせる関数
-//---------------------------------------------------------------------------
-void CharacterBase::Attack_Action(int index)
-{
-	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
-	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, index, attack_anim_model[attack_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
-	m_attack_judge = true; // 攻撃中にする
+	delete[] block_anim_model;
+	delete[] block_anim_attach;
+	delete[] block_anim_total;
+	delete[] block_anim_rate;
+	delete[] block_anim_frame;
 }
 
 //---------------------------------------------------------------------------
