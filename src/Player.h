@@ -35,7 +35,9 @@ public:
 	// カメラがどの方向にあるのかを情報として使う
 	void Update(Vector3* camera_rot) override;  // 更新処理
 	void Move_Hit_Update()override; // プレイヤーの移動用当たり判定更新処理
-
+	void Attack_Update()override;   // 攻撃が行われた時に行う
+	void Damage_Update()override;	// ダメージを食らった時に行う
+	void Block_Update()override;	// ガードが行われた時に行う
 	void Draw() override;		// 描画処理
 	void Exit() override;		//終了処理
 
@@ -83,11 +85,20 @@ private:
 	// ガードアニメーション用の列挙体　
 	enum BLOCK_ANIM
 	{
-		BLOCK_ANIM,
+		BLOCK_ANIM, // ブロックアニメーション
 
-		BLOCK_ANIM_MAX 
+		BLOCK_ANIM_MAX
 	};
 
+
+	// アクション用の当たり判定用の列挙体
+	enum HIT_ACTION
+	{
+		ATTACK_SHORT_NORMAL_1_HIT, // 近距離普通攻撃１用の当たり判定
+		BLOCK_HIT,                 // ブロック用の当たり判定
+
+		HIT_ACTION_MAX
+	};
 public:
 	// bead 関連
 	//------------------------------------
@@ -116,42 +127,22 @@ public:
 		float hit_anim_frame;  // アニメーションのフレーム(ここで出す)
 	};
 
-	Hit_capsule_data hit_areas[ATTACK_ANIM_MAX] =
+	Hit_capsule_data hit_areas[HIT_ACTION_MAX] =
 	{
-		//遠距離普通攻撃
-		 { Vector3(0,0,0), // トップ
-		   Vector3(0,0,0), // アンダー
-		   0.0f,   // 半径
-		   0.0,    // フレーム
-		 }
-		 // 近距離攻撃１
-		,{
-		   Vector3(8,   13, 8), // トップ
-		   Vector3(6, 12.7, 6), // アンダー
-		   1.0f,   // 半径
-		   18.000, // フレーム}	
-		}
-		// 近距離攻撃2
-		,{
-		   Vector3(0,0,0), // トップ
-		   Vector3(0,0,0), // アンダー
-		   0.0f,   // 半径
-		   0.000, // フレーム} //
-		}
-		// スライディング
-		,{
-		   Vector3(8,1,10), // トップ
-		   Vector3(8,0,10),     // アンダー
-		   1.0f,   // 半径
-		   0.000, // フレーム} // 
-		}
-		// 必殺技
-		,{
-		   Vector3(0,0,0), // トップ
-		   Vector3(0,0,0),     // アンダー
-		   1.0f,   // 半径
-		   18.000, // フレーム} //
-		}
+
+		// 近距離攻撃１
+	   {
+		  Vector3(8,   13, 8), // トップ
+		  Vector3(6, 12.7, 6), // アンダー
+		  1.0f,   // 半径
+		  18.000, // フレーム}	
+	   },
+	   //ガードアクション
+	   { Vector3(5,   17, 5), // トップ
+		  Vector3(5,   5, 5), // アンダー
+		  3.0f,   // 半径
+		  0.0,    // フレーム
+	   },
 
 	};
 

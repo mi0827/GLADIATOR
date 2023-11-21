@@ -30,9 +30,9 @@ Player::Player()
 	m_hit_body_r = 2.0f;                              // 半径
 
 	// あたり判定用
-	m_hit_attack_pos_top.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 13, m_pos.z + 8 * cosf(TO_RADIAN(m_rot.y)));
-	m_hit_attack_pos_under.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 12.7, m_pos.z + 6 * cosf(TO_RADIAN(m_rot.y)));
-	m_hit_attack_r = 1.0f;
+	m_hit_cd_pos_top.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 13, m_pos.z + 8 * cosf(TO_RADIAN(m_rot.y)));
+	m_hit_cd_pos_under.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 12.7, m_pos.z + 6 * cosf(TO_RADIAN(m_rot.y)));
+	m_hit_cd_r = 1.0f;
 	//======================
 	// 移動用のボックス                                                   
 	m_move_hit_box_size.set(PANEL_HALF - 0.1, PANEL_HALF - 0.1, PANEL_HALF - 0.1);    // パネルの大きさ
@@ -86,19 +86,19 @@ void Player::Animation_Init()
 	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/special_attack.mv1");               // 必殺技
 	CharacterBase::Attack_Anim_Init(ATTACK_ANIM_MAX, 1); //< 攻撃アニメーションの初期設定
 
-	// ダメージアニメーションの初期化
-	CharacterBase::Damage_Anim_New(DAMAGE_ANIM_MAX); //< ダメージアニメーションに必要な変数の配列を作る
-	damage_anim_model[DAMAGE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/damage1.mv1");     //< ダメージ食らった時
-	damage_anim_model[DAMAGE_ANIM_1] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/damage2.mv1");   //< ダメージ食らった時２
-	damage_anim_model[DAMAGE_ANIM_2] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/SweepFall.mv1"); //< 吹き飛ぶアニメーション
-	damage_anim_model[DAMAGE_ANIM_3] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/GettingUp.mv1"); //< 起き上がるアニメーション
-	damage_anim_model[DAMAGE_ANIM_END] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/die.mv1");
-	CharacterBase::Damage_Anim_Init(DAMAGE_ANIM_MAX, 1); //< ダメージアニメーションの初期化
+	//// ダメージアニメーションの初期化
+	//CharacterBase::Damage_Anim_New(DAMAGE_ANIM_MAX); //< ダメージアニメーションに必要な変数の配列を作る
+	//damage_anim_model[DAMAGE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/damage1.mv1");     //< ダメージ食らった時
+	//damage_anim_model[DAMAGE_ANIM_1] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/damage2.mv1");   //< ダメージ食らった時２
+	//damage_anim_model[DAMAGE_ANIM_2] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/SweepFall.mv1"); //< 吹き飛ぶアニメーション
+	//damage_anim_model[DAMAGE_ANIM_3] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/GettingUp.mv1"); //< 起き上がるアニメーション
+	//damage_anim_model[DAMAGE_ANIM_END] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/die.mv1");
+	//CharacterBase::Damage_Anim_Init(DAMAGE_ANIM_MAX, 1); //< ダメージアニメーションの初期化
 
-	//// ガードアニメーションの設定
-	//CharacterBase::Block_Anim_New(BLOCK_ANIM_MAX);
-	//block_anim_model[BLOCK_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Block/block.mv1");
-	//CharacterBase::Block_Anim_Init(BLOCK_ANIM_MAX, 1);
+	// ガードアニメーションの設定
+	CharacterBase::Block_Anim_New(BLOCK_ANIM_MAX);
+	block_anim_model[BLOCK_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Block/block.mv1");
+	CharacterBase::Block_Anim_Init(BLOCK_ANIM_MAX, 1);
 }
 
 //---------------------------------------------------------------------------
@@ -229,6 +229,10 @@ void Player::Update(Vector3* camera_rot)
 			attack_anim_pick = ATTACK_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
 		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
+
+		if (m_attack_judge) { // 攻撃フラグが上がっていたら
+			Attack_Update();  // 攻撃用のアップデート
+		}
 		break;
 	case BLOCK_ACTION:
 		// アニメーションの再生
@@ -239,126 +243,31 @@ void Player::Update(Vector3* camera_rot)
 			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);  // 攻撃アニメーションをディタッチしておく
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
-			// 攻撃が終わったのでこうげきしていないようにする
-			//m_attack_judge = false;
+
 			block_anim_pick = BLOCK_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
 		MV1SetAttachAnimTime(m_model, block_anim_attach[block_anim_pick], block_anim_frame[block_anim_pick]); // アニメーションの再生
+		if (m_block_judge) {  // ガードフラグが上がったら
+			Block_Update();   // ガード用のアップデート
+		}
+		
 		break;
 
 
 	case DAMAGE_ACTION:
-
+		if (m_damage_judge) { // ダメージを食らったフラグが上がっていたら
+			Damage_Update();  // ダメージ用のアップデート
+		}
 
 		break;
 	}
 
 
-	switch (attack_anim_pick)
-	{
-	case ATTACK_LONG_NORMAL_ANIM: // 遠距離攻撃（弾を出す）
-		// カウントがからだったら
-		if (lifespan_count == NULL) {
-			lifespan_count = 120.0f; // カウントのセット
-		}
-		// 弾用の変数
-		if (lifespan_count >= 120.0f) {
-			bead_pos = new Vector3;
-			*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
-			bead_pos->y += 10.0f; // y座標をずらして空中に浮かべる
-			bead_r = 2.0f;        // 半径の設定
-		}
-		// 一旦前に飛ばす
-		bead_pos->x += 3 * sinf(TO_RADIAN(m_rot.y));
-		bead_pos->z += 3 * cosf(TO_RADIAN(m_rot.y));
-		lifespan_count--; // 弾が消えるまでのカウントを進める
-		// カウントが一定にまで減るか、当たり判定があったら
-		if (lifespan_count <= 0 || bead_hit_judg) {
-			delete bead_pos; // 弾の解放
-			bead_pos = NULL;
-			lifespan_count = NULL; // 次のために空にしておく
-			m_attack_judge = false; // 攻撃を終わらせておく
-		}
-		break;
-
-
-	case ATTACK_SHORT_NORMAL_1_ANIM: // 近距離普通攻撃１ (当たり判定の作成)
-		if (m_attack_judge) { // 攻撃フラグが上がっていたら
-			now_hit_area = &hit_areas[ATTACK_SHORT_NORMAL_1_ANIM];
-			if (attack_anim_frame[ATTACK_SHORT_NORMAL_1_ANIM] == now_hit_area->hit_anim_frame) {
-				attack_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
-
-				// 当たり判定を見えるようにする物
-				// 向いている方向に座標を設定（今はパンチに位置）
-				m_hit_attack_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
-				m_hit_attack_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
-			}
-			else {
-				attack_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
-			}
-
-		}
-		break;
-
-
-	case ATTACK_SLIDE_ANIM: // スライディング（当たり判定の作成）
-		if (m_attack_judge) { // 攻撃フラグが上がっていたら
-			now_hit_area = &hit_areas[ATTACK_SLIDE_ANIM]; // 構造体を触りやすくするために違う変数に入れておく
-			attack_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
-
-			// 当たり判定を見えるようにする物
-			// 向いている方向に座標を設定（今はパンチに位置）
-			if (attack_anim_frame[ATTACK_SLIDE_ANIM] == now_hit_area->hit_anim_frame) {
-				m_hit_attack_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
-				m_hit_attack_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
-			}
-			else {
-				attack_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
-			}
-		}
-		break;
-	case ATTACK_SPECIAL_ANIM: // 必殺技 (弾を出す)
-		// カウントがからだったら
-		if (lifespan_count == NULL) {
-			lifespan_count = 240.0f; // カウントのセット
-		}
-		// 弾用の変数
-		if (lifespan_count >= 240.0f) {
-			bead_pos = new Vector3;
-			*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
-
-			// 座標の設定
-			bead_pos->set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 300, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
-			bead_r = 100.0f;        // 半径の設定
-		}
-		bead_pos->y--;
-		lifespan_count--; // 弾が消えるまでのカウントを進める
-		// カウントが一定にまで減るか、当たり判定があったら
-		if (lifespan_count <= 0 || bead_hit_judg) {
-			delete bead_pos; // 弾の解放
-			bead_pos = NULL;
-			lifespan_count = NULL; // 次のために空にしておく
-			m_attack_judge = false; // 攻撃を終わらせておく
-		}
-	}
-
-
+	
+	
 	// ステータスの更新処理
 	CharacterBase::Update_Status();
 }
-
-//---------------------------------------------------------------------------
-// プレイヤーの移動用当たり判定（壁擦り）
-//---------------------------------------------------------------------------
-void Player::Move_Hit_Update()
-{
-	CharacterBase::Move_Hit(&before_mov, &m_move_hit_box_size, &m_hit_other_pos, &m_hit_other_size);
-}
-
-//---------------------------------------------------------------------------
-// ステータス描画処理
-//---------------------------------------------------------------------------
-// CharacterBase::Draw_Status(); //ステータス描画処理
 
 //---------------------------------------------------------------------------
 // 描画処理
@@ -375,9 +284,9 @@ void Player::Draw()
 	// 当たり判定を見えるようにする物
 	// 向いている方向に座標を設定（今はパンチに位置）
 	//hit_areas[ATTACK_LONG_NORMAL_ANIM].hit_top = Vector3();
-	DrawCapsule3D(m_hit_attack_pos_top.VGet(), m_hit_attack_pos_under.VGet(), m_hit_attack_r, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
-
-
+	if (cd_hit_flag) {
+		DrawCapsule3D(m_hit_cd_pos_top.VGet(), m_hit_cd_pos_under.VGet(), m_hit_cd_r, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
+	}
 	// プレイヤーの描画設定
 	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z)); // 描画するプレイヤーモデルの座標の設定
 	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z))); // モデルの回転
@@ -410,4 +319,135 @@ void Player::Exit()
 	}
 	// アニメーション用変数たちのdelete
 	CharacterBase::Anim_Delete();
+}
+
+//---------------------------------------------------------------------------
+// プレイヤーの移動用当たり判定（壁擦り）
+//---------------------------------------------------------------------------
+void Player::Move_Hit_Update()
+{
+	CharacterBase::Move_Hit(&before_mov, &m_move_hit_box_size, &m_hit_other_pos, &m_hit_other_size);
+}
+
+//---------------------------------------------------------------------------
+// 攻撃用アップデート
+//---------------------------------------------------------------------------
+void Player::Attack_Update()
+{
+	switch (attack_anim_pick)
+	{
+	case ATTACK_LONG_NORMAL_ANIM: // 遠距離攻撃（弾を出す）
+		// カウントがからだったら
+		if (lifespan_count == NULL) {
+			lifespan_count = 120.0f; // カウントのセット
+		}
+		// 弾用の変数
+		if (lifespan_count >= 120.0f) {
+			bead_pos = new Vector3;
+			*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
+			bead_pos->y += 10.0f; // y座標をずらして空中に浮かべる
+			bead_r = 2.0f;        // 半径の設定
+		}
+		// 一旦前に飛ばす
+		bead_pos->x += 3 * sinf(TO_RADIAN(m_rot.y));
+		bead_pos->z += 3 * cosf(TO_RADIAN(m_rot.y));
+		lifespan_count--; // 弾が消えるまでのカウントを進める
+		// カウントが一定にまで減るか、当たり判定があったら
+		if (lifespan_count <= 0 || bead_hit_judg) {
+			delete bead_pos; // 弾の解放
+			bead_pos = NULL;
+			lifespan_count = NULL; // 次のために空にしておく
+			m_attack_judge = false; // 攻撃を終わらせておく
+		}
+		break;
+
+	case ATTACK_SHORT_NORMAL_1_ANIM: // 近距離普通攻撃１ (当たり判定の作成)
+		now_hit_area = &hit_areas[ATTACK_SHORT_NORMAL_1_HIT];
+		if (attack_anim_frame[ATTACK_SHORT_NORMAL_1_ANIM] == now_hit_area->hit_anim_frame) {
+			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
+			// 当たり判定を見えるようにする物
+			// 向いている方向に座標を設定（今はパンチに位置）
+			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
+			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
+			m_hit_cd_r = now_hit_area->hit_r;
+		}
+		else {
+			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
+		}
+		break;
+
+
+	case ATTACK_SLIDE_ANIM: // スライディング（当たり判定の作成）
+		now_hit_area = &hit_areas[ATTACK_SLIDE_ANIM]; // 構造体を触りやすくするために違う変数に入れておく
+		cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
+		// 当たり判定を見えるようにする物
+		// 向いている方向に座標を設定（今はパンチに位置）
+		if (attack_anim_frame[ATTACK_SLIDE_ANIM] == now_hit_area->hit_anim_frame) {
+			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
+			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
+		}
+		else {
+			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
+		}
+		break;
+	case ATTACK_SPECIAL_ANIM: // 必殺技 (弾を出す)
+		// カウントがからだったら
+		if (lifespan_count == NULL) {
+			lifespan_count = 240.0f; // カウントのセット
+		}
+		// 弾用の変数
+		if (lifespan_count >= 240.0f) {
+			bead_pos = new Vector3;
+			*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
+
+			// 座標の設定
+			bead_pos->set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 300, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
+			bead_r = 100.0f;        // 半径の設定
+		}
+		bead_pos->y--;
+		lifespan_count--; // 弾が消えるまでのカウントを進める
+		// カウントが一定にまで減るか、当たり判定があったら
+		if (lifespan_count <= 0 || bead_hit_judg) {
+			delete bead_pos; // 弾の解放
+			bead_pos = NULL;
+			lifespan_count = NULL; // 次のために空にしておく
+			m_attack_judge = false; // 攻撃を終わらせておく
+		}
+	}
+}
+
+//---------------------------------------------------------------------------
+// ダメージを食らった時用の関数
+//---------------------------------------------------------------------------
+void Player::Damage_Update()
+{
+}
+
+//---------------------------------------------------------------------------
+// 
+// ガードをした時用の関数
+//---------------------------------------------------------------------------
+void Player::Block_Update()
+{
+	switch (block_anim_pick)
+	{
+	case BLOCK_ANIM:
+		now_hit_area = &hit_areas[BLOCK_HIT];
+		if (attack_anim_frame[BLOCK_HIT] <= now_hit_area->hit_anim_frame) {
+			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
+			// 当たり判定を見えるようにする物
+			// 向いている方向に座標を設定（今はパンチに位置）
+			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
+			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
+			m_hit_cd_r = now_hit_area->hit_r;
+		}
+		else {
+			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
+		}
+		
+		break;
+	}
 }

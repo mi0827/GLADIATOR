@@ -33,7 +33,9 @@ public:
 	// カメラがどの方向にあるのかを情報として使う
 	void Update(Vector3* camera_rot) override;		//	更新処理
 	void Move_Hit_Update()override;
-	
+	void Attack_Update()override;   // 攻撃が行われた時に行う
+	void Damage_Update()override;	// ダメージを食らった時に行う
+	void Block_Update()override;	// ガードが行われた時に行う
 	void Draw()override;		//	描画処理
 	void Exit()override;		//	終了処理
 	//---------------

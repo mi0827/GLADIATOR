@@ -21,7 +21,9 @@ public:
 	// カメラがどの方向にあるのかを情報として使う
 	virtual void Update(Vector3* camera_rot) = 0;		// 更新処理
 	virtual void Move_Hit_Update() = 0; // 壁擦り用の関数
-
+	virtual void Attack_Update() = 0;   // 攻撃が行われた時に行う
+	virtual void Damage_Update() = 0;   // ダメージを食らった時に行う
+	virtual void Block_Update() = 0;    // ガードが行われた時に行う
 	virtual void Draw() = 0;		    // 描画処理
 	virtual void Exit() = 0;		    // 終了処理
 
@@ -64,22 +66,23 @@ public:
 	void Attack_Anim_New(int ATTACK_ANIM_MAX);
 	// 攻撃アニメーションの初期設定
 	void Attack_Anim_Init(int ATTACK_ANIM_MAX, int index);
-	// 攻撃にあったアニメーションさせる関数
+	// アクションにあったアニメーションつける関数（攻撃）
 	void Attack_Action(int index);
 
 	// ダメージアニメーション用の変数のNew用関数
 	void Damage_Anim_New(int DAMAGE_ANIM_MAX);
 	// ダメージアニメーションの初期設定
 	void Damage_Anim_Init(int DAMAGE_ANIM_MAX, int index);
-	// 攻撃にあったアニメーションさせる関数
+	// アクションにあったアニメーションつける関数（ダメージ）
 	void Damage_Action(int index);
 
 	// ガードアニメーション用の変数のNew用関数
 	void Block_Anim_New(int DAMAGE_ANIM_MAX);
 	// ガードアニメーションの初期設定
 	void Block_Anim_Init(int DAMAGE_ANIM_MAX, int index);
-	// 攻撃にあったアニメーションさせる関数
+	// アクションにあったアニメーションつける関数（ガード）
 	void Block_Action(int index);
+
 	// アニメーション変数をdeleteする用の関数
 	void Anim_Delete();
 
@@ -162,7 +165,7 @@ public:
 	//---------------------------------------------------------------------------
 	// 各キャラの当たり判定用変数
 	//---------------------------------------------------------------------------
-	bool attack_hit_flag; //< あたり判定を行てよいかのフラグ
+	bool cd_hit_flag; //< あたり判定を行てよいかのフラグ
 	
 
 	//---------------------------------------------------------------------------
@@ -180,7 +183,7 @@ public:
 	Vector3 m_hit_other_size;  // 当たり判定があった相手のサイズを入れる（立方体の場合）
 
 	//---------------------------------------------------------------------------
-	// カプセル型の当たり判定用変数
+	// キャラクターのカプセル型の当たり判定用変数
 	//---------------------------------------------------------------------------
 	Vector3 m_hit_body_pos_top;     // カプセルの上側 
 	Vector3 m_hit_body_pos_under;   // 下側
@@ -194,11 +197,11 @@ public:
 	Vector3 m_character_size;    // プレイヤーをボックスとしたときの大きさ(中心座標からPANEL_HAL)
 
 	//---------------------------------------------------------------------------
-	// 攻撃時の当たり判定用変数（カプセル）
+	// アクション時の当たり判定用変数（カプセル）
 	//---------------------------------------------------------------------------
-	Vector3 m_hit_attack_pos_top;     // カプセルの上側 
-	Vector3 m_hit_attack_pos_under;   // 下側
-	float   m_hit_attack_r = 0;       // 半径
+	Vector3 m_hit_cd_pos_top;     // カプセルの上側 
+	Vector3 m_hit_cd_pos_under;   // 下側
+	float   m_hit_cd_r = 0;       // 半径
 protected:
 	//---------------------------------------------------------------------------
 	// 移動に関する物

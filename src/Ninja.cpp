@@ -259,6 +259,18 @@ void  Ninja::Move_Hit_Update()
 	CharacterBase::Move_Hit(&before_mov, &m_move_hit_box_size, &m_hit_other_pos, &m_hit_other_size);
 }
 
+void Ninja::Attack_Update()
+{
+}
+
+void Ninja::Damage_Update()
+{
+}
+
+void Ninja::Block_Update()
+{
+}
+
 //---------------------------------------------------------------------------
 // ステータス描画処理
 //---------------------------------------------------------------------------

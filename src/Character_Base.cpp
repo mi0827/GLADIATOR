@@ -267,8 +267,8 @@ void CharacterBase::Damage_Anim_Init(int DAMAGE_ANIM_MAX, int index)
 	for (int i = 0; i < DAMAGE_ANIM_MAX; i++)
 	{
 		damage_anim_attach[i] = MV1AttachAnim(m_model, index, damage_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
-		damage_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, damage_anim_model[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		damage_anim_attach[i] = MV1DetachAnim(m_model, damage_anim_model[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+		damage_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, damage_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		damage_anim_attach[i] = MV1DetachAnim(m_model, damage_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
 }
 //---------------------------------------------------------------------------
@@ -307,8 +307,8 @@ void CharacterBase::Block_Anim_Init(int BLOCK_ANIM_MAX, int index)
 	for (int i = 0; i < BLOCK_ANIM_MAX; i++)
 	{
 		block_anim_attach[i] = MV1AttachAnim(m_model, index, block_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
-		block_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, block_anim_model[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		block_anim_attach[i] = MV1DetachAnim(m_model, block_anim_model[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+		block_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, block_anim_attach[i]);         // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		block_anim_attach[i] = MV1DetachAnim(m_model, block_anim_attach[i]);                    // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
 }
 //---------------------------------------------------------------------------
@@ -379,7 +379,7 @@ void CharacterBase::Attack_Hit_New(Vector3* pot_pos, Vector3* under_pos)
 	hit_pos_under;
 	// 当たり判定を見えるようにする物
 	// 向いている方向に座標を設定（今はパンチに位置）
-	m_hit_attack_pos_top.set(m_pos.x + pot_pos->x * sinf(TO_RADIAN(m_rot.y)), m_pos.y + pot_pos->y, m_pos.z + pot_pos->z * cosf(TO_RADIAN(m_rot.y)));
-	m_hit_attack_pos_under.set(m_pos.x + under_pos->x * sinf(TO_RADIAN(m_rot.y)), m_pos.y + under_pos->y, m_pos.z + under_pos->z * cosf(TO_RADIAN(m_rot.y)));
+	m_hit_cd_pos_top.set(m_pos.x + pot_pos->x * sinf(TO_RADIAN(m_rot.y)), m_pos.y + pot_pos->y, m_pos.z + pot_pos->z * cosf(TO_RADIAN(m_rot.y)));
+	m_hit_cd_pos_under.set(m_pos.x + under_pos->x * sinf(TO_RADIAN(m_rot.y)), m_pos.y + under_pos->y, m_pos.z + under_pos->z * cosf(TO_RADIAN(m_rot.y)));
 }
 
