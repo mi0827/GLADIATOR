@@ -28,7 +28,7 @@ Field field;
 void GameInit()
 {
 	players[0] = new Player;
-	players[1] = new Ninja;
+	players[1] = new Player;
 	// プレイヤー０にカメラ０をつける
 	// プレイヤー１にカメラ１をつける
 	camera[0] = new Camera;
@@ -65,13 +65,6 @@ void GameUpdate()
 		camera[i]->Update(&players[i]->m_pos);
 		
 	}
-	/*for (int i = 0; i < PLAYER_MAX; ++i)
-	{
-		for (int j = 0; j < field.obj_max; j++) {
-			camera[i]->Hit_Object(&field.objects[j]->m_cube_hit_pos, &field.objects[j]->m_cube_size_half);
-		}
-
-	}*/
 }
 
 // 描画処理
@@ -159,12 +152,14 @@ void Move_Hit()
 //---------------------------------------------------------------------------
 void Attack_Hit()
 {
+	// 当たり判定を取っていいときに当たっていたらダメージを入れる
 	if (players[0]->cd_hit_flag) {
 		if (HitCheck_Capsule_Capsule(players[0]->m_hit_cd_pos_top.VGet(), players[0]->m_hit_body_pos_under.VGet(), players[0]->m_hit_cd_r,
 			players[1]->m_hit_body_pos_top.VGet(), players[1]->m_hit_body_pos_under.VGet(), players[1]->m_hit_body_r))
 		{
-			players[1]->m_pos.z += 5;
-			players[1]->m_hp_count.x -= 50;//players[0]->attack_damage[players[0]->];
+			players[1]->m_hp_count.x -= players[0]->m_attack_damage[players[0]->attack_anim_pick]; // ダメージを入れる
+			players[1]->m_damage_judge = true;
+
 		}
 	}
 }

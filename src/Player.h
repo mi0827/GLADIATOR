@@ -107,16 +107,16 @@ public:
 
 public:
 	// それぞれの攻撃ダメージの設定
-	int attack_damage[ATTACK_ANIM_MAX]
+	const int attack_damage[ATTACK_ANIM_MAX]
 	{
 		20,  // 遠距離攻撃
-		30,  // 近距離攻撃１
+		100,  // 近距離攻撃１
 		30,  // 近距離攻撃２
 		10,  // スライディング
 		150, // 必殺技
 	};
-
-
+	// 引数で使用するために移す
+	const int* m_damage = attack_damage;
 
 	// 近接攻撃にの当たり判定用の構造体
 	struct Hit_capsule_data
@@ -143,7 +143,6 @@ public:
 		  3.0f,   // 半径
 		  0.0,    // フレーム
 	   },
-
 	};
 
 	Hit_capsule_data* now_hit_area;

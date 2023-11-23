@@ -31,9 +31,12 @@ Ninja::Ninja()
 	m_move_hit_box_size.set(PANEL_HALF - 0.1, PANEL_HALF - 0.1, PANEL_HALF - 0.1);    // パネルの大きさ
 
 	// 判断用、フラグ変数
-	m_move_judge = false;                              // 最初は動いてはいけない
-	m_attack_judge = false;                            // 攻撃していない
-	bead_hit_judg = false;                            // なににもあたってない
+	m_move_judge = false;     // 最初は動いてはいけない
+	bead_hit_judg = false;    // なににもあたってない
+	m_attack_judge = false;  // 攻撃していない
+	m_damage_judge = false;  // 今ダメージを受けているのか
+	m_block_judge = false;   // 今ガード中なのか
+
 
 	m_hp_pos.set(10, 32);         // HPバーの描画位置初期化
 	m_hp_count.set(HP_MAX, 32 + 30);   // HPの計算用の初期化
@@ -115,7 +118,7 @@ void Ninja::Update(Vector3* camera_rot)
 		}
 
 		// 移動をいまはやめておく
-        // 移動処理
+		// 移動処理
 		CharacterBase::Move_Player(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 
 

@@ -383,3 +383,23 @@ void CharacterBase::Attack_Hit_New(Vector3* pot_pos, Vector3* under_pos)
 	m_hit_cd_pos_under.set(m_pos.x + under_pos->x * sinf(TO_RADIAN(m_rot.y)), m_pos.y + under_pos->y, m_pos.z + under_pos->z * cosf(TO_RADIAN(m_rot.y)));
 }
 
+//---------------------------------------------------------------------------
+// 攻撃力を保存する用の関数
+//---------------------------------------------------------------------------
+void CharacterBase::Set_Attack_Damage(int ATTACK_ANIM_MAX, const int *attack_damage)
+{
+	m_attack_damage = new int[ATTACK_ANIM_MAX];
+	for (int i = 0; i < ATTACK_ANIM_MAX; i++) {
+		m_attack_damage[i] = attack_damage[i];
+	}
+}
+
+//---------------------------------------------------------------------------
+// delete用の関数
+//---------------------------------------------------------------------------
+void CharacterBase::Delete()
+{
+	Anim_Delete(); // アニメーションのdelete用の関数
+	delete[] m_attack_damage; // 攻撃ダメージの解放
+}
+

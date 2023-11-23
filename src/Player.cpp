@@ -64,6 +64,9 @@ void Player::Init(int player_num)
 		m_pos.set(0.0f, 0.0f, 500.0f);            // 初期座標の設定
 		m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 	}
+
+	// 攻撃力の設定
+	CharacterBase::Set_Attack_Damage(ATTACK_ANIM_MAX, m_damage);
 }
 
 //---------------------------------------------------------------------------
@@ -86,14 +89,14 @@ void Player::Animation_Init()
 	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/special_attack.mv1");               // 必殺技
 	CharacterBase::Attack_Anim_Init(ATTACK_ANIM_MAX, 1); //< 攻撃アニメーションの初期設定
 
-	//// ダメージアニメーションの初期化
-	//CharacterBase::Damage_Anim_New(DAMAGE_ANIM_MAX); //< ダメージアニメーションに必要な変数の配列を作る
-	//damage_anim_model[DAMAGE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/damage1.mv1");     //< ダメージ食らった時
-	//damage_anim_model[DAMAGE_ANIM_1] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/damage2.mv1");   //< ダメージ食らった時２
-	//damage_anim_model[DAMAGE_ANIM_2] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/SweepFall.mv1"); //< 吹き飛ぶアニメーション
-	//damage_anim_model[DAMAGE_ANIM_3] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/GettingUp.mv1"); //< 起き上がるアニメーション
-	//damage_anim_model[DAMAGE_ANIM_END] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/die.mv1");
-	//CharacterBase::Damage_Anim_Init(DAMAGE_ANIM_MAX, 1); //< ダメージアニメーションの初期化
+	// ダメージアニメーションの初期化
+	CharacterBase::Damage_Anim_New(DAMAGE_ANIM_MAX); //< ダメージアニメーションに必要な変数の配列を作る
+	damage_anim_model[DAMAGE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/damage1.mv1");     //< ダメージ食らった時
+	damage_anim_model[DAMAGE_ANIM_1] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/damage2.mv1");   //< ダメージ食らった時２
+	damage_anim_model[DAMAGE_ANIM_2] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/SweepFall.mv1"); //< 吹き飛ぶアニメーション
+	damage_anim_model[DAMAGE_ANIM_3] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/GettingUp.mv1"); //< 起き上がるアニメーション
+	damage_anim_model[DAMAGE_ANIM_END] = MV1LoadModel("Data/Model/Player/Animation/TakeDamage/die.mv1");
+	CharacterBase::Damage_Anim_Init(DAMAGE_ANIM_MAX, 1); //< ダメージアニメーションの初期化
 
 	// ガードアニメーションの設定
 	CharacterBase::Block_Anim_New(BLOCK_ANIM_MAX);
@@ -187,12 +190,21 @@ void Player::Update(Vector3* camera_rot)
 		//=================================
 		// または、Xボタンで遠距離攻撃
 		if (PushHitKey(KEY_INPUT_LSHIFT) || GetJoypadInputState(pad_no) & PAD_INPUT_3) {
-			action_mode = BLOCK_ACTION;           // モデルのアクションを攻撃に変更
-			block_anim_pick = BLOCK_ANIM;  // ガードアクションを設定
-			CharacterBase::Block_Action(1);        // 行いたい攻撃アニメーションをセット
+			action_mode = BLOCK_ACTION;           // モデルのアクションをガードに変更
+			block_anim_pick = BLOCK_ANIM;         // ガードアクションを設定
+			CharacterBase::Block_Action(1); // 行いたい攻撃アニメーションをセット
 			break;
 		}
 
+		//=================================
+		// ダメージのを食らったら
+		//=================================
+		if (m_damage_judge) {
+			action_mode = DAMAGE_ACTION;           // モデルのアクションをダメージに変更
+			damage_anim_pick = DAMAGE_ANIM;        // ダメージアクションを設定
+			CharacterBase::Damage_Action(1); // 行いたいダメージアニメーションをセット
+			break;
+		}
 
 		// アニメーション用のフレームカウントを進める
 		for (int i = 0; i < ANIM_MAX; ++i) {
@@ -255,6 +267,16 @@ void Player::Update(Vector3* camera_rot)
 
 
 	case DAMAGE_ACTION:
+		damage_anim_frame[damage_anim_pick]++;
+		if (damage_anim_frame[damage_anim_pick] >= damage_anim_total[damage_anim_pick]) { // アニメーションが一周したら
+			damage_anim_frame[damage_anim_pick] = 0.0f;
+			damage_anim_frame[damage_anim_pick] = MV1DetachAnim(m_model, damage_anim_attach[damage_anim_pick]);  // 攻撃アニメーションをディタッチしておく
+			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
+			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
+			m_damage_judge = false;
+			damage_anim_pick = DAMAGE_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
+		}
+		MV1SetAttachAnimTime(m_model, damage_anim_attach[damage_anim_pick], damage_anim_frame[damage_anim_pick]);
 		if (m_damage_judge) { // ダメージを食らったフラグが上がっていたら
 			Damage_Update();  // ダメージ用のアップデート
 		}
@@ -317,8 +339,8 @@ void Player::Exit()
 	if (!now_hit_area) {
 		now_hit_area = nullptr;
 	}
-	// アニメーション用変数たちのdelete
-	CharacterBase::Anim_Delete();
+	// baseでnewした変数たちのdelete
+	CharacterBase::Delete();
 }
 
 //---------------------------------------------------------------------------
