@@ -54,16 +54,18 @@ void GameInit()
 // 更新処理
 void GameUpdate()
 {
-	
+
 	Move_Hit(); // キャラクターの移動時のあたり判定実行用
-	Attack_Hit(); // 当たり判定を見る関数
+	if (Block_Hit()) {  // ガード当たり判定
+		Attack_Hit(); // 当たり判定を見る関数
+	}
 
 	// 各クラスの更新処理
 	field.Update();
 	for (int i = 0; i < PLAYER_MAX; ++i)
 	{
 		camera[i]->Update(&players[i]->m_pos);
-		
+
 	}
 }
 
@@ -74,7 +76,7 @@ void GameDraw()
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		camera[i]->Draw_Set();       // カメラの描画前設定（ ※ 描画処理の一番最初にすること）
 		field.Draw();
-		
+
 		// プレイヤ―を描画させるための配列
 		for (int j = 0; j < PLAYER_MAX; j++) {
 			players[j]->Draw();
@@ -100,7 +102,7 @@ void GameExit()
 		delete camera[i];
 		camera[i] = nullptr;
 	}
-	
+
 }
 
 
@@ -147,19 +149,40 @@ void Move_Hit()
 	}
 
 }
+
 //---------------------------------------------------------------------------
 // 攻撃のあたり判定をとる関数
 //---------------------------------------------------------------------------
 void Attack_Hit()
 {
 	// 当たり判定を取っていいときに当たっていたらダメージを入れる
-	if (players[0]->cd_hit_flag) {
+	// (当たり判定と攻撃フラグがたっていたら)
+	if (players[0]->cd_hit_flag && players[0]->m_attack_judge) {
 		if (HitCheck_Capsule_Capsule(players[0]->m_hit_cd_pos_top.VGet(), players[0]->m_hit_body_pos_under.VGet(), players[0]->m_hit_cd_r,
 			players[1]->m_hit_body_pos_top.VGet(), players[1]->m_hit_body_pos_under.VGet(), players[1]->m_hit_body_r))
 		{
 			players[1]->m_hp_count.x -= players[0]->m_attack_damage[players[0]->attack_anim_pick]; // ダメージを入れる
 			players[1]->m_damage_judge = true;
 
+		}
+	}
+}
+
+//---------------------------------------------------------------------------
+// ガードのあたり判定をとる関数
+//---------------------------------------------------------------------------
+bool Block_Hit()
+{
+	// 当たり判定を取っていいときに当たっていたらダメージを入れる
+	if (players[0]->cd_hit_flag && players[0]->m_block_judge) {
+		if (HitCheck_Capsule_Capsule(players[0]->m_hit_cd_pos_top.VGet(), players[0]->m_hit_body_pos_under.VGet(), players[0]->m_hit_cd_r,
+			players[1]->m_hit_body_pos_top.VGet(), players[1]->m_hit_body_pos_under.VGet(), players[1]->m_hit_body_r))
+		{
+			return true;
+		}
+		else
+		{
+			false;
 		}
 	}
 }
