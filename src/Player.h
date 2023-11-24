@@ -20,7 +20,7 @@ class Player : public CharacterBase
 private:
 
 	const float MOVE_SPEED = 3.0f; // 走る用のスピード
-
+	const float WARP = 50.0f;      // キャラクターのワープする量
 
 public:
 

@@ -56,16 +56,22 @@ void GameUpdate()
 {
 
 	Move_Hit(); // キャラクターの移動時のあたり判定実行用
-	if (Block_Hit()) {  // ガード当たり判定
-		Attack_Hit(); // 当たり判定を見る関数
-	}
+	
 
 	// 各クラスの更新処理
 	field.Update();
 	for (int i = 0; i < PLAYER_MAX; ++i)
 	{
 		camera[i]->Update(&players[i]->m_pos);
+	}
 
+	for (int i = 0; i < PLAYER_MAX; i++) {
+		if (players[i]->m_attack_judge) {  // ガード当たり判定
+			Attack_Hit(); // 当たり判定を見る関数
+		}
+		else if (players[i]->m_block_judge) {
+			Block_Hit();
+		}
 	}
 }
 
@@ -171,18 +177,19 @@ void Attack_Hit()
 //---------------------------------------------------------------------------
 // ガードのあたり判定をとる関数
 //---------------------------------------------------------------------------
-bool Block_Hit()
+void Block_Hit()
 {
 	// 当たり判定を取っていいときに当たっていたらダメージを入れる
 	if (players[0]->cd_hit_flag && players[0]->m_block_judge) {
 		if (HitCheck_Capsule_Capsule(players[0]->m_hit_cd_pos_top.VGet(), players[0]->m_hit_body_pos_under.VGet(), players[0]->m_hit_cd_r,
 			players[1]->m_hit_body_pos_top.VGet(), players[1]->m_hit_body_pos_under.VGet(), players[1]->m_hit_body_r))
 		{
-			return true;
+
 		}
-		else
+		else  // 当たり判定がガードのじゃなくボディーだった時
 		{
-			false;
+			players[1]->m_hp_count.x -= players[0]->m_attack_damage[players[0]->attack_anim_pick]; // ダメージを入れる
+			players[1]->m_damage_judge = true;
 		}
 	}
 }

@@ -171,6 +171,7 @@ void Player::Update(Vector3* camera_rot)
 			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(1);        // 行いたい攻撃アニメーションをセット
+		//	CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &WARP);
 			break;
 		}
 
@@ -228,6 +229,7 @@ void Player::Update(Vector3* camera_rot)
 		}
 		break;
 	case ATTACK_ACTION: // 攻撃アクション
+
 		// アニメーションの再生
 		// 攻撃アニメーション用のフレームカウントを進める
 		attack_anim_frame[attack_anim_pick]++;
@@ -246,7 +248,10 @@ void Player::Update(Vector3* camera_rot)
 			Attack_Update();  // 攻撃用のアップデート
 		}
 		break;
+
+
 	case BLOCK_ACTION:
+
 		// アニメーションの再生
 		// ガードアニメーション用のフレームカウントを進める
 		block_anim_frame[block_anim_pick]++;
@@ -267,6 +272,7 @@ void Player::Update(Vector3* camera_rot)
 
 
 	case DAMAGE_ACTION:
+
 		damage_anim_frame[damage_anim_pick]++;
 		if (damage_anim_frame[damage_anim_pick] >= damage_anim_total[damage_anim_pick]) { // アニメーションが一周したら
 			damage_anim_frame[damage_anim_pick] = 0.0f;
@@ -407,6 +413,7 @@ void Player::Attack_Update()
 		// 当たり判定を見えるようにする物
 		// 向いている方向に座標を設定（今はパンチに位置）
 		if (attack_anim_frame[ATTACK_SLIDE_ANIM] == now_hit_area->hit_anim_frame) {
+			
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
 		}

@@ -22,6 +22,6 @@ void Move_Hit();
 // 攻撃のあたり判定を行う関数
 void Attack_Hit();
 // ガードの当たり判定
-bool Block_Hit();
+void Block_Hit();
 // キャラクターのステータス描画処理
 void Draw_Status();
