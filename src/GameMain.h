@@ -20,8 +20,8 @@ void GameExit();
 void Move_Hit();
 
 // 攻撃のあたり判定を行う関数
-void Attack_Hit();
+void Attack_Hit(int player1, int player2);
 // ガードの当たり判定
-void Block_Hit();
+void Block_Hit(int player1, int player2);
 // キャラクターのステータス描画処理
 void Draw_Status();

@@ -249,7 +249,6 @@ void Player::Update(Vector3* camera_rot)
 		}
 		break;
 
-
 	case BLOCK_ACTION:
 
 		// アニメーションの再生
@@ -260,16 +259,14 @@ void Player::Update(Vector3* camera_rot)
 			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);  // 攻撃アニメーションをディタッチしておく
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
-
+			m_block_judge = false;
 			block_anim_pick = BLOCK_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
 		MV1SetAttachAnimTime(m_model, block_anim_attach[block_anim_pick], block_anim_frame[block_anim_pick]); // アニメーションの再生
 		if (m_block_judge) {  // ガードフラグが上がったら
 			Block_Update();   // ガード用のアップデート
-		}
-		
+		}	
 		break;
-
 
 	case DAMAGE_ACTION:
 
@@ -289,10 +286,6 @@ void Player::Update(Vector3* camera_rot)
 
 		break;
 	}
-
-
-	
-	
 	// ステータスの更新処理
 	CharacterBase::Update_Status();
 }
