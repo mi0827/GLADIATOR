@@ -159,6 +159,7 @@ void Player::Update(Vector3* camera_rot)
 		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(pad_no) & PAD_INPUT_4) {
 			action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
+			bead_hit_judg = false;
 			CharacterBase::Attack_Action(1);              // 行いたい攻撃アニメーションをセット
 			break;
 		}
@@ -171,7 +172,7 @@ void Player::Update(Vector3* camera_rot)
 			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(1);        // 行いたい攻撃アニメーションをセット
-		//	CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &WARP);
+			//	CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &WARP);
 			break;
 		}
 
@@ -265,7 +266,7 @@ void Player::Update(Vector3* camera_rot)
 		MV1SetAttachAnimTime(m_model, block_anim_attach[block_anim_pick], block_anim_frame[block_anim_pick]); // アニメーションの再生
 		if (m_block_judge) {  // ガードフラグが上がったら
 			Block_Update();   // ガード用のアップデート
-		}	
+		}
 		break;
 
 	case DAMAGE_ACTION:
@@ -296,8 +297,8 @@ void Player::Update(Vector3* camera_rot)
 void Player::Draw()
 {
 	// 玉を描画する(今だけ)
-	if (bead_pos != NULL) {
-		DrawSphere3D(bead_pos->VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
+	if (!bead_hit_judg) {
+		DrawSphere3D(bead_pos.VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 	}
 	// プレイヤー自身の当たり判定
 	DrawCapsule3D(m_hit_body_pos_top.VGet(), m_hit_body_pos_under.VGet(), m_hit_body_r, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), FALSE);
@@ -330,10 +331,6 @@ void Player::Exit()
 		MV1DeleteModel(attack_anim_model[i]);
 	}
 
-	// 弾が解放されていなかったら解放する
-	if (bead_pos != NULL) {
-		delete bead_pos;
-	}
 	// 攻撃用あたり判定が解放されていなかったら
 	if (!now_hit_area) {
 		now_hit_area = nullptr;
@@ -359,26 +356,39 @@ void Player::Attack_Update()
 	{
 	case ATTACK_LONG_NORMAL_ANIM: // 遠距離攻撃（弾を出す）
 		// カウントがからだったら
+	
 		if (lifespan_count == NULL) {
 			lifespan_count = 120.0f; // カウントのセット
 		}
 		// 弾用の変数
 		if (lifespan_count >= 120.0f) {
-			bead_pos = new Vector3;
-			*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
-			bead_pos->y += 10.0f; // y座標をずらして空中に浮かべる
+
+			bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
+			bead_pos.y += 10.0f; // y座標をずらして空中に浮かべる
 			bead_r = 2.0f;        // 半径の設定
 		}
 		// 一旦前に飛ばす
-		bead_pos->x += 3 * sinf(TO_RADIAN(m_rot.y));
-		bead_pos->z += 3 * cosf(TO_RADIAN(m_rot.y));
+		bead_pos.x += 3 * sinf(TO_RADIAN(m_rot.y));
+		bead_pos.z += 3 * cosf(TO_RADIAN(m_rot.y));
 		lifespan_count--; // 弾が消えるまでのカウントを進める
+
+		now_hit_area = &hit_areas[THROW_ATTACK_1_HIT];
+		if (attack_anim_frame[THROW_ATTACK_1_HIT] == now_hit_area->hit_anim_frame) {
+			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
+			// 当たり判定を見えるようにする物
+			// 向いている方向に座標を設定（今はパンチに位置）
+			m_hit_cd_pos_top.set(bead_pos);
+			m_hit_cd_pos_under.set(bead_pos);
+			m_hit_cd_r = now_hit_area->hit_r;
+		}
+
 		// カウントが一定にまで減るか、当たり判定があったら
 		if (lifespan_count <= 0 || bead_hit_judg) {
-			delete bead_pos; // 弾の解放
-			bead_pos = NULL;
-			lifespan_count = NULL; // 次のために空にしておく
+			lifespan_count = NULL;  // 次のために空にしておく
+			bead_hit_judg = true;   // 弾が何かに当たったか消えたので判定をリセット
 			m_attack_judge = false; // 攻撃を終わらせておく
+			cd_hit_flag = false;    //< 当たり判定をしてほしくないのでフラグを下す
 		}
 		break;
 
@@ -406,7 +416,7 @@ void Player::Attack_Update()
 		// 当たり判定を見えるようにする物
 		// 向いている方向に座標を設定（今はパンチに位置）
 		if (attack_anim_frame[ATTACK_SLIDE_ANIM] == now_hit_area->hit_anim_frame) {
-			
+
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
 		}
@@ -421,20 +431,19 @@ void Player::Attack_Update()
 		}
 		// 弾用の変数
 		if (lifespan_count >= 240.0f) {
-			bead_pos = new Vector3;
-			*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
+
+			bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
 
 			// 座標の設定
-			bead_pos->set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 300, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
+			bead_pos.set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 300, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
 			bead_r = 100.0f;        // 半径の設定
 		}
-		bead_pos->y--;
+		bead_pos.y--;
 		lifespan_count--; // 弾が消えるまでのカウントを進める
 		// カウントが一定にまで減るか、当たり判定があったら
 		if (lifespan_count <= 0 || bead_hit_judg) {
-			delete bead_pos; // 弾の解放
-			bead_pos = NULL;
 			lifespan_count = NULL; // 次のために空にしておく
+			bead_hit_judg = false;  // 弾が何かに当たったか消えたので判定をリセット
 			m_attack_judge = false; // 攻撃を終わらせておく
 		}
 	}
@@ -469,7 +478,7 @@ void Player::Block_Update()
 		else {
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
 		}
-		
+
 		break;
 	}
 }

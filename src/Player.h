@@ -94,6 +94,7 @@ private:
 	// アクション用の当たり判定用の列挙体
 	enum HIT_ACTION
 	{
+		THROW_ATTACK_1_HIT,    // 遠距離普通攻撃
 		ATTACK_SHORT_NORMAL_1_HIT, // 近距離普通攻撃１用の当たり判定
 		BLOCK_HIT,                 // ブロック用の当たり判定
 
@@ -129,7 +130,13 @@ public:
 
 	Hit_capsule_data hit_areas[HIT_ACTION_MAX] =
 	{
-
+		// 投げアクション１
+		{
+			Vector3(8,   13, 8), // トップ
+		  Vector3(6, 12.7, 6), // アンダー
+		  1.0f,   // 半径
+		  0.000, // フレーム}	
+		},
 		// 近距離攻撃１
 	   {
 		  Vector3(8,   13, 8), // トップ
@@ -149,10 +156,6 @@ public:
 
 
 
-	// 弾が何かにあたったか
-	bool bead_hit_judg;
-	// 弾変数
-	Vector3* bead_pos = 0; // 座標
-	float bead_r = 0;      // 半径
+
 
 };
