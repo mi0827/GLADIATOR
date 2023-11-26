@@ -76,9 +76,11 @@ void GameUpdate()
 		}
 
 
-		if (players[player2]->m_block_judge && !players[player2]->m_attack_judge) {
-			Block_Hit(player2,player1);
-		}else if (players[player1]->m_attack_judge && !players[player1]->m_block_judge) {  // 攻撃
+		if (players[player1]->block_flag && !players[player1]->attack_flag) {
+			Block_Hit(player1, player2);
+		}
+
+		if (players[player1]->attack_flag && !players[player1]->block_flag) {  // 攻撃
 			Attack_Hit(player1, player2); // 当たり判定を見る関数
 		}
 
@@ -169,16 +171,16 @@ void Move_Hit()
 //---------------------------------------------------------------------------
 // 攻撃のあたり判定をとる関数
 //---------------------------------------------------------------------------
-void Attack_Hit(int player1,int player2)
+void Attack_Hit(int player1, int player2)
 {
 	// 当たり判定を取っていいときに当たっていたらダメージを入れる
 	// (当たり判定と攻撃フラグがたっていたら)
-	if (players[player1]->cd_hit_flag && players[player1]->m_attack_judge) {
+	if (players[player1]->cd_hit_flag && players[player1]->attack_flag) {
 		if (HitCheck_Capsule_Capsule(players[player1]->m_hit_cd_pos_top.VGet(), players[player1]->m_hit_cd_pos_under.VGet(), players[player1]->m_hit_cd_r,
 			players[player2]->m_hit_body_pos_top.VGet(), players[player2]->m_hit_body_pos_under.VGet(), players[player2]->m_hit_body_r))
 		{
 			players[player2]->m_hp_count.x -= players[player1]->m_attack_damage[players[player1]->attack_anim_pick]; // ダメージを入れる
-			players[player2]->m_damage_judge = true;
+			players[player2]->damage_flag = true;
 
 		}
 	}
@@ -191,19 +193,19 @@ void Block_Hit(int player1, int player2)
 {
 	// 当たり判定を取っていいときに当たっていたらダメージを入れる
 	// プレイヤー０の攻撃判定とプレイヤー1のガードの判定
-	if (players[player1]->cd_hit_flag && players[player1]->m_block_judge) {
-		if (HitCheck_Capsule_Capsule(players[player1]->m_hit_cd_pos_top.VGet(), players[player1]->m_hit_cd_pos_top.VGet(), players[player1]->m_hit_cd_r,
+	if (players[player1]->cd_hit_flag && players[player1]->block_flag) {
+		if (HitCheck_Capsule_Capsule(players[player1]->m_block_top.VGet(), players[player1]->m_block_under.VGet(), players[player1]->m_block_r,
 			players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_r))
 		{
 
 		}
-		//else// 当たり判定がガードのじゃなくボディーだった時 
-		//	if (HitCheck_Capsule_Capsule(players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_r,
-		//		players[player1]->m_hit_body_pos_top.VGet(), players[player1]->m_hit_body_pos_under.VGet(), players[player1]->m_hit_body_r))
-		//	{
-		//		players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
-		//		players[player1]->m_damage_judge = true;
-		//	}
+		// 当たり判定がガードのじゃなくボディーだった時 
+		else if (HitCheck_Capsule_Capsule(players[player1]->m_hit_body_pos_top.VGet(), players[player1]->m_hit_body_pos_under.VGet(), players[player1]->m_hit_body_r,
+			players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_r))
+		{
+			players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
+			players[player1]->damage_flag = true;
+		}
 	}
 }
 

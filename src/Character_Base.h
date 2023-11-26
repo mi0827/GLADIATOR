@@ -1,14 +1,16 @@
 #pragma once
 
 #include "Base.h"
-
+#include "InputPad.h"
 // キャラクタークラス
 // Baseクラスを継承
 class CharacterBase : public Base
 {
 public:
 
-#define HP_MAX 350 // HPの最大値
+#define HP_MAX 350          // HPの最大値
+#define SKILL_POINT_MAX 150 // スキルポイントの最大値
+#define SP_POINT_MAX 200    // SPポイントの最大値
 #define PUNCH_MAX 2
 	//---------------
 	// 関数の定義
@@ -20,12 +22,14 @@ public:
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
 	virtual void Update(Vector3* camera_rot) = 0;		// 更新処理
-	virtual void Move_Hit_Update() = 0; // 壁擦り用の関数
-	virtual void Attack_Update() = 0;   // 攻撃が行われた時に行う
-	virtual void Damage_Update() = 0;   // ダメージを食らった時に行う
-	virtual void Block_Update() = 0;    // ガードが行われた時に行う
-	virtual void Draw() = 0;		    // 描画処理
-	virtual void Exit() = 0;		    // 終了処理
+	virtual void Draw() = 0;		               // 描画処理
+	virtual void Exit() = 0;		               // 終了処理
+	virtual void Move_Hit_Update() = 0;            // 壁擦り用の関数
+	virtual void Attack_PressButton_Update() = 0;  // アクションに関するボタン押し用の関数（見やすくするための関数）
+	virtual void Attack_Update() = 0;              // 攻撃が行われた時に行う
+	virtual void Damage_Update() = 0;              // ダメージを食らった時に行う
+	virtual void Block_Update() = 0;               // ガードが行われた時に行う
+	
 
 	void Update_Status();   // ステータス更新処理
 	void Draw_Status();     // ステータス描画用関数
@@ -86,6 +90,8 @@ public:
 	// アニメーション変数をdeleteする用の関数
 	void Anim_Delete();
 
+	
+
 
 	// 当たり判定のあったとき当たった相手の情報をとってくる関数
 	void Get_other(float* hit_other_x, float* hit_other_z, float* hit_other_r); // カプセル、円
@@ -117,6 +123,7 @@ public:
 	{
 		pad_no = no;
 	}
+
 
 protected:
 
@@ -180,10 +187,11 @@ public:
 	//---------------------------------------------------------------------------
 	// 各アクション判断用変数
 	//---------------------------------------------------------------------------
-	bool m_attack_judge;       // 今攻撃中なのかの判断 
-	bool m_damage_judge;       // 今ダメージを受けているのか
-	bool m_block_judge;        // 今ガード中なのか
-	bool bead_hit_judg;        // 弾が何かにあたったか
+	bool action_flag;          // アクション（何かのアニメーション）されているかのフラグ
+	bool attack_flag;       // 今攻撃中なのかの判断 
+	bool damage_flag;       // 今ダメージを受けているのか
+	bool block_flag;        // 今ガード中なのか
+	bool bead_hit_flag;        // 弾が何かにあたったか
 
 	//---------------------------------------------------------------------------
 	// 当たり判定があったときの各処理の判断用変数
@@ -239,11 +247,16 @@ public:
 	// キャラクターのステータス用の変数
 	//---------------------------------------------------------------------------
 	// キャラクターの体力
-	Vector2 m_hp_pos;     // 描画座標
-	Vector2 m_hp_count;   // 計算用
+	Vector2 m_hp_pos;      // 描画座標
+	Vector2 m_hp_count;    // 計算用
+	Vector2 m_skill_pos;   // 描画座標
+	Vector2 m_skill_count; // 計算用
+	Vector2 m_sp_pos;      // 描画座標
+	Vector2 m_sp_count;    // 計算用
+
 	int* m_attack_damage; // 攻撃力
-	int* skill_cooldown;  // スキル使用後のクールダウン
-	int* sp_point;        // 必殺技のSP
+	bool skill_cooldown;  // スキル使用後のクールダウン
+	bool SP;              // 必殺技のSP
 	// ↑上の二つの変数の上限は各キャラのクラスで定義する
 	//---------------------------------------------------------------------------
 	// 攻撃時の当たり判定用変数

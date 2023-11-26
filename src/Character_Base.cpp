@@ -20,6 +20,17 @@ void CharacterBase::Update_Status()
 	if (0 >= m_hp_count.x) {
 		m_hp_count.x = 0;
 	}
+	// スキルクールダウンのカウントを増やす
+	m_skill_count.x++;
+	if (m_skill_count.x >= SKILL_POINT_MAX) {
+		m_skill_count.x = SKILL_POINT_MAX;
+	}
+	// SPバーのカウントを増やす
+	m_sp_count.x++;
+	if (m_sp_count.x >= SP_POINT_MAX) {
+		m_sp_count.x = SP_POINT_MAX;
+	}
+
 }
 
 //---------------------------------------------------------------------------
@@ -30,6 +41,12 @@ void CharacterBase::Draw_Status()
 	// HPバーの描画
 	DrawBox(m_hp_pos.x, m_hp_pos.y, m_hp_pos.x + m_hp_count.x, m_hp_count.y, GetColor(0, 255, 0), TRUE);
 	DrawLineBox(m_hp_pos.x, m_hp_pos.y, HP_MAX + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));
+	// スキルクールダウンバーの描画
+	DrawBox(m_skill_pos.x, m_skill_pos.y, m_skill_pos.x + m_skill_count.x, m_skill_count.y, GetColor(0, 255, 0), TRUE);
+	DrawLineBox(m_skill_pos.x, m_skill_pos.y, m_skill_count.x + m_skill_pos.x, m_skill_count.y, GetColor(255, 255, 255));
+	// SPバーの描画
+	DrawBox(m_sp_pos.x, m_sp_pos.y, m_sp_pos.x + m_sp_count.x, m_sp_count.y, GetColor(0, 255, 0), TRUE);
+	DrawLineBox(m_sp_pos.x, m_sp_pos.y, m_sp_count.x + m_sp_pos.x, m_sp_count.y, GetColor(255, 255, 255));
 }
 
 //---------------------------------------------------------------------------
@@ -238,7 +255,7 @@ void CharacterBase::Attack_Action(int index)
 {
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
 	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, index, attack_anim_model[attack_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
-	m_attack_judge = true; // 攻撃中にする
+	attack_flag = true; // 攻撃中にする
 }
 
 
@@ -278,7 +295,7 @@ void CharacterBase::Damage_Action(int index)
 {
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
 	damage_anim_attach[damage_anim_pick] = MV1AttachAnim(m_model, index, damage_anim_model[damage_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
-	m_damage_judge = true; // 攻撃中にする
+	damage_flag = true; // 攻撃中にする
 }
 
 
@@ -318,7 +335,7 @@ void CharacterBase::Block_Action(int index)
 {
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
 	block_anim_attach[block_anim_pick] = MV1AttachAnim(m_model, index, block_anim_model[block_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
-	m_block_judge = true; // 攻撃中にする
+	block_flag = true; // 攻撃中にする
 }
 
 

@@ -33,9 +33,9 @@ Ninja::Ninja()
 	// 判断用、フラグ変数
 	m_move_judge = false;     // 最初は動いてはいけない
 	bead_hit_judg = false;    // なににもあたってない
-	m_attack_judge = false;  // 攻撃していない
-	m_damage_judge = false;  // 今ダメージを受けているのか
-	m_block_judge = false;   // 今ガード中なのか
+	attack_flag = false;  // 攻撃していない
+	damage_flag = false;  // 今ダメージを受けているのか
+	block_flag = false;   // 今ガード中なのか
 
 
 	m_hp_pos.set(10, 32);         // HPバーの描画位置初期化
@@ -222,14 +222,14 @@ void Ninja::Update(Vector3* camera_rot)
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 0, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
 			// 攻撃が終わったのでこうげきしていないようにする
-			// m_attack_judge = false;
+			// attack_hlag = false;
 		}
 		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
 		break;
 	}
 
 
-	if (m_attack_judge) {
+	if (attack_flag) {
 
 		// 弾用の変数
 		if (lifespan_count >= 120.0f) {
@@ -247,7 +247,7 @@ void Ninja::Update(Vector3* camera_rot)
 			delete bead_pos; // 弾の解放
 			bead_pos = NULL;
 			lifespan_count = 120.0f; // カウントのリセット
-			m_attack_judge = false; // 攻撃を終わらせておく
+			attack_flag = false; // 攻撃を終わらせておく
 		}
 	}
 	// ステータスの更新処理
@@ -260,6 +260,10 @@ void Ninja::Update(Vector3* camera_rot)
 void  Ninja::Move_Hit_Update()
 {
 	CharacterBase::Move_Hit(&before_mov, &m_move_hit_box_size, &m_hit_other_pos, &m_hit_other_size);
+}
+
+void Ninja::Attack_PressButton_Update()
+{
 }
 
 void Ninja::Attack_Update()

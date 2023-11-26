@@ -1,7 +1,7 @@
 #include "WinMain.h"
 #include "GameMain.h"
 #include "Player.h"
-
+#include "InputPad.h"
 
 
 #define PANEL_SIZE	5.0f              // パネルの大きさ
@@ -39,11 +39,18 @@ Player::Player()
 
 	// 判断用、フラグ変数
 	m_move_judge = false;                              // 最初は動いてはいけない
-	m_attack_judge = false;                            // 攻撃していない
-	bead_hit_judg = false;                             // なににもあたってない
+	attack_flag = false;                            // 攻撃していない
+	bead_hit_flag = false;                             // なににもあたってない
 
-	m_hp_pos.set(10, 32);         // HPバーの描画位置初期化
+	// HP
+	m_hp_pos.set(10, 32);           // HPバーの描画位置初期化
 	m_hp_count.set(HP_MAX, 32 + 30);   // HPの計算用の初期化
+	// スキル
+	m_skill_pos.set(10, 72);			    // スキルのクールダウンバーの描画位置初期化
+	m_skill_count.set(0, m_skill_pos.y + 30);// スキルのクールダウンバーの計算用の初期化
+	// SP
+	m_sp_pos.set(10, 112);		   	 // SPのクールダウンバーの描画位置初期化
+	m_sp_count.set(0, m_sp_pos.y + 30); // SPのクールダウンバーの計算用の初期化
 }
 
 //---------------------------------------------------------------------------
@@ -110,7 +117,7 @@ void Player::Animation_Init()
 void Player::Update(Vector3* camera_rot)
 {
 	before_mov = m_pos; // 移動される前に入れ替えとく
-
+	action_flag = false; // アクションフラグを下す
 	// アクションモードの判断してそれに合った操作をするようにする
 	switch (action_mode)
 	{
@@ -140,68 +147,16 @@ void Player::Update(Vector3* camera_rot)
 			}
 		}
 
-		//=================================
-		// 近距離攻撃
-		//=================================
-		// マウスの左クリックまたはAボタンで近距離攻撃
-		if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(pad_no) & PAD_INPUT_1) {
-			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
-			attack_anim_pick = ATTACK_SHORT_NORMAL_1_ANIM;  // 近距離攻撃アクションを設定
-			CharacterBase::Attack_Action(1);                 // 行いたい攻撃アニメーションをセット
-
-			break;
+		Attack_PressButton_Update(); // アクションに関するボタン押し用の関数（見やすくするための関数）
+		if (action_flag) { // アクションフラグが上がっていたら
+			break;         // 後の処理を飛ばす
 		}
 
-		//=================================
-		// 遠距離攻撃
-		//=================================
-		// マウスの右クリック、または、Yボタンで遠距離攻撃
-		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(pad_no) & PAD_INPUT_4) {
-			action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
-			attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
-			bead_hit_judg = false;
-			CharacterBase::Attack_Action(1);              // 行いたい攻撃アニメーションをセット
-			break;
-		}
-
-		//=================================
-		// スライディング
-		//=================================
-		// スペースキークリック、または、Bボタンで遠距離攻撃
-		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(pad_no) & PAD_INPUT_2) {
-			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
-			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
-			CharacterBase::Attack_Action(1);        // 行いたい攻撃アニメーションをセット
-			//	CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &WARP);
-			break;
-		}
-
-		//=================================
-		// 必殺技
-		//=================================
-		// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
-		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(pad_no) & PAD_INPUT_6 && GetJoypadInputState(pad_no) & PAD_INPUT_5) {
-			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
-			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 必殺攻撃アクションを設定
-			CharacterBase::Attack_Action(1);   // 行いたい攻撃アニメーションをセット
-			break;
-		}
-
-		//=================================
-		// ガード
-		//=================================
-		// または、Xボタンで遠距離攻撃
-		if (PushHitKey(KEY_INPUT_LSHIFT) || GetJoypadInputState(pad_no) & PAD_INPUT_3) {
-			action_mode = BLOCK_ACTION;           // モデルのアクションをガードに変更
-			block_anim_pick = BLOCK_ANIM;         // ガードアクションを設定
-			CharacterBase::Block_Action(1); // 行いたい攻撃アニメーションをセット
-			break;
-		}
 
 		//=================================
 		// ダメージのを食らったら
 		//=================================
-		if (m_damage_judge) {
+		if (damage_flag) {
 			action_mode = DAMAGE_ACTION;           // モデルのアクションをダメージに変更
 			damage_anim_pick = DAMAGE_ANIM;        // ダメージアクションを設定
 			CharacterBase::Damage_Action(1); // 行いたいダメージアニメーションをセット
@@ -240,12 +195,12 @@ void Player::Update(Vector3* camera_rot)
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
 			// 攻撃が終わったのでこうげきしていないようにする
-			//m_attack_judge = false;
+			//attack_hlag = false;
 			attack_anim_pick = ATTACK_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
 		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
 
-		if (m_attack_judge) { // 攻撃フラグが上がっていたら
+		if (attack_flag) { // 攻撃フラグが上がっていたら
 			Attack_Update();  // 攻撃用のアップデート
 		}
 		break;
@@ -260,11 +215,11 @@ void Player::Update(Vector3* camera_rot)
 			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);  // 攻撃アニメーションをディタッチしておく
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
-			m_block_judge = false;
+			block_flag = false;
 			block_anim_pick = BLOCK_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
 		MV1SetAttachAnimTime(m_model, block_anim_attach[block_anim_pick], block_anim_frame[block_anim_pick]); // アニメーションの再生
-		if (m_block_judge) {  // ガードフラグが上がったら
+		if (block_flag) {  // ガードフラグが上がったら
 			Block_Update();   // ガード用のアップデート
 		}
 		break;
@@ -277,11 +232,11 @@ void Player::Update(Vector3* camera_rot)
 			damage_anim_frame[damage_anim_pick] = MV1DetachAnim(m_model, damage_anim_attach[damage_anim_pick]);  // 攻撃アニメーションをディタッチしておく
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたからダメージアニメーションから出る
-			m_damage_judge = false;         // ダメージアニメーションフラグを下す
+			damage_flag = false;         // ダメージアニメーションフラグを下す
 			damage_anim_pick = DAMAGE_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
 		MV1SetAttachAnimTime(m_model, damage_anim_attach[damage_anim_pick], damage_anim_frame[damage_anim_pick]);
-		if (m_damage_judge) { // ダメージを食らったフラグが上がっていたら
+		if (damage_flag) { // ダメージを食らったフラグが上がっていたら
 			Damage_Update();  // ダメージ用のアップデート
 		}
 
@@ -297,7 +252,7 @@ void Player::Update(Vector3* camera_rot)
 void Player::Draw()
 {
 	// 玉を描画する(今だけ)
-	if (!bead_hit_judg) {
+	if (!bead_hit_flag) {
 		DrawSphere3D(bead_pos.VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 	}
 	// プレイヤー自身の当たり判定
@@ -306,8 +261,11 @@ void Player::Draw()
 	// 当たり判定を見えるようにする物
 	// 向いている方向に座標を設定（今はパンチに位置）
 	//hit_areas[ATTACK_LONG_NORMAL_ANIM].hit_top = Vector3();
-	if (cd_hit_flag) {
+	if (cd_hit_flag && attack_flag) {
 		DrawCapsule3D(m_hit_cd_pos_top.VGet(), m_hit_cd_pos_under.VGet(), m_hit_cd_r, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
+	}
+	if (cd_hit_flag && block_flag) {
+		DrawCapsule3D(m_block_top.VGet(), m_block_under.VGet(), m_block_r, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
 	}
 	// プレイヤーの描画設定
 	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z)); // 描画するプレイヤーモデルの座標の設定
@@ -348,6 +306,72 @@ void Player::Move_Hit_Update()
 }
 
 //---------------------------------------------------------------------------
+// アクションに関するボタン押し用の関数（見やすくするための関数）
+//---------------------------------------------------------------------------
+void Player::Attack_PressButton_Update()
+{
+	//=================================
+	// 近距離攻撃
+	//=================================
+	// マウスの左クリックまたはAボタンで近距離攻撃
+	if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(pad_no) & PAD_INPUT_1) {
+		action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
+		attack_anim_pick = ATTACK_SHORT_NORMAL_1_ANIM;  // 近距離攻撃アクションを設定
+		CharacterBase::Attack_Action(1);          // 行いたい攻撃アニメーションをセット	
+		action_flag = true;                             // アクションフラグを上げる
+	}
+
+	//=================================
+	// 遠距離攻撃
+	//=================================
+	// マウスの右クリック、または、Yボタンで遠距離攻撃
+	if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(pad_no) & PAD_INPUT_4) {
+		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
+		attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
+		bead_hit_flag = false;
+		CharacterBase::Attack_Action(1);       // 行いたい攻撃アニメーションをセット	
+		action_flag = true;                          // アクションフラグを上げる
+	}
+
+	//=================================
+	// スライディング
+	//=================================
+	// スペースキークリック、または、Bボタンで遠距離攻撃
+	if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(pad_no) & PAD_INPUT_2) {
+		action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
+		attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
+		CharacterBase::Attack_Action(1);        // 行いたい攻撃アニメーションをセット
+		//	CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &WARP);
+		action_flag = true;                          // アクションフラグを上げる
+
+	}
+
+	//=================================
+	// 必殺技
+	//=================================
+	// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
+	if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(pad_no) & PAD_INPUT_6 && GetJoypadInputState(pad_no) & PAD_INPUT_5) {
+		action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
+		attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 必殺攻撃アクションを設定
+		CharacterBase::Attack_Action(1);   // 行いたい攻撃アニメーションをセット
+		action_flag = true;                      // アクションフラグを上げる
+
+	}
+
+	//=================================
+	// ガード
+	//=================================
+	// または、Xボタンで遠距離攻撃
+	if (PushHitKey(KEY_INPUT_LSHIFT) || GetJoypadInputState(pad_no) & PAD_INPUT_3) {
+		action_mode = BLOCK_ACTION;           // モデルのアクションをガードに変更
+		block_anim_pick = BLOCK_ANIM;         // ガードアクションを設定
+		CharacterBase::Block_Action(1); // 行いたい攻撃アニメーションをセット
+		action_flag = true;                   // アクションフラグを上げる
+	}
+
+}
+
+//---------------------------------------------------------------------------
 // 攻撃用アップデート
 //---------------------------------------------------------------------------
 void Player::Attack_Update()
@@ -356,7 +380,7 @@ void Player::Attack_Update()
 	{
 	case ATTACK_LONG_NORMAL_ANIM: // 遠距離攻撃（弾を出す）
 		// カウントがからだったら
-	
+
 		if (lifespan_count == NULL) {
 			lifespan_count = 120.0f; // カウントのセット
 		}
@@ -384,10 +408,10 @@ void Player::Attack_Update()
 		}
 
 		// カウントが一定にまで減るか、当たり判定があったら
-		if (lifespan_count <= 0 || bead_hit_judg) {
+		if (lifespan_count <= 0 || bead_hit_flag) {
 			lifespan_count = NULL;  // 次のために空にしておく
-			bead_hit_judg = true;   // 弾が何かに当たったか消えたので判定をリセット
-			m_attack_judge = false; // 攻撃を終わらせておく
+			bead_hit_flag = true;   // 弾が何かに当たったか消えたので判定をリセット
+			attack_flag = false; // 攻撃を終わらせておく
 			cd_hit_flag = false;    //< 当たり判定をしてほしくないのでフラグを下す
 		}
 		break;
@@ -441,10 +465,10 @@ void Player::Attack_Update()
 		bead_pos.y--;
 		lifespan_count--; // 弾が消えるまでのカウントを進める
 		// カウントが一定にまで減るか、当たり判定があったら
-		if (lifespan_count <= 0 || bead_hit_judg) {
+		if (lifespan_count <= 0 || bead_hit_flag) {
 			lifespan_count = NULL; // 次のために空にしておく
-			bead_hit_judg = false;  // 弾が何かに当たったか消えたので判定をリセット
-			m_attack_judge = false; // 攻撃を終わらせておく
+			bead_hit_flag = false;  // 弾が何かに当たったか消えたので判定をリセット
+			attack_flag = false; // 攻撃を終わらせておく
 		}
 	}
 }
@@ -471,9 +495,9 @@ void Player::Block_Update()
 
 			// 当たり判定を見えるようにする物
 			// 向いている方向に座標を設定（今はパンチに位置）
-			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
-			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
-			m_hit_cd_r = now_hit_area->hit_r;
+			m_block_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
+			m_block_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
+			m_block_r = now_hit_area->hit_r;
 		}
 		else {
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
