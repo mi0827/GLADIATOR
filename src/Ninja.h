@@ -33,7 +33,7 @@ public:
 	// カメラがどの方向にあるのかを情報として使う
 	void Update(Vector3* camera_rot) override;		//	更新処理
 	void Move_Hit_Update()override;           // プレイヤーの移動用当たり判定更新処理（壁擦り）
-	void Attack_PressButton_Update()override; // アクションに関するボタン押し用の関数（見やすくするための関数）
+	void Attack_PressButton_Update(Vector3* camera_rot)override; // アクションに関するボタン押し用の関数（見やすくするための関数）
 	void Attack_Update()override;   // 攻撃が行われた時に行う
 	void Damage_Update()override;	// ダメージを食らった時に行う
 	void Block_Update()override;	// ガードが行われた時に行う

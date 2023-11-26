@@ -147,7 +147,7 @@ void Player::Update(Vector3* camera_rot)
 			}
 		}
 
-		Attack_PressButton_Update(); // アクションに関するボタン押し用の関数（見やすくするための関数）
+		Attack_PressButton_Update(camera_rot); // アクションに関するボタン押し用の関数（見やすくするための関数）
 		if (action_flag) { // アクションフラグが上がっていたら
 			break;         // 後の処理を飛ばす
 		}
@@ -194,8 +194,7 @@ void Player::Update(Vector3* camera_rot)
 			attack_anim_attach[attack_anim_pick] = MV1DetachAnim(m_model, attack_anim_attach[attack_anim_pick]);  // 攻撃アニメーションをディタッチしておく
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
-			// 攻撃が終わったのでこうげきしていないようにする
-			//attack_hlag = false;
+			attack_flag = false; // 攻撃が終わったのでこうげきしていないようにする
 			attack_anim_pick = ATTACK_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
 		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
@@ -308,7 +307,7 @@ void Player::Move_Hit_Update()
 //---------------------------------------------------------------------------
 // アクションに関するボタン押し用の関数（見やすくするための関数）
 //---------------------------------------------------------------------------
-void Player::Attack_PressButton_Update()
+void Player::Attack_PressButton_Update(Vector3* camera_rot)
 {
 	//=================================
 	// 近距離攻撃
@@ -336,26 +335,31 @@ void Player::Attack_PressButton_Update()
 	//=================================
 	// スライディング
 	//=================================
-	// スペースキークリック、または、Bボタンで遠距離攻撃
-	if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(pad_no) & PAD_INPUT_2) {
-		action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
-		attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
-		CharacterBase::Attack_Action(1);        // 行いたい攻撃アニメーションをセット
-		//	CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &WARP);
-		action_flag = true;                          // アクションフラグを上げる
-
+	if (skill_flag) { // スキルが使用できるなら
+		// スペースキークリック、または、Bボタンで遠距離攻撃
+		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(pad_no) & PAD_INPUT_2) {
+			m_skill_count.x = 0; // スキルの使用なのでカウントをリセット
+			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
+			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
+			CharacterBase::Attack_Action(1);        // 行いたい攻撃アニメーションをセット
+			CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &WARP);
+			action_flag = true;                          // アクションフラグを上げる
+			skill_flag = false;                          // skillを使用済みにしておく
+		}
 	}
-
 	//=================================
 	// 必殺技
 	//=================================
 	// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
-	if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(pad_no) & PAD_INPUT_6 && GetJoypadInputState(pad_no) & PAD_INPUT_5) {
-		action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
-		attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 必殺攻撃アクションを設定
-		CharacterBase::Attack_Action(1);   // 行いたい攻撃アニメーションをセット
-		action_flag = true;                      // アクションフラグを上げる
-
+	if (sp_flag) { // 必殺技が使用可能なら
+		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(pad_no) & PAD_INPUT_6 && GetJoypadInputState(pad_no) & PAD_INPUT_5) {
+			m_sp_count.x = 0; // SPの使用なのでカウントをリセット
+			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
+			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 必殺攻撃アクションを設定
+			CharacterBase::Attack_Action(1);   // 行いたい攻撃アニメーションをセット
+			action_flag = true;                      // アクションフラグを上げる
+			sp_flag = false;                         // SPを使用済みにしておく
+		}
 	}
 
 	//=================================
@@ -411,7 +415,7 @@ void Player::Attack_Update()
 		if (lifespan_count <= 0 || bead_hit_flag) {
 			lifespan_count = NULL;  // 次のために空にしておく
 			bead_hit_flag = true;   // 弾が何かに当たったか消えたので判定をリセット
-			attack_flag = false; // 攻撃を終わらせておく
+			attack_flag = false;    // 攻撃を終わらせておく
 			cd_hit_flag = false;    //< 当たり判定をしてほしくないのでフラグを下す
 		}
 		break;
@@ -466,9 +470,10 @@ void Player::Attack_Update()
 		lifespan_count--; // 弾が消えるまでのカウントを進める
 		// カウントが一定にまで減るか、当たり判定があったら
 		if (lifespan_count <= 0 || bead_hit_flag) {
-			lifespan_count = NULL; // 次のために空にしておく
+			lifespan_count = NULL;  // 次のために空にしておく
 			bead_hit_flag = false;  // 弾が何かに当たったか消えたので判定をリセット
-			attack_flag = false; // 攻撃を終わらせておく
+			attack_flag = false;    // 攻撃を終わらせておく
+			cd_hit_flag = false;    //< 当たり判定をしてほしくないのでフラグを下す
 		}
 	}
 }

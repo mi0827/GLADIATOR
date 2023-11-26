@@ -22,13 +22,18 @@ void CharacterBase::Update_Status()
 	}
 	// スキルクールダウンのカウントを増やす
 	m_skill_count.x++;
+	// スキルポイントがたまったら
 	if (m_skill_count.x >= SKILL_POINT_MAX) {
 		m_skill_count.x = SKILL_POINT_MAX;
+		skill_flag = true; // スキルを使用できるようにする
 	}
+
 	// SPバーのカウントを増やす
 	m_sp_count.x++;
+	// SPポイントがたまったら
 	if (m_sp_count.x >= SP_POINT_MAX) {
 		m_sp_count.x = SP_POINT_MAX;
+		sp_flag = true; // 必殺技を使用できるようにする
 	}
 
 }
@@ -403,7 +408,7 @@ void CharacterBase::Attack_Hit_New(Vector3* pot_pos, Vector3* under_pos)
 //---------------------------------------------------------------------------
 // 攻撃力を保存する用の関数
 //---------------------------------------------------------------------------
-void CharacterBase::Set_Attack_Damage(int ATTACK_ANIM_MAX, const int *attack_damage)
+void CharacterBase::Set_Attack_Damage(int ATTACK_ANIM_MAX, const int* attack_damage)
 {
 	m_attack_damage = new int[ATTACK_ANIM_MAX];
 	for (int i = 0; i < ATTACK_ANIM_MAX; i++) {

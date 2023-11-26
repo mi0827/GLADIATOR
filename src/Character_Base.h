@@ -25,7 +25,7 @@ public:
 	virtual void Draw() = 0;		               // 描画処理
 	virtual void Exit() = 0;		               // 終了処理
 	virtual void Move_Hit_Update() = 0;            // 壁擦り用の関数
-	virtual void Attack_PressButton_Update() = 0;  // アクションに関するボタン押し用の関数（見やすくするための関数）
+	virtual void Attack_PressButton_Update(Vector3* camera_rot) = 0;  // アクションに関するボタン押し用の関数（見やすくするための関数）
 	virtual void Attack_Update() = 0;              // 攻撃が行われた時に行う
 	virtual void Damage_Update() = 0;              // ダメージを食らった時に行う
 	virtual void Block_Update() = 0;               // ガードが行われた時に行う
@@ -187,11 +187,13 @@ public:
 	//---------------------------------------------------------------------------
 	// 各アクション判断用変数
 	//---------------------------------------------------------------------------
-	bool action_flag;          // アクション（何かのアニメーション）されているかのフラグ
+	bool action_flag;       // アクション（何かのアニメーション）されているかのフラグ
 	bool attack_flag;       // 今攻撃中なのかの判断 
 	bool damage_flag;       // 今ダメージを受けているのか
 	bool block_flag;        // 今ガード中なのか
-	bool bead_hit_flag;        // 弾が何かにあたったか
+	bool bead_hit_flag;     // 弾が何かにあたったか
+	bool skill_flag;        // スキル技の使用できるかのフラグ
+	bool sp_flag;           // 必殺技の使用できるかのフラグ
 
 	//---------------------------------------------------------------------------
 	// 当たり判定があったときの各処理の判断用変数
