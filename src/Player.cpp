@@ -3,7 +3,6 @@
 #include "Player.h"
 #include "InputPad.h"
 
-
 #define PANEL_SIZE	5.0f              // パネルの大きさ
 #define PANEL_HALF	(PANEL_SIZE/2.0f) // パネルの半分の大きさ
 
@@ -116,6 +115,7 @@ void Player::Animation_Init()
 //---------------------------------------------------------------------------
 void Player::Update(Vector3* camera_rot)
 {
+
 	before_mov = m_pos; // 移動される前に入れ替えとく
 	action_flag = false; // アクションフラグを下す
 	// アクションモードの判断してそれに合った操作をするようにする
@@ -444,7 +444,6 @@ void Player::Attack_Update()
 		// 当たり判定を見えるようにする物
 		// 向いている方向に座標を設定（今はパンチに位置）
 		if (attack_anim_frame[ATTACK_SLIDE_ANIM] == now_hit_area->hit_anim_frame) {
-
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
 		}
@@ -471,7 +470,7 @@ void Player::Attack_Update()
 		// カウントが一定にまで減るか、当たり判定があったら
 		if (lifespan_count <= 0 || bead_hit_flag) {
 			lifespan_count = NULL;  // 次のために空にしておく
-			bead_hit_flag = false;  // 弾が何かに当たったか消えたので判定をリセット
+			bead_hit_flag = true;  // 弾が何かに当たったか消えたので判定をリセット
 			attack_flag = false;    // 攻撃を終わらせておく
 			cd_hit_flag = false;    //< 当たり判定をしてほしくないのでフラグを下す
 		}

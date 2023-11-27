@@ -29,7 +29,7 @@ public:
 	virtual void Attack_Update() = 0;              // 攻撃が行われた時に行う
 	virtual void Damage_Update() = 0;              // ダメージを食らった時に行う
 	virtual void Block_Update() = 0;               // ガードが行われた時に行う
-	
+
 
 	void Update_Status();   // ステータス更新処理
 	void Draw_Status();     // ステータス描画用関数
@@ -90,7 +90,7 @@ public:
 	// アニメーション変数をdeleteする用の関数
 	void Anim_Delete();
 
-	
+
 
 
 	// 当たり判定のあったとき当たった相手の情報をとってくる関数
@@ -235,7 +235,7 @@ public:
 	//---------------------------------------------------------------------------
 	Vector3 bead_pos;  // 座標
 	float   bead_r;    // 半径
-	
+
 protected:
 	//---------------------------------------------------------------------------
 	// 移動に関する物
@@ -249,12 +249,14 @@ public:
 	// キャラクターのステータス用の変数
 	//---------------------------------------------------------------------------
 	// キャラクターの体力
-	Vector2 m_hp_pos;      // 描画座標
-	Vector2 m_hp_count;    // 計算用
-	Vector2 m_skill_pos;   // 描画座標
-	Vector2 m_skill_count; // 計算用
-	Vector2 m_sp_pos;      // 描画座標
-	Vector2 m_sp_count;    // 計算用
+	Vector2 m_hp_pos;          // 描画座標
+	Vector2 m_hp_count;        // 計算用
+	Vector2 m_skill_pos;       // 描画座標
+	Vector2 m_skill_count;     // 計算用
+	int skill_flame_count = 0; // フレームカウント用変数
+	Vector2 m_sp_pos;          // 描画座標
+	Vector2 m_sp_count;        // 計算用
+	int sp_flame_count = 0;    // フレームカウント用変数
 
 	int* m_attack_damage; // 攻撃力
 	bool skill_cooldown;  // スキル使用後のクールダウン
@@ -265,5 +267,6 @@ public:
 	//---------------------------------------------------------------------------
 	Vector3 hit_pos_pot;
 	Vector3 hit_pos_under;
+
 
 };

@@ -20,8 +20,14 @@ void CharacterBase::Update_Status()
 	if (0 >= m_hp_count.x) {
 		m_hp_count.x = 0;
 	}
+
+	skill_flame_count++; // フレームカウントを増やす
 	// スキルクールダウンのカウントを増やす
-	m_skill_count.x++;
+	//if (skill_flame_count % 60 == 0) {
+	
+		m_skill_count.x++;
+		// skill_flame_count = 0;
+	//}
 	// スキルポイントがたまったら
 	if (m_skill_count.x >= SKILL_POINT_MAX) {
 		m_skill_count.x = SKILL_POINT_MAX;
@@ -35,7 +41,6 @@ void CharacterBase::Update_Status()
 		m_sp_count.x = SP_POINT_MAX;
 		sp_flag = true; // 必殺技を使用できるようにする
 	}
-
 }
 
 //---------------------------------------------------------------------------
@@ -52,6 +57,8 @@ void CharacterBase::Draw_Status()
 	// SPバーの描画
 	DrawBox(m_sp_pos.x, m_sp_pos.y, m_sp_pos.x + m_sp_count.x, m_sp_count.y, GetColor(0, 255, 0), TRUE);
 	DrawLineBox(m_sp_pos.x, m_sp_pos.y, m_sp_count.x + m_sp_pos.x, m_sp_count.y, GetColor(255, 255, 255));
+
+	DrawFormatString(16, 200, GetColor(255, 255, 255), "%2d, %2f", skill_flame_count, m_skill_count.x);
 }
 
 //---------------------------------------------------------------------------

@@ -24,6 +24,9 @@ Camera* camera[2];         // キャラクタと同じ数
 
 Field field;
 
+int Time_count = 0;     // フレーム数を現実の時間で計算する用の変数
+
+
 // 初期処理(各クラスのコンストラクタできないもの)
 void GameInit()
 {
@@ -74,8 +77,6 @@ void GameUpdate()
 		else {
 			player2 = 0;
 		}
-
-
 		if (players[player1]->block_flag && !players[player1]->attack_flag) {
 			Block_Hit(player1, player2);
 		}
