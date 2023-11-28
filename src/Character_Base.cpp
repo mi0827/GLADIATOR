@@ -9,7 +9,6 @@ CharacterBase::CharacterBase()
 {
 }
 
-
 //---------------------------------------------------------------------------
 // ステータスを更新関数
 //---------------------------------------------------------------------------
@@ -23,19 +22,22 @@ void CharacterBase::Update_Status()
 
 	skill_flame_count++; // フレームカウントを増やす
 	// スキルクールダウンのカウントを増やす
-	//if (skill_flame_count % 60 == 0) {
-	
-		m_skill_count.x++;
-		// skill_flame_count = 0;
-	//}
+	if (skill_flame_count % 60 == 0) {
+		m_skill_count.x += 10;
+	}
 	// スキルポイントがたまったら
 	if (m_skill_count.x >= SKILL_POINT_MAX) {
 		m_skill_count.x = SKILL_POINT_MAX;
 		skill_flag = true; // スキルを使用できるようにする
 	}
 
-	// SPバーのカウントを増やす
-	m_sp_count.x++;
+	sp_flame_count++; // フレームカウントを増やす
+	// SPクールダウンのカウントを増やす
+	if (sp_flame_count % 60 == 0) {
+		// SPバーのカウントを増やす
+		m_sp_count.x += 10 ;
+	}
+
 	// SPポイントがたまったら
 	if (m_sp_count.x >= SP_POINT_MAX) {
 		m_sp_count.x = SP_POINT_MAX;
@@ -53,12 +55,10 @@ void CharacterBase::Draw_Status()
 	DrawLineBox(m_hp_pos.x, m_hp_pos.y, HP_MAX + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));
 	// スキルクールダウンバーの描画
 	DrawBox(m_skill_pos.x, m_skill_pos.y, m_skill_pos.x + m_skill_count.x, m_skill_count.y, GetColor(0, 255, 0), TRUE);
-	DrawLineBox(m_skill_pos.x, m_skill_pos.y, m_skill_count.x + m_skill_pos.x, m_skill_count.y, GetColor(255, 255, 255));
+	DrawLineBox(m_skill_pos.x, m_skill_pos.y, SKILL_POINT_MAX + m_skill_pos.x, m_skill_count.y, GetColor(255, 255, 255));
 	// SPバーの描画
 	DrawBox(m_sp_pos.x, m_sp_pos.y, m_sp_pos.x + m_sp_count.x, m_sp_count.y, GetColor(0, 255, 0), TRUE);
-	DrawLineBox(m_sp_pos.x, m_sp_pos.y, m_sp_count.x + m_sp_pos.x, m_sp_count.y, GetColor(255, 255, 255));
-
-	DrawFormatString(16, 200, GetColor(255, 255, 255), "%2d, %2f", skill_flame_count, m_skill_count.x);
+	DrawLineBox(m_sp_pos.x, m_sp_pos.y, SP_POINT_MAX + m_sp_pos.x, m_sp_count.y, GetColor(255, 255, 255));	
 }
 
 //---------------------------------------------------------------------------
