@@ -24,7 +24,10 @@ Camera* camera[2];         // キャラクタと同じ数
 
 Field field;
 
-int Time_count = 0;     // フレーム数を現実の時間で計算する用の変数
+int time_count;     // フレーム数を現実の時間で計算する用の変数
+int flame_count;    // フレーム数をカウントをする変数
+constexpr int TIME_MAX = 90;  // 制限時間
+constexpr int FLAME_MAX = 60; // 何フレームで一秒七日のための定数 
 
 
 // 初期処理(各クラスのコンストラクタできないもの)
@@ -42,8 +45,8 @@ void GameInit()
 	players[0]->Init(0);
 	players[1]->Init(1);
 	// ゲームパッドの設定
-	players[0]->SetPadNo(DX_INPUT_PAD1);
-	players[1]->SetPadNo(DX_INPUT_PAD2);
+	players[0]->SetPadNo(PAD_NO::PAD_NO1);//DX_INPUT_PAD1);
+	players[1]->SetPadNo(PAD_NO::PAD_NO2);//DX_INPUT_PAD2);
 
 
 	for (int i = 0; i < PLAYER_MAX; i++) {
@@ -52,6 +55,11 @@ void GameInit()
 	// ゲームパッドの設定
 	camera[0]->SetPadNo(DX_INPUT_PAD1);
 	camera[1]->SetPadNo(DX_INPUT_PAD2);
+
+	// 最初は０から始める
+	time_count = TIME_MAX;   // タイマーの設定
+	flame_count = FLAME_MAX; // フレームカウントの設定
+
 }
 
 // 更新処理
@@ -68,24 +76,68 @@ void GameUpdate()
 		camera[i]->Update(&players[i]->m_pos);
 	}
 
-	for (int i = 0; i < PLAYER_MAX; i++) {
-		int player1 = i;
-		int player2 = 0;
-		if (player1 == 0) {
-			player2 = 1;
-		}
-		else {
-			player2 = 0;
-		}
-		if (players[player1]->block_flag && !players[player1]->attack_flag) {
-			Block_Hit(player1, player2);
-		}
+	//for (int i = 0; i < PLAYER_MAX; i++) {
+	//	int player1 = i;
+	//	int player2 = 0;
+	//	if (player1 == 0) {
+	//		player2 = 1;
+	//	}
+	//	else {
+	//		player2 = 0;
+	//	}
+	//	if (players[player1]->block_flag && !players[player1]->attack_flag) {
+	//		Block_Hit(player1, player2);
+	//	}
+	//	if (players[player1]->attack_flag && !players[player1]->block_flag) {  // 攻撃
+	//		Attack_Hit(player1, player2); // 当たり判定を見る関数
+	//	}
+	//}
 
-		if (players[player1]->attack_flag && !players[player1]->block_flag) {  // 攻撃
-			Attack_Hit(player1, player2); // 当たり判定を見る関数
-		}
+	int player1 = 0;
+	int player2 = 1;
 
+	bool is_both_no_guard =	// 両方とも攻撃中
+	(
+		players[player1]->block_flag == false &&
+		players[player2]->block_flag == false
+	);
+	bool is_player1_guard =	// プレイヤー1がガード中
+	(
+		players[player1]->block_flag  == true &&
+		players[player2]->attack_flag == true
+	);
+	bool is_player2_guard =	// プレイヤー2がガード中
+	(
+		players[player1]->attack_flag == true &&
+		players[player2]->block_flag  == true
+	);
+
+	// プレイヤー1の攻撃とプレイヤー2の攻撃
+	if (is_both_no_guard == true)
+	{
+		// 通常の当たり判定を行う
+		Attack_Hit(player1, player2);
+		Attack_Hit(player2, player1);
 	}
+	// プレイヤー1のガードとプレイヤー2の攻撃
+	else if (is_player1_guard == true)
+	{
+		Block_Hit(player1, player2);
+	}
+	// プレイヤー1の攻撃とプレイヤー2のガード
+	else if (is_player2_guard)
+	{
+		Block_Hit(player2, player1);
+	}
+	//else
+	//{
+	//	// 通常の当たり判定を行う
+	//	Attack_Hit(player1, player2);
+	//}
+
+
+
+	Time_Update(); // タイマーの更新
 }
 
 // 描画処理
@@ -103,6 +155,7 @@ void GameDraw()
 		players[i]->Draw_Status();
 		camera[i]->Draw(i); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
 	}
+	Time_Draw();
 }
 
 // 終了処理
@@ -123,7 +176,6 @@ void GameExit()
 	}
 
 }
-
 
 //---------------------------------------------------------------------------
 // キャラクターの移動あたり判定実行用関数
@@ -166,7 +218,41 @@ void Move_Hit()
 	else {
 		players[0]->m_move_judge = false;
 	}
+}
 
+//---------------------------------------------------------------------------
+// タイマーの更新処理
+//---------------------------------------------------------------------------
+void Time_Update() {
+	flame_count--;               // フレームカウントを減らす
+	if (flame_count < 0) {      // フレームカウントが０になったら
+		time_count--;            // タイマーを減らす
+		flame_count = FLAME_MAX; // フレームカウントを設定しなおす
+	}
+
+	// タイマーがゼロになったら
+	if (time_count <= 0) {
+		time_count = 0; // ゼロで止める
+	}
+
+}
+
+//---------------------------------------------------------------------------
+// タイマーの描画処理
+//---------------------------------------------------------------------------
+void Time_Draw() {
+	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
+	const char* name = "[%2d]";
+	// 描画幅の取得
+	float w = GetDrawStringWidth(name, -1);
+	// 文字列の高さ取得
+	float h = GetFontSize();
+
+	DrawBox(SCREEN_W / 2 + 16 - w, h - 16, SCREEN_W / 2 + 16 - w + 60, h - 16 + 30, GetColor(0, 0, 0), TRUE);
+	SetFontSize(28); // フォントサイズの変更
+	// 描画
+	DrawFormatStringF(SCREEN_W / 2 + 16 - w, h - 16, GetColor(255, 255, 0), name, time_count);
+	SetFontSize(18); // フォントサイズを戻す
 }
 
 //---------------------------------------------------------------------------
@@ -187,6 +273,25 @@ void Attack_Hit(int player1, int player2)
 	}
 }
 
+struct Capsule
+{
+	VECTOR top_pos;
+	VECTOR bottom_pos;
+	float   r;
+};
+
+bool HitCheck_Capsule_Capsule(const Capsule& cp1, const Capsule& cp2)
+{
+	//float angle = atan2f(cp2.bottom_pos.y - cp1.bottom_pos.y, cp2.bottom_pos.x - cp1.bottom_pos.x);
+	//float dgree = TO_DEGREE(angle);
+	return HitCheck_Capsule_Capsule(cp1.top_pos,
+									cp1.bottom_pos,
+									cp1.r,
+									cp2.top_pos,
+									cp2.bottom_pos,
+									cp2.r) == 1;
+}
+
 //---------------------------------------------------------------------------
 // ガードのあたり判定をとる関数
 //---------------------------------------------------------------------------
@@ -194,19 +299,73 @@ void Block_Hit(int player1, int player2)
 {
 	// 当たり判定を取っていいときに当たっていたらダメージを入れる
 	// プレイヤー０の攻撃判定とプレイヤー1のガードの判定
-	if (players[player1]->cd_hit_flag && players[player1]->block_flag) {
-		if (HitCheck_Capsule_Capsule(players[player1]->m_block_top.VGet(), players[player1]->m_block_under.VGet(), players[player1]->m_block_r,
-			players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_r))
+	//if (players[player1]->cd_hit_flag && players[player1]->block_flag) {
+	//	if (HitCheck_Capsule_Capsule(players[player1]->m_block_top.VGet(), players[player1]->m_block_under.VGet(), players[player1]->m_block_r,
+	//		players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_r))
+	//	{
+	//	}
+	//	// 当たり判定がガードのじゃなくボディーだった時 
+	//	else if (HitCheck_Capsule_Capsule(players[player1]->m_hit_body_pos_top.VGet(), players[player1]->m_hit_body_pos_under.VGet(), players[player1]->m_hit_body_r,
+	//		players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_r))
+	//	{
+	//		players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
+	//		players[player1]->damage_flag = true;
+	//	}
+	//}
+
+	// 攻撃用カプセル
+	Capsule player2_hit_cp =
+	{
+		players[player2]->m_hit_cd_pos_top.VGet(),
+		players[player2]->m_hit_cd_pos_under.VGet(),
+		players[player2]->m_hit_cd_r
+	};
+	// ガードしているとき
+	Capsule player1_cp =
+	{
+		players[player1]->m_block_top.VGet(),
+		players[player1]->m_block_under.VGet(),
+		players[player1]->m_block_r
+	};
+	// ガードしていないとき
+	Capsule player1_no_cp =
+	{
+		players[player1]->m_hit_body_pos_top.VGet(),
+		players[player1]->m_hit_body_pos_under.VGet(),
+		players[player1]->m_hit_body_r
+	};
+
+	// ------------------------------------------------
+	//	ガードしている人に対しての当たり判定を行うかどうか
+	// ------------------------------------------------
+	// 当たり判定をしていいかどうか
+	bool can_check_hit = players[player1]->cd_hit_flag && players[player1]->block_flag;
+
+	if (can_check_hit)
+	{
+
+		// どの方向からガードカプセルに攻撃が当たったのかを調べる
+		// その方向がガードカプセル側であれば、”何もしない”
+		// そうじゃなければ、”ダメージ処理”
+
+
+		if (HitCheck_Capsule_Capsule(player1_cp, player2_hit_cp))
 		{
+			// player1のガード用カプセルとplayer2の攻撃用カプセルが当たったとき
 
 		}
-		// 当たり判定がガードのじゃなくボディーだった時 
-		else if (HitCheck_Capsule_Capsule(players[player1]->m_hit_body_pos_top.VGet(), players[player1]->m_hit_body_pos_under.VGet(), players[player1]->m_hit_body_r,
-			players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_pos_top.VGet(), players[player2]->m_hit_cd_r))
+		else if (HitCheck_Capsule_Capsule(player1_no_cp, player2_hit_cp))
 		{
+			// player1の本体用のカプセルとplayer2の攻撃用カプセルが当たったとき
 			players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
 			players[player1]->damage_flag = true;
 		}
+	}
+
+
+	if (IsPadRepeat(PAD_ID::PAD_A, players[0]->GetPadNo()))
+	{
+
 	}
 }
 

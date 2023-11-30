@@ -122,9 +122,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (CheckHitKey(KEY_INPUT_ESCAPE)) {
 			break;
 		}
-
 	}
-
 	// ƒQ[ƒ€I—¹ˆ—
 	GameExit();
 

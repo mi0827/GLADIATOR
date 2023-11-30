@@ -118,10 +118,14 @@ public:
 	// ゲームパッド用の変数
 	int pad_input;
 
-	int pad_no = 0;				// 何番のパッドを使っているのか
-	void SetPadNo(int no)
+	PAD_NO pad_no = PAD_NO::PAD_NO1;				// 何番のパッドを使っているのか
+	void SetPadNo(PAD_NO no)
 	{
 		pad_no = no;
+	}
+	PAD_NO GetPadNo() const
+	{
+		return pad_no;
 	}
 
 
