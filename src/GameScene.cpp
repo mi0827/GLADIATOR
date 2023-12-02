@@ -41,7 +41,7 @@ GameScene::GameScene()
 //------------------------------------------------
 // 初期処理(各クラスのコンストラクタできないもの)
 //------------------------------------------------
-void GameScene::GameInit()
+void GameScene::Init()
 {
 	players[0] = new Player;
 	players[1] = new Player;
@@ -74,7 +74,7 @@ void GameScene::GameInit()
 //----------------------------------------
 // 更新処理
 //----------------------------------------
-void GameScene::GameUpdate()
+void GameScene::Update()
 {
 	Move_Hit(); // キャラクターの移動時のあたり判定実行用
 
@@ -130,7 +130,7 @@ void GameScene::GameUpdate()
 //-------------------------------------
 // 描画処理
 //-------------------------------------
-void GameScene::GameDraw()
+void GameScene::Draw()
 {
 	// 各クラスの描画処理
 	for (int i = 0; i < PLAYER_MAX; i++) {
@@ -150,7 +150,7 @@ void GameScene::GameDraw()
 //------------------------------------
 // 描画処理
 //------------------------------------
-void GameScene::GameExit()
+void GameScene::Exit()
 {
 	// 各クラスの終了処理
 	for (int i = 0; i < PLAYER_MAX; i++) {

@@ -119,10 +119,12 @@ public:
 	int pad_input;
 
 	PAD_NO pad_no = PAD_NO::PAD_NO1;				// 何番のパッドを使っているのか
+	// ゲームパッドの番号をセットする
 	void SetPadNo(PAD_NO no)
 	{
 		pad_no = no;
 	}
+	// ゲームパッドの番号をとってくる
 	PAD_NO GetPadNo() const
 	{
 		return pad_no;

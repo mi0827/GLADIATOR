@@ -1,21 +1,22 @@
 #pragma once
 
-class GameScene
+#include "Snene_Base.h"
+class GameScene :public Scene_Base
 {
 public:
 	GameScene();
-	~GameScene();
+	// ~GameScene();
 	// ‰Šúˆ—
-	void GameInit();
+	void Init()override;
 
 	// XVˆ—
-	void GameUpdate();
+	void Update()override;
 
 	// •`‰æˆ—
-	void GameDraw();
+	void Draw()override;
 
 	// I—¹ˆ—
-	void GameExit();
+	void Exit()override;
 
 	// ˆÚ“®‚Ì‚¨Œİ‚¢‚Ì‚ ‚½‚è”»’èv
 	void Move_Hit();

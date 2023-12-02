@@ -104,7 +104,7 @@ void Ninja::Update(Vector3* camera_rot)
 		XINPUT_STATE input;
 		// ゲームパッドの情報を丸ごと取得
 		//GetJoypadXInputState(DX_INPUT_PAD2, &input);
-		GetJoypadXInputState(pad_no, &input);
+		GetJoypadXInputState((int)pad_no, &input);
 
 
 		// 左スティックの値を設定
@@ -148,7 +148,7 @@ void Ninja::Update(Vector3* camera_rot)
 		// 近距離攻撃
 		//=================================
 		// マウスの左クリックまたはAボタンで近距離攻撃
-		if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(pad_no) & PAD_INPUT_1) {
+		if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
 			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SHORT_NORMAL_1_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);                 // 行いたい攻撃アニメーションをセット
@@ -160,7 +160,7 @@ void Ninja::Update(Vector3* camera_rot)
 		// 遠距離攻撃
 		//=================================
 		// マウスの右クリック、または、Yボタンで遠距離攻撃
-		if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(pad_no) & PAD_INPUT_4) {
+		if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_Y, pad_no)) {
 			action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);              // 行いたい攻撃アニメーションをセット
@@ -171,7 +171,7 @@ void Ninja::Update(Vector3* camera_rot)
 		// スライディング
 		//=================================
 		// スペースキークリック、または、Bボタンで遠距離攻撃
-		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(pad_no) & PAD_INPUT_2) {
+		if (PushHitKey(KEY_INPUT_SPACE) || IsPadOn(PAD_ID::PAD_B, pad_no)) {
 			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);        // 行いたい攻撃アニメーションをセット
@@ -183,7 +183,7 @@ void Ninja::Update(Vector3* camera_rot)
 		// 必殺技
 		//=================================
 		// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
-		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(pad_no) & PAD_INPUT_6 && GetJoypadInputState(pad_no) & PAD_INPUT_5) {
+		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || IsPadOn(PAD_ID::PAD_L, pad_no) && IsPadOn(PAD_ID::PAD_R, pad_no)) {
 			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);          // 行いたい攻撃アニメーションをセット

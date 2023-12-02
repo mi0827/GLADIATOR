@@ -27,6 +27,9 @@
     <Filter Include="ソース ファイル\Scene">
       <UniqueIdentifier>{8eb67503-cad0-4233-91eb-cc4e3f5b2bf5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Scene\Scene_Base">
+      <UniqueIdentifier>{3203260b-aea8-4c56-b6ab-f611b68ec036}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\WinMain.cpp">
@@ -71,11 +74,14 @@
     <ClCompile Include="src\GameScene.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\TieleScene.cpp">
+    <ClCompile Include="src\TitleScene.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\EndScene.cpp">
       <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Snene_Base.cpp">
+      <Filter>ソース ファイル\Scene\Scene_Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -121,11 +127,14 @@
     <ClInclude Include="src\GameScene.h">
       <Filter>ソース ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\TieleScene.h">
+    <ClInclude Include="src\TitleScene.h">
       <Filter>ソース ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\EndScene.h">
       <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Snene_Base.h">
+      <Filter>ソース ファイル\Scene\Scene_Base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -313,7 +313,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// 近距離攻撃
 	//=================================
 	// マウスの左クリックまたはAボタンで近距離攻撃
-	if (PushMouseInput(MOUSE_INPUT_LEFT) || GetJoypadInputState(pad_no) & PAD_INPUT_1) {
+	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no) ){
 		action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_SHORT_NORMAL_1_ANIM;  // 近距離攻撃アクションを設定
 		CharacterBase::Attack_Action(1);          // 行いたい攻撃アニメーションをセット	
@@ -324,7 +324,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// 遠距離攻撃
 	//=================================
 	// マウスの右クリック、または、Yボタンで遠距離攻撃
-	if (PushMouseInput(MOUSE_INPUT_RIGHT) || GetJoypadInputState(pad_no) & PAD_INPUT_4) {
+	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_Y, pad_no)) {
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
 		bead_hit_flag = false;
@@ -337,7 +337,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	if (skill_flag) { // スキルが使用できるなら
 		// スペースキークリック、または、Bボタンで遠距離攻撃
-		if (PushHitKey(KEY_INPUT_SPACE) || GetJoypadInputState(pad_no) & PAD_INPUT_2) {
+		if (PushHitKey(KEY_INPUT_SPACE) || IsPadOn(PAD_ID::PAD_B, pad_no)) {
 			m_skill_count.x = 0; // スキルの使用なのでカウントをリセット
 			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
@@ -352,7 +352,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
 	if (sp_flag) { // 必殺技が使用可能なら
-		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || GetJoypadInputState(pad_no) & PAD_INPUT_6 && GetJoypadInputState(pad_no) & PAD_INPUT_5) {
+		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || IsPadOn(PAD_ID::PAD_L, pad_no) && IsPadOn(PAD_ID::PAD_R, pad_no)) {
 			m_sp_count.x = 0; // SPの使用なのでカウントをリセット
 			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 必殺攻撃アクションを設定
@@ -366,7 +366,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// ガード
 	//=================================
 	// または、Xボタンで遠距離攻撃
-	if (PushHitKey(KEY_INPUT_LSHIFT) || GetJoypadInputState(pad_no) & PAD_INPUT_3) {
+	if (PushHitKey(KEY_INPUT_LSHIFT) || IsPadOn(PAD_ID::PAD_X, pad_no)) {
 		action_mode = BLOCK_ACTION;           // モデルのアクションをガードに変更
 		block_anim_pick = BLOCK_ANIM;         // ガードアクションを設定
 		CharacterBase::Block_Action(1); // 行いたい攻撃アニメーションをセット
