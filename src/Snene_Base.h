@@ -14,13 +14,13 @@ public:
 	// 終了処理
 	virtual void Exit() = 0;
 
-	// 今のシーンから次のシーンに切り替える関数
-	void Scene_Change_Judge(int* now_scene, int* next_scene);
+	//// 今のシーンから次のシーンに切り替える関数
+	//void Scene_Change_Judge(int* now_scene, int* next_scene);
 
-	// フレームから時間に置き換える関数
-	void Flame_Time_Update(int* flame, int* time);
+	//// フレームから時間に置き換える関数
+	//void Flame_Time_Update(int* flame, int* time);
 public:
-
+	const int Flame_MAX = 60; // 一秒何フレームか
 
 	bool scene_change_judge ; // シーンの切り替えを行っていいか (trueになったらシーンの切り替え可能)
 

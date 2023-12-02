@@ -66,9 +66,11 @@ void GameScene::Init()
 	camera[0]->SetPadNo(DX_INPUT_PAD1);
 	camera[1]->SetPadNo(DX_INPUT_PAD2);
 
-	// 最初は０から始める
+	// 最初はマックス値から始める
 	time_count = TIME_MAX;   // タイマーの設定
 	flame_count = FLAME_MAX; // フレームカウントの設定
+
+	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
 }
 
 //----------------------------------------
@@ -224,6 +226,8 @@ void GameScene::Time_Update()
 	// タイマーがゼロになったら
 	if (time_count <= 0) {
 		time_count = 0; // ゼロで止める
+		// タイマーが終わったら
+		scene_change_judge = true; // シーンの切り替えを許可する
 	}
 }
 

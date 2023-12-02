@@ -22,7 +22,12 @@ void TiteleScene::Init()
 //------------------------------------------
 void TiteleScene::Update()
 {
-	Flame_Time_Update(&count_flame, &count_time);
+	count_flame++; // フレームのカウントを進める
+	if (count_flame >= Flame_MAX) { // フレームが設定された値以上になったら
+		count_flame = 0; // フレームカウントをリセット
+		count_time++;    // タイムカウントを進める
+	}
+	//Flame_Time_Update(&count_flame, &count_time);
 	if (count_time >= 10) // タイトル画面で10秒経ったら
 	{
 		scene_change_judge = true; // シーンの切り替えを許可する
