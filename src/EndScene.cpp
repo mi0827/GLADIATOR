@@ -1,7 +1,7 @@
 #include "EndScene.h"
 #include "WinMain.h"
 #include "GameMain.h"
-const int End_Time_MAX = 10;  // ƒGƒ“ƒh•`‰æŠÔ
+const int End_Time_MAX = 3;  // ƒGƒ“ƒh•`‰æŠÔ(¡‚¾‚¯3•b)
 //------------------------------------------
 // ‰Šúˆ—
 //------------------------------------------

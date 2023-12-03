@@ -18,6 +18,13 @@ public:
 	// 終了処理
 	void Exit()override;
 
+	// チュートリアルの更新処理
+	void Tutorial_Update();
+	// メインプレイシーンの更新処理
+	void PlayMain_Update();
+	// プレイエンドの更新処理
+	void PlayEnd_Update();
+
 	// 移動時のお互いのあたり判定v
 	void Move_Hit();
 
@@ -33,8 +40,17 @@ public:
 	// キャラクターのステータス描画処理
 	void Draw_Status();
 
+
+	enum play_scene
+	{
+		Play_Tutorial, // チュートリアルシーン
+		Play_Main,     // ゲームメインシーン
+		Play_End,      // プレイENDシーン
+
+		Play_Max       // プレイシーンの最大
+	};
 private:
 
-	bool play_main; // チュートリアルの途中かを判別
-
+	int play_scene; // チュートリアルの途中かを判別
+	int end_count;  // エンドシーンの時間
 };

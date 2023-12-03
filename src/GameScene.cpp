@@ -71,7 +71,8 @@ void GameScene::Init()
 	flame_count = FLAME_MAX; // フレームカウントの設定
 
 	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
-	play_main = false;          // 最初はチュートリアルシーン
+
+	play_scene = Play_Tutorial;// 最初はチュートリアルシーン
 }
 
 //----------------------------------------
@@ -81,7 +82,6 @@ void GameScene::Update()
 {
 	Move_Hit(); // キャラクターの移動時のあたり判定実行用
 
-
 	// 各クラスの更新処理
 	field.Update();
 	for (int i = 0; i < PLAYER_MAX; ++i)
@@ -89,48 +89,25 @@ void GameScene::Update()
 		camera[i]->Update(&players[i]->m_pos);
 	}
 
-
-	int player1 = 0;
-	int player2 = 1;
-
-	bool is_both_no_guard =	// 両方とも攻撃中
-		(
-			players[player1]->block_flag == false &&
-			players[player2]->block_flag == false
-			);
-	bool is_player1_guard =	// プレイヤー1がガード中
-		(
-			players[player1]->block_flag == true &&
-			players[player2]->attack_flag == true
-			);
-	bool is_player2_guard =	// プレイヤー2がガード中
-		(
-			players[player1]->attack_flag == true &&
-			players[player2]->block_flag == true
-			);
-
-	// チュートリアルが終わっていたら処理をする
-	if (play_main) {
-	// プレイヤー1の攻撃とプレイヤー2の攻撃
-	if (is_both_no_guard == true)
-	{
-		// 通常の当たり判定を行う
-		Attack_Hit(player1, player2);
-		Attack_Hit(player2, player1);
-	}
-	// プレイヤー1のガードとプレイヤー2の攻撃
-	else if (is_player1_guard == true)
-	{
-		Block_Hit(player1, player2);
-	}
-	// プレイヤー1の攻撃とプレイヤー2のガード
-	else if (is_player2_guard)
-	{
-		Block_Hit(player2, player1);
-	}
 	
-		Time_Update(); // タイマーの更新
-	}
+
+	
+	switch (play_scene)
+	{
+	case Play_Tutorial:
+		Tutorial_Update();
+		break;
+
+	case Play_Main:
+		PlayMain_Update();
+		break;
+
+	case Play_End:
+		Time_Update();
+		break;
+
+	};
+	
 }
 
 //-------------------------------------
@@ -171,6 +148,71 @@ void GameScene::Exit()
 		delete camera[i];
 		camera[i] = nullptr;
 	}
+}
+
+//------------------------------------
+// チュートリアルの更新処理
+//------------------------------------
+void GameScene::Tutorial_Update()
+{
+	// スペースキーを押されたら
+	if (CheckHitKey(KEY_INPUT_SPACE)) {
+		play_scene = Play_Main; // プレイメインに移動
+	}
+}
+
+//------------------------------------
+// メインプレイシーンの更新処理
+//------------------------------------
+void GameScene::PlayMain_Update()
+{
+	int player1 = 0;
+	int player2 = 1;
+	bool is_both_no_guard =	// 両方とも攻撃中
+		(
+			players[player1]->block_flag == false &&
+			players[player2]->block_flag == false
+			);
+	bool is_player1_guard =	// プレイヤー1がガード中
+		(
+			players[player1]->block_flag == true &&
+			players[player2]->attack_flag == true
+			);
+	bool is_player2_guard =	// プレイヤー2がガード中
+		(
+			players[player1]->attack_flag == true &&
+			players[player2]->block_flag == true
+			);
+
+	// プレイヤー1の攻撃とプレイヤー2の攻撃
+	if (is_both_no_guard == true)
+	{
+		// 通常の当たり判定を行う
+		Attack_Hit(player1, player2);
+		Attack_Hit(player2, player1);
+	}
+	// プレイヤー1のガードとプレイヤー2の攻撃
+	else if (is_player1_guard == true)
+	{
+		Block_Hit(player1, player2);
+	}
+	// プレイヤー1の攻撃とプレイヤー2のガード
+	else if (is_player2_guard)
+	{
+		Block_Hit(player2, player1);
+	}
+
+	Time_Update(); // タイマーの更新
+
+}
+
+//------------------------------------
+// プレイエンドの更新処理
+//------------------------------------
+void GameScene::PlayEnd_Update()
+{
+	// タイマーが終わったら
+	scene_change_judge = true; // シーンの切り替えを許可する
 }
 
 //---------------------------------------------------------------------------
@@ -230,8 +272,7 @@ void GameScene::Time_Update()
 	// タイマーがゼロになったら
 	if (time_count <= 0) {
 		time_count = 0; // ゼロで止める
-		// タイマーが終わったら
-		scene_change_judge = true; // シーンの切り替えを許可する
+	
 	}
 }
 

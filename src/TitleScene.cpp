@@ -2,7 +2,7 @@
 #include "GameMain.h"
 #include "TitleScene.h"
 
-const int Title_Time_MAX = 10;  // タイトル描画時間
+const int Title_Time_MAX = 3;  // タイトル描画時間(今だけ3秒)
 
 //------------------------------------------
 // 初期処理
