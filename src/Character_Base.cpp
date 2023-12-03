@@ -74,7 +74,10 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 	XINPUT_STATE input;
 	// ゲームパッドの情報を丸ごと取得
 	//GetJoypadXInputState(DX_INPUT_PAD1, &input);
-	GetJoypadXInputState((int)pad_no, &input);
+	// GetJoypadXInputState((int) pad_no, &input);
+	
+	GetJoypadXInputState((int)((PAD_NO)pad_no), &input);
+
 	// 左スティックの値を設定
 	mov.x = input.ThumbLX;
 	mov.z = input.ThumbLY;

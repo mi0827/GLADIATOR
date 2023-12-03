@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Snene_Base.h"
+#include "Scene_Base.h"
 class GameScene :public Scene_Base
 {
 public:
@@ -34,5 +34,7 @@ public:
 	void Draw_Status();
 
 private:
+
+	bool play_main; // チュートリアルの途中かを判別
 
 };

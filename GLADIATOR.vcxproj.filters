@@ -80,7 +80,7 @@
     <ClCompile Include="src\EndScene.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\Snene_Base.cpp">
+    <ClCompile Include="src\Scene_Base.cpp">
       <Filter>ソース ファイル\Scene\Scene_Base</Filter>
     </ClCompile>
   </ItemGroup>
@@ -133,7 +133,7 @@
     <ClInclude Include="src\EndScene.h">
       <Filter>ソース ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\Snene_Base.h">
+    <ClInclude Include="src\Scene_Base.h">
       <Filter>ソース ファイル\Scene\Scene_Base</Filter>
     </ClInclude>
   </ItemGroup>

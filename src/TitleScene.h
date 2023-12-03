@@ -1,5 +1,5 @@
 #pragma once
-#include "Snene_Base.h"
+#include "Scene_Base.h"
 #include "Vector2.h"
 // タイトルシーンのクラス
 class TiteleScene : public Scene_Base 

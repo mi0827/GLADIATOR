@@ -1,14 +1,18 @@
 #include "WinMain.h"
 #include "GameMain.h"
-
+#include "Scene_Base.h"
 #include "GameScene.h"
 #include "TitleScene.h"
 #include "EndScene.h"
+
+Scene_Base* scene;
 
 // 各シーンのオブジェクト
 TiteleScene titel_scene; // タイトル
 GameScene play_scene;    // ゲームプレイシーン
 EndScene end_scene;      // エンド
+
+
 
 int scene_num; // 今どのシーン名のを見る用の変数
 // 各シーンでの使い分けをするためのシーンの列挙隊
@@ -24,10 +28,13 @@ enum Scene
 // 初期処理
 void GameInit()
 {
-	// 各シーンの初期化
-	titel_scene.Init();
-	play_scene.Init();
-	end_scene.Init();
+	// 最初はタイトルシーンから始める
+	scene = new TiteleScene;
+	scene->Init(); // タイトルシーンの初期化
+	//// 各シーンの初期化
+	//titel_scene.Init();
+	//play_scene.Init();
+	//end_scene.Init();
 
 	scene_num = Titele; // 最初はタイトルシーンから始める
 }
@@ -39,20 +46,35 @@ void GameUpdate()
 	{
 	case Titele: // タイトルシーン
 
-		titel_scene.Update();
-		if (titel_scene.scene_change_judge) {    // シーンの切り替えの許可が下りれば
+		scene->Update();
+		if (scene->scene_change_judge) {                             // シーンの切り替えの許可が下りれば
 			Scene_Change_Judge(scene_num, Play); // シーンの切り替え
+			scene->Exit();                                           // dekete前に終了処理を回す
+			delete scene;                                            // シーンの切り替えの前にタイトルシーンを初期化
+			scene = new GameScene;                                   // 次のシーンをnewしておく
+			scene->Init();                                           // 次のシーンの初期処理もここで済ます
 		}
 		break;
 
 	case Play:  // プレイシーン
-		play_scene.Update();
-		if (play_scene.scene_change_judge) {     // シーンの切り替えの許可が下りれば
+		scene->Update();
+		if (scene->scene_change_judge) {                             // シーンの切り替えの許可が下りれば
 			Scene_Change_Judge(scene_num, End);  // シーンの切り替え
+			scene->Exit();                                           // dekete前に終了処理を回す
+			delete scene;                                            // シーンの切り替えの前にタイトルシーンを初期化
+			scene = new EndScene;                                    // 次のシーンをnewしておく
+			scene->Init();                                           // 次のシーンの初期処理もここで済ます
 		}
 		break;
 	case End:  // エンドシーン
-		end_scene.Update();
+		scene->Update();
+		if (scene->scene_change_judge) {                             // シーンの切り替えの許可が下りれば
+			Scene_Change_Judge(scene_num, End);  // シーンの切り替え
+			scene->Exit();                                           // dekete前に終了処理を回す
+			delete scene;                                            // シーンの切り替えの前にタイトルシーンを初期化
+			scene = new TiteleScene;                                 // 次のシーンをnewしておく
+			scene->Init();                                           // 次のシーンの初期処理もここで済ます
+		}
 		break;
 	}
 
@@ -62,30 +84,28 @@ void GameUpdate()
 // 描画処理
 void GameDraw()
 {
-	switch (scene_num)
-	{
-	case Titele: // タイトルシーン
+	//switch (scene_num)
+	//{
+	//case Titele: // タイトルシーン
+	//	scene->Draw();
+	//	break;
 
-		titel_scene.Draw();
-		// titel_scene.Draw();
-		break;
+	//case Play:  // プレイシーン
+	//	scene->Draw();
+	//	break;
+	//case End:  // エンドシーン
+	//	scene->Draw();
+	//	break;
+	//}
 
-	case Play:  // プレイシーン
-		play_scene.Draw();
-		break;
-	case End:  // エンドシーン
-		end_scene.Draw();
-		break;
-	}
-
+	scene->Draw();
 }
 
 // 終了処理
 void GameExit()
 {
-	titel_scene.Exit();
-	play_scene.Exit();
-	end_scene.Exit();
+	
+	scene->Exit();
 }
 
 

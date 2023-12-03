@@ -28,8 +28,8 @@ Field field;
 
 int time_count;     // フレーム数を現実の時間で計算する用の変数
 int flame_count;    // フレーム数をカウントをする変数
-constexpr int TIME_MAX = 90;  // 制限時間
-constexpr int FLAME_MAX = 60; // 何フレームで一秒七日のための定数 
+constexpr int TIME_MAX = 10;  // 制限時間 (今だけ10秒)
+
 
 //------------------------------------------
 // ゲーム開始の最初の設定
@@ -71,6 +71,7 @@ void GameScene::Init()
 	flame_count = FLAME_MAX; // フレームカウントの設定
 
 	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
+	play_main = false;          // 最初はチュートリアルシーン
 }
 
 //----------------------------------------
@@ -108,6 +109,8 @@ void GameScene::Update()
 			players[player2]->block_flag == true
 			);
 
+	// チュートリアルが終わっていたら処理をする
+	if (play_main) {
 	// プレイヤー1の攻撃とプレイヤー2の攻撃
 	if (is_both_no_guard == true)
 	{
@@ -125,8 +128,9 @@ void GameScene::Update()
 	{
 		Block_Hit(player2, player1);
 	}
-
-	Time_Update(); // タイマーの更新
+	
+		Time_Update(); // タイマーの更新
+	}
 }
 
 //-------------------------------------
