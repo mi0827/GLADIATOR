@@ -31,10 +31,6 @@ void GameInit()
 	// 最初はタイトルシーンから始める
 	scene = new TiteleScene;
 	scene->Init(); // タイトルシーンの初期化
-	//// 各シーンの初期化
-	//titel_scene.Init();
-	//play_scene.Init();
-	//end_scene.Init();
 
 	scene_num = Titele; // 最初はタイトルシーンから始める
 }
@@ -84,20 +80,6 @@ void GameUpdate()
 // 描画処理
 void GameDraw()
 {
-	//switch (scene_num)
-	//{
-	//case Titele: // タイトルシーン
-	//	scene->Draw();
-	//	break;
-
-	//case Play:  // プレイシーン
-	//	scene->Draw();
-	//	break;
-	//case End:  // エンドシーン
-	//	scene->Draw();
-	//	break;
-	//}
-
 	scene->Draw();
 }
 

@@ -26,9 +26,9 @@ Camera* camera[2];         // キャラクタと同じ数
 
 Field field;
 
-int time_count;     // フレーム数を現実の時間で計算する用の変数
-int flame_count;    // フレーム数をカウントをする変数
+
 constexpr int TIME_MAX = 10;  // 制限時間 (今だけ10秒)
+constexpr int END_TIME_MAX = 3; // エンドの時間制限
 
 
 //------------------------------------------
@@ -89,9 +89,6 @@ void GameScene::Update()
 		camera[i]->Update(&players[i]->m_pos);
 	}
 
-	
-
-	
 	switch (play_scene)
 	{
 	case Play_Tutorial:
@@ -103,9 +100,8 @@ void GameScene::Update()
 		break;
 
 	case Play_End:
-		Time_Update();
+		PlayEnd_Update();
 		break;
-
 	};
 	
 }
@@ -202,8 +198,11 @@ void GameScene::PlayMain_Update()
 		Block_Hit(player2, player1);
 	}
 
-	Time_Update(); // タイマーの更新
-
+	Time_Update(time_count); // タイマーの更新
+	// タイマーが０になったら
+	if (time_count == 0) {
+		play_scene = Play_End; // プレイエンドに進む
+	}
 }
 
 //------------------------------------
@@ -211,8 +210,16 @@ void GameScene::PlayMain_Update()
 //------------------------------------
 void GameScene::PlayEnd_Update()
 {
-	// タイマーが終わったら
-	scene_change_judge = true; // シーンの切り替えを許可する
+	Time_Update(end_count);
+	
+	if (end_count <= 0) 
+	{
+		end_count = 0;
+		// タイマーが終わったら
+		scene_change_judge = true; // シーンの切り替えを許可する
+	}
+
+	
 }
 
 //---------------------------------------------------------------------------
@@ -227,9 +234,9 @@ void GameScene::Move_Hit()
 		for (int i = 0; i < field.obj_max; i++) {
 			if (CheckBoxHit3D(players[player]->m_pos, players[player]->m_move_hit_box_size, field.objects[i]->m_cube_hit_pos, field.objects[i]->m_cube_size_half))
 			{
-				players[player]->m_move_judge = true; // 移動に支障があるのTureを返す
+				players[player]->m_move_judge = true; // 移動に支障があるのTureをwwwwwww返す
 				players[player]->Get_other(&field.objects[i]->m_cube_hit_pos, &field.objects[i]->m_cube_size_half); // Playerに当たった相手の情報を渡する
-				players[player]->Move_Hit_Update(); // 壁擦り用の関数
+				players[player]->Move_Hit_Update();   // 壁擦り用の関数
 			}
 			else {
 				players[player]->m_move_judge = false;
@@ -241,7 +248,7 @@ void GameScene::Move_Hit()
 	{
 		players[0]->m_move_judge = true; // 移動に支障があるのTureを返す
 		players[0]->Get_other(&players[1]->m_pos, &players[1]->m_move_hit_box_size); // Playerに当たった相手の情報を渡する
-		players[0]->Move_Hit_Update(); // 壁擦り用の関数
+		players[0]->Move_Hit_Update();   // 壁擦り用の関数
 	}
 	else {
 		players[0]->m_move_judge = false;
@@ -261,7 +268,7 @@ void GameScene::Move_Hit()
 //---------------------------------------------------------------------------
 // タイマーの更新処理
 //---------------------------------------------------------------------------
-void GameScene::Time_Update()
+void GameScene::Time_Update(int& time_count)
 {
 	flame_count--;               // フレームカウントを減らす
 	if (flame_count < 0) {      // フレームカウントが０になったら
@@ -272,7 +279,6 @@ void GameScene::Time_Update()
 	// タイマーがゼロになったら
 	if (time_count <= 0) {
 		time_count = 0; // ゼロで止める
-	
 	}
 }
 

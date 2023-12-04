@@ -29,7 +29,7 @@ public:
 	void Move_Hit();
 
 	// タイマーの更新処理
-	void Time_Update();
+	void Time_Update(int& time_count);
 	// タイマーの描画
 	void Time_Draw();
 
@@ -51,6 +51,8 @@ public:
 	};
 private:
 
+	int time_count;     // フレーム数を現実の時間で計算する用の変数
+	int flame_count;    // フレーム数をカウントをする変数
 	int play_scene; // チュートリアルの途中かを判別
 	int end_count;  // エンドシーンの時間
 };

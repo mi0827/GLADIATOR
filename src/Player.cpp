@@ -113,7 +113,7 @@ void Player::Animation_Init()
 //---------------------------------------------------------------------------
 // 更新処理
 //---------------------------------------------------------------------------
-void Player::Update(Vector3* camera_rot)
+void Player::Update(Vector3* camera_rot, bool status_flag)
 {
 
 	before_mov = m_pos; // 移動される前に入れ替えとく
@@ -241,8 +241,12 @@ void Player::Update(Vector3* camera_rot)
 
 		break;
 	}
-	// ステータスの更新処理
-	CharacterBase::Update_Status();
+	
+	// ステータスの更新のフラグが上がっていたら
+	if (status_flag) {
+		// ステータスの更新処理
+		CharacterBase::Update_Status();
+	}
 }
 
 //---------------------------------------------------------------------------

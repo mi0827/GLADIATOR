@@ -21,7 +21,7 @@ public:
 	virtual void Animation_Init() = 0;     // アニメーション用の初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
-	virtual void Update(Vector3* camera_rot) = 0;		// 更新処理
+	virtual void Update(Vector3* camera_rot, bool status_flag) = 0;		// 更新処理
 	virtual void Draw() = 0;		               // 描画処理
 	virtual void Exit() = 0;		               // 終了処理
 	virtual void Move_Hit_Update() = 0;            // 壁擦り用の関数
