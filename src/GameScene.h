@@ -25,8 +25,8 @@ public:
 	// プレイエンドの更新処理
 	void PlayEnd_Update();
 
-	// 移動時のお互いのあたり判定v
-	void Move_Hit();
+	// キャラクターの更新処理（移動時のお互いのあたり判定）
+	void Character_Update();
 
 	// タイマーの更新処理
 	void Time_Update(int& time_count);
@@ -53,6 +53,7 @@ private:
 
 	int time_count;     // フレーム数を現実の時間で計算する用の変数
 	int flame_count;    // フレーム数をカウントをする変数
-	int play_scene; // チュートリアルの途中かを判別
-	int end_count;  // エンドシーンの時間
+	int play_scene;     // チュートリアルの途中かを判別
+	int end_count;      // エンドシーンの時間
+	bool status_flag;   // ステータス更新処理していいかのフラグ
 };

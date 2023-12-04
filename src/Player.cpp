@@ -241,7 +241,7 @@ void Player::Update(Vector3* camera_rot, bool status_flag)
 
 		break;
 	}
-	
+
 	// ステータスの更新のフラグが上がっていたら
 	if (status_flag) {
 		// ステータスの更新処理

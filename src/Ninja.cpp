@@ -86,7 +86,7 @@ void Ninja::Animation_Init()
 }
 
 // XVˆ—
-void Ninja::Update(Vector3* camera_rot)
+void Ninja::Update(Vector3* camera_rot, bool status_flag)
 {
 	before_mov = m_pos; // ˆÚ“®‚³‚ê‚é‘O‚É“ü‚ê‘Ö‚¦‚Æ‚­
 

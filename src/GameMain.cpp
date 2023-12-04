@@ -65,7 +65,7 @@ void GameUpdate()
 	case End:  // エンドシーン
 		scene->Update();
 		if (scene->scene_change_judge) {                             // シーンの切り替えの許可が下りれば
-			Scene_Change_Judge(scene_num, End);  // シーンの切り替え
+			Scene_Change_Judge(scene_num, Titele);  // シーンの切り替え
 			scene->Exit();                                           // dekete前に終了処理を回す
 			delete scene;                                            // シーンの切り替えの前にタイトルシーンを初期化
 			scene = new TiteleScene;                                 // 次のシーンをnewしておく

@@ -36,6 +36,7 @@ constexpr int END_TIME_MAX = 3; // エンドの時間制限
 //------------------------------------------
 GameScene::GameScene()
 {	
+
 }
 
 //------------------------------------------------
@@ -58,7 +59,6 @@ void GameScene::Init()
 	players[0]->SetPadNo(PAD_NO::PAD_NO1);//DX_INPUT_PAD1);
 	players[1]->SetPadNo(PAD_NO::PAD_NO2);//DX_INPUT_PAD2);
 
-
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		camera[i]->PlayField_Init();
 	}
@@ -67,12 +67,13 @@ void GameScene::Init()
 	camera[1]->SetPadNo(DX_INPUT_PAD2);
 
 	// 最初はマックス値から始める
-	time_count = TIME_MAX;   // タイマーの設定
-	flame_count = FLAME_MAX; // フレームカウントの設定
-
+	time_count = TIME_MAX;      // タイマーの設定
+	flame_count = FLAME_MAX;    // フレームカウントの設定
+	end_count = END_TIME_MAX;   // エンドに行くまでのカウントダウン
 	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
+	status_flag = false;        // 最初はステータス更新をしてほしくない
+	play_scene = Play_Tutorial; // 最初はチュートリアルシーン
 
-	play_scene = Play_Tutorial;// 最初はチュートリアルシーン
 }
 
 //----------------------------------------
@@ -80,7 +81,8 @@ void GameScene::Init()
 //----------------------------------------
 void GameScene::Update()
 {
-	Move_Hit(); // キャラクターの移動時のあたり判定実行用
+
+	Character_Update(); // キャラクターたちの更新処理
 
 	// 各クラスの更新処理
 	field.Update();
@@ -92,18 +94,18 @@ void GameScene::Update()
 	switch (play_scene)
 	{
 	case Play_Tutorial:
+		status_flag = false;        // ステータス更新をしてほしくない
 		Tutorial_Update();
 		break;
-
 	case Play_Main:
+		status_flag = true;         // ステータス更新をしてほしくない
 		PlayMain_Update();
 		break;
-
 	case Play_End:
+		status_flag = false;        // 最初はステータス更新をしてほしくない
 		PlayEnd_Update();
 		break;
 	};
-	
 }
 
 //-------------------------------------
@@ -211,30 +213,27 @@ void GameScene::PlayMain_Update()
 void GameScene::PlayEnd_Update()
 {
 	Time_Update(end_count);
-	
 	if (end_count <= 0) 
 	{
 		end_count = 0;
 		// タイマーが終わったら
 		scene_change_judge = true; // シーンの切り替えを許可する
 	}
-
-	
 }
 
 //---------------------------------------------------------------------------
-// キャラクターの移動あたり判定実行用関数
+// キャラクターの更新処理（移動時のお互いのあたり判定）
 //---------------------------------------------------------------------------
-void GameScene::Move_Hit()
+void GameScene::Character_Update()
 {
 	// キャラクターの移動（壁擦り）処理
 	for (int player = 0; player < PLAYER_MAX; player++) {
-		players[player]->Update(&camera[player]->m_rot);
+		players[player]->Update(&camera[player]->m_rot, status_flag);
 		// 立方体とプレイヤーのあたり判定
 		for (int i = 0; i < field.obj_max; i++) {
 			if (CheckBoxHit3D(players[player]->m_pos, players[player]->m_move_hit_box_size, field.objects[i]->m_cube_hit_pos, field.objects[i]->m_cube_size_half))
 			{
-				players[player]->m_move_judge = true; // 移動に支障があるのTureをwwwwwww返す
+				players[player]->m_move_judge = true; // 移動に支障があるのTureを返す
 				players[player]->Get_other(&field.objects[i]->m_cube_hit_pos, &field.objects[i]->m_cube_size_half); // Playerに当たった相手の情報を渡する
 				players[player]->Move_Hit_Update();   // 壁擦り用の関数
 			}
@@ -300,6 +299,7 @@ void GameScene::Time_Draw()
 	DrawFormatStringF(SCREEN_W / 2 + 16 - w, h - 16, GetColor(255, 255, 0), name, time_count);
 	SetFontSize(18); // フォントサイズを戻す
 }
+
 
 //---------------------------------------------------------------------------
 // 攻撃のあたり判定をとる関数
