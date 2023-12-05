@@ -19,6 +19,7 @@ void CharacterBase::Update_Status()
 	if (0 >= m_hp_count.x) {
 		m_hp_count.x = 0;
 	}
+	m_now_hp = m_hp_count.x; // わかりやすくするために入れる
 
 	skill_flame_count++; // フレームカウントを増やす
 	// スキルクールダウンのカウントを増やす
@@ -30,12 +31,13 @@ void CharacterBase::Update_Status()
 		m_skill_count.x = SKILL_POINT_MAX;
 		skill_flag = true; // スキルを使用できるようにする
 	}
+	m_now_skill = m_skill_count.x; // わかりやすくするために入れる
 
 	sp_flame_count++; // フレームカウントを増やす
 	// SPクールダウンのカウントを増やす
 	if (sp_flame_count % 60 == 0) {
 		// SPバーのカウントを増やす
-		m_sp_count.x += 10 ;
+		m_sp_count.x += 10;
 	}
 
 	// SPポイントがたまったら
@@ -43,6 +45,18 @@ void CharacterBase::Update_Status()
 		m_sp_count.x = SP_POINT_MAX;
 		sp_flag = true; // 必殺技を使用できるようにする
 	}
+	sp_flame_count = m_sp_count.x; // わかりやすくするために入れる
+}
+
+//---------------------------------------------------------------------------
+//  ステータスのリセット用関数
+//---------------------------------------------------------------------------
+void CharacterBase::Reset_Status()
+{
+	m_skill_count.x = 0; // スキルポイントを戻す
+	skill_flag = true;   // スキルを使用できないようにする
+	m_sp_count.x = 0;    // SPポイントを戻す
+	sp_flag = false;     // 必殺技を使できないようにする
 }
 
 //---------------------------------------------------------------------------
@@ -58,7 +72,7 @@ void CharacterBase::Draw_Status()
 	DrawLineBox(m_skill_pos.x, m_skill_pos.y, SKILL_POINT_MAX + m_skill_pos.x, m_skill_count.y, GetColor(255, 255, 255));
 	// SPバーの描画
 	DrawBox(m_sp_pos.x, m_sp_pos.y, m_sp_pos.x + m_sp_count.x, m_sp_count.y, GetColor(0, 255, 0), TRUE);
-	DrawLineBox(m_sp_pos.x, m_sp_pos.y, SP_POINT_MAX + m_sp_pos.x, m_sp_count.y, GetColor(255, 255, 255));	
+	DrawLineBox(m_sp_pos.x, m_sp_pos.y, SP_POINT_MAX + m_sp_pos.x, m_sp_count.y, GetColor(255, 255, 255));
 }
 
 //---------------------------------------------------------------------------
@@ -75,7 +89,7 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 	// ゲームパッドの情報を丸ごと取得
 	//GetJoypadXInputState(DX_INPUT_PAD1, &input);
 	// GetJoypadXInputState((int) pad_no, &input);
-	
+
 	GetJoypadXInputState((int)((PAD_NO)pad_no), &input);
 
 	// 左スティックの値を設定

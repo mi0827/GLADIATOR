@@ -125,7 +125,20 @@ void GameScene::Draw()
 		players[i]->Draw_Status();
 		camera[i]->Draw(i); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
 	}
-	Time_Draw();
+
+	switch (play_scene)
+	{
+	case Play_Tutorial:
+		Tutorial_Draw();          
+		break;
+	case Play_Main:
+		Time_Draw();               // タイマーを描画するのはプレイ中だけ
+		break;
+	case Play_End:
+		End_Draw();
+		break;
+	};
+	
 }
 
 //------------------------------------
@@ -154,7 +167,13 @@ void GameScene::Exit()
 void GameScene::Tutorial_Update()
 {
 	// スペースキーを押されたら
-	if (CheckHitKey(KEY_INPUT_SPACE)) {
+	if (CheckHitKey(KEY_INPUT_SPACE)) 
+	{
+		for (int i = 0; i < PLAYER_MAX; i++) 
+		{
+			players[i]->Reset_Status(); // ステータスをリセットしておく
+		}
+
 		play_scene = Play_Main; // プレイメインに移動
 	}
 }
@@ -213,11 +232,38 @@ void GameScene::PlayMain_Update()
 void GameScene::PlayEnd_Update()
 {
 	Time_Update(end_count);
+
+	Play_Victory(players[0],players[1]);
+
+
+
 	if (end_count <= 0) 
 	{
 		end_count = 0;
 		// タイマーが終わったら
 		scene_change_judge = true; // シーンの切り替えを許可する
+	}
+}
+
+//---------------------------------------------------------------------------
+// 勝者を決める関数
+//---------------------------------------------------------------------------
+void GameScene::Play_Victory(CharacterBase* character1, CharacterBase* character2)
+{
+	// hpをわかりやすいようにする
+	float hp1 = character1->m_now_hp;
+	float hp2 = character2->m_now_hp;
+
+	if (hp1 == hp2) {
+		// 残りhpが同じなら
+	}
+	if (hp1 > hp2)
+	{
+		// hp1のほうが残りhpが多いい場合
+	}
+	if(hp2 > hp1)
+	{
+		// hp2のほうが残りhpが多いい場合
 	}
 }
 
@@ -228,7 +274,7 @@ void GameScene::Character_Update()
 {
 	// キャラクターの移動（壁擦り）処理
 	for (int player = 0; player < PLAYER_MAX; player++) {
-		players[player]->Update(&camera[player]->m_rot, status_flag);
+		players[player]->Update(&camera[player]->m_rot/*, status_flag*/);
 		// 立方体とプレイヤーのあたり判定
 		for (int i = 0; i < field.obj_max; i++) {
 			if (CheckBoxHit3D(players[player]->m_pos, players[player]->m_move_hit_box_size, field.objects[i]->m_cube_hit_pos, field.objects[i]->m_cube_size_half))
@@ -242,6 +288,7 @@ void GameScene::Character_Update()
 			}
 		}
 	}
+
 	// プレイヤーとプレイヤーの移動あたり判定
 	if (CheckBoxHit3D(players[0]->m_pos, players[0]->m_move_hit_box_size, players[1]->m_pos, players[1]->m_move_hit_box_size))
 	{
@@ -260,7 +307,7 @@ void GameScene::Character_Update()
 		players[1]->Move_Hit_Update(); // 壁擦り用の関数
 	}
 	else {
-		players[0]->m_move_judge = false;
+		players[1]->m_move_judge = false;
 	}
 }
 
@@ -270,7 +317,7 @@ void GameScene::Character_Update()
 void GameScene::Time_Update(int& time_count)
 {
 	flame_count--;               // フレームカウントを減らす
-	if (flame_count < 0) {      // フレームカウントが０になったら
+	if (flame_count < 0) {       // フレームカウントが０になったら
 		time_count--;            // タイマーを減らす
 		flame_count = FLAME_MAX; // フレームカウントを設定しなおす
 	}
@@ -293,7 +340,42 @@ void GameScene::Time_Draw()
 	// 文字列の高さ取得
 	float h = GetFontSize();
 
-	DrawBox(SCREEN_W / 2 + 16 - w, h - 16, SCREEN_W / 2 + 16 - w + 60, h - 16 + 30, GetColor(0, 0, 0), TRUE);
+	SetFontSize(28); // フォントサイズの変更
+	// 描画
+	DrawFormatStringF(SCREEN_W / 2 + 16 - w, h - 16, GetColor(255, 255, 0), name, time_count);
+	SetFontSize(18); // フォントサイズを戻す
+}
+
+//---------------------------------------------------------------------------
+// チュートリアルでの描画処理
+//---------------------------------------------------------------------------
+void GameScene::Tutorial_Draw()
+{
+	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
+	const char* name = "チュートリアル";
+	// 描画幅の取得
+	float w = GetDrawStringWidth(name, -1);
+	// 文字列の高さ取得
+	float h = GetFontSize();
+
+	SetFontSize(28); // フォントサイズの変更
+	// 描画
+	DrawFormatStringF(SCREEN_W / 2 + 16 - w, h - 16, GetColor(255, 255, 0), name, time_count);
+	SetFontSize(18); // フォントサイズを戻す
+}
+
+//---------------------------------------------------------------------------
+// エンドでの描画処理
+//---------------------------------------------------------------------------
+void GameScene::End_Draw()
+{
+	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
+	const char* name = "end";
+	// 描画幅の取得
+	float w = GetDrawStringWidth(name, -1);
+	// 文字列の高さ取得
+	float h = GetFontSize();
+	
 	SetFontSize(28); // フォントサイズの変更
 	// 描画
 	DrawFormatStringF(SCREEN_W / 2 + 16 - w, h - 16, GetColor(255, 255, 0), name, time_count);
@@ -314,13 +396,12 @@ void GameScene::Attack_Hit(int player1, int player2)
 		{
 			players[player2]->m_hp_count.x -= players[player1]->m_attack_damage[players[player1]->attack_anim_pick]; // ダメージを入れる
 			players[player2]->damage_flag = true;
-
 		}
 	}
 }
 
 
-
+// 当たり判定用の構造体（わかりやすいように）
 struct Capsule
 {
 	VECTOR top_pos;

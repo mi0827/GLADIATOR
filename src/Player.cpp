@@ -44,12 +44,15 @@ Player::Player()
 	// HP
 	m_hp_pos.set(10, 32);           // HPバーの描画位置初期化
 	m_hp_count.set(HP_MAX, 32 + 30);   // HPの計算用の初期化
+	m_now_hp = HP_MAX;                    // 最初は体力マックス                         
 	// スキル
 	m_skill_pos.set(10, 72);			    // スキルのクールダウンバーの描画位置初期化
 	m_skill_count.set(0, m_skill_pos.y + 30);// スキルのクールダウンバーの計算用の初期化
 	// SP
 	m_sp_pos.set(10, 112);		   	 // SPのクールダウンバーの描画位置初期化
 	m_sp_count.set(0, m_sp_pos.y + 30); // SPのクールダウンバーの計算用の初期化
+
+
 }
 
 //---------------------------------------------------------------------------
@@ -113,7 +116,7 @@ void Player::Animation_Init()
 //---------------------------------------------------------------------------
 // 更新処理
 //---------------------------------------------------------------------------
-void Player::Update(Vector3* camera_rot, bool status_flag)
+void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 {
 
 	before_mov = m_pos; // 移動される前に入れ替えとく
@@ -243,10 +246,10 @@ void Player::Update(Vector3* camera_rot, bool status_flag)
 	}
 
 	// ステータスの更新のフラグが上がっていたら
-	if (status_flag) {
+	//if (status_flag) {
 		// ステータスの更新処理
 		CharacterBase::Update_Status();
-	}
+	//}
 }
 
 //---------------------------------------------------------------------------

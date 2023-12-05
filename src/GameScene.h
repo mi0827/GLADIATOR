@@ -24,14 +24,19 @@ public:
 	void PlayMain_Update();
 	// プレイエンドの更新処理
 	void PlayEnd_Update();
+	// エンドシーンでの勝敗に関する関数
+	void Play_Victory(CharacterBase* character1, CharacterBase* character2); // 勝者を決める関数
 
 	// キャラクターの更新処理（移動時のお互いのあたり判定）
 	void Character_Update();
-
 	// タイマーの更新処理
 	void Time_Update(int& time_count);
 	// タイマーの描画
 	void Time_Draw();
+	// チュートリアルでの描画処理
+	void Tutorial_Draw();
+	// エンドでの描画処理
+	void End_Draw();
 
 	// 攻撃のあたり判定を行う関数
 	void Attack_Hit(int player1, int player2);
@@ -56,4 +61,8 @@ private:
 	int play_scene;     // チュートリアルの途中かを判別
 	int end_count;      // エンドシーンの時間
 	bool status_flag;   // ステータス更新処理していいかのフラグ
+
+
+
+
 };

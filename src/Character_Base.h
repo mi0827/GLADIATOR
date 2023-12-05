@@ -21,7 +21,7 @@ public:
 	virtual void Animation_Init() = 0;     // アニメーション用の初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
-	virtual void Update(Vector3* camera_rot, bool status_flag) = 0;		// 更新処理
+	virtual void Update(Vector3* camera_rot/*, bool status_flag*/) = 0;		// 更新処理
 	virtual void Draw() = 0;		               // 描画処理
 	virtual void Exit() = 0;		               // 終了処理
 	virtual void Move_Hit_Update() = 0;            // 壁擦り用の関数
@@ -32,6 +32,7 @@ public:
 
 
 	void Update_Status();   // ステータス更新処理
+	void Reset_Status();    // ステータスのリセット用関数
 	void Draw_Status();     // ステータス描画用関数
 	//---------------------------------------------------------------------------
 	// プレイヤーの移動をする関数
@@ -257,11 +258,14 @@ public:
 	// キャラクターの体力
 	Vector2 m_hp_pos;          // 描画座標
 	Vector2 m_hp_count;        // 計算用
+	float m_now_hp;            // 今のhp
 	Vector2 m_skill_pos;       // 描画座標
 	Vector2 m_skill_count;     // 計算用
+	float m_now_skill;         // 今のスキルポイント
 	int skill_flame_count = 0; // フレームカウント用変数
 	Vector2 m_sp_pos;          // 描画座標
 	Vector2 m_sp_count;        // 計算用
+	float m_now_sp;            // 今のSPポイント
 	int sp_flame_count = 0;    // フレームカウント用変数
 
 	int* m_attack_damage; // 攻撃力
