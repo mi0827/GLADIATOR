@@ -1,10 +1,24 @@
 #include "WinMain.h"
-#include "GameMain.h"
+#include "Vector3.h"
+#include "Vector2.h"
+#include "Hit.h" // あたり判定
+#include "Base.h"
+// キャラクター.h
+#include "Character_Base.h"
+#include "Player.h"
+#include "Ninja.h"
+// オブジェクトクラス
+#include "Object.h"
+// フィールド.h
+#include "Field.h"
+// カメラ.h
+#include "Camera.h"
+
 #include "Scene_Base.h"
 #include "GameScene.h"
 #include "TitleScene.h"
 #include "EndScene.h"
-
+#include "GameMain.h"
 Scene_Base* scene;
 
 // 各シーンのオブジェクト

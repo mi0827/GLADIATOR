@@ -1,5 +1,5 @@
 #include "WinMain.h"
-#include "GameMain.h"
+#include "Vector3.h"
 #include "Hit.h"
 
 ////---------------------------------------------------------------------------------

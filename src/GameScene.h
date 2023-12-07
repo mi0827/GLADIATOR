@@ -1,6 +1,7 @@
 #pragma once
+//#include "Character_Base.h"
 
-#include "Scene_Base.h"
+
 class GameScene :public Scene_Base
 {
 public:

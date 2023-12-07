@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Base.h"
-#include "Object.h"
+
 
 //	Field(フィールド)クラス
 // Baseクラスを継承

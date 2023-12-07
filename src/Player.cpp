@@ -1,8 +1,10 @@
 #include "WinMain.h"
 #include "GameMain.h"
+#include "Vector3.h"
+#include "Vector2.h"
+#include "Base.h"
+#include "Character_Base.h"
 #include "Player.h"
-#include "InputPad.h"
-
 #define PANEL_SIZE	5.0f              // パネルの大きさ
 #define PANEL_HALF	(PANEL_SIZE/2.0f) // パネルの半分の大きさ
 
@@ -332,6 +334,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	// マウスの右クリック、または、Yボタンで遠距離攻撃
 	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_Y, pad_no)) {
+	//if (IsPadRepeat(PAD_ID::PAD_Y, PAD_NO::PAD_NO1)) {
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
 		bead_hit_flag = false;

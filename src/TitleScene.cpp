@@ -1,5 +1,6 @@
 #include "WinMain.h"
-#include "GameMain.h"
+#include "Vector2.h"
+#include "Scene_Base.h"
 #include "TitleScene.h"
 
 const int Title_Time_MAX = 3;  // ƒ^ƒCƒgƒ‹•`‰æŠÔ(¡‚¾‚¯3•b)

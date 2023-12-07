@@ -1,5 +1,5 @@
 #pragma once
-#include"Base.h"
+
 
 class Object : public Base
 {
@@ -47,5 +47,6 @@ public:
 	Vector3 m_cube_hit_pos;     // 当たり判定用の座標（cubeの中心から当たり判定をとるため）
 	Vector3 m_cube_size;        // サイズ
 	Vector3 m_cube_size_half;   // サイズの半分のサイズ（cubeの中心から当たり判定をとるため）
-	int   m_cube_color;       // 色
+	int   m_cube_color;         // 立方体の色
+	int   m_line_color;         // ラインの色
 };

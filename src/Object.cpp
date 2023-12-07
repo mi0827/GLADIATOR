@@ -1,5 +1,7 @@
 #include "WinMain.h"
-#include "GameMain.h"
+#include "Vector3.h"
+#include "Vector2.h"
+#include"Base.h"
 #include "object.h"
 // コンストラクタ（初期化）
 // 
@@ -50,7 +52,7 @@ void Object::Field_Object_Init(const int m_field_size, int pos_z, int pos_x)
 	// 色の設定
 	//=================================
 	m_cube_color = GetColor(25, 25, 25);
-
+	m_line_color = GetColor(255, 255, 255);
 	//=================================
 	// 当たり判定用の座標の設定
 	//=================================
@@ -79,6 +81,7 @@ void Object::Draw()
 	SetUseLighting(FALSE);
 	// 立方体の描画
 	DrawCube3D(m_cube_top_pos.VGet(), m_cube_bottom_pos.VGet(), m_cube_color, m_cube_color, TRUE);
+	DrawCube3D(m_cube_top_pos.VGet(), m_cube_bottom_pos.VGet(), m_cube_color, m_line_color, FALSE);
 	SetUseLighting(TRUE);
 }
 
@@ -112,7 +115,7 @@ Vector3 Object::Set_Cube_Bottom_Pos(float m_field_size, int pos_z, int pos_x, Ve
 	// フィールド内の一つのスペースでのランダム座標の設定
 	//=====================================================
 	field_pos->x = GetRand(m_field_size); // X座標
-	field_pos->y = 0.0f;                         // Y座標
+	field_pos->y = 0.0f;                  // Y座標
 	field_pos->z = GetRand(m_field_size); // Z座標
 
 	//========================================================

@@ -1,7 +1,6 @@
 #pragma once
-
-#include "Base.h"
-#include "InputPad.h"
+//#include "Vector2.h"
+//#include "Base.h"
 // キャラクタークラス
 // Baseクラスを継承
 class CharacterBase : public Base

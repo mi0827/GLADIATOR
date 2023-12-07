@@ -1,6 +1,9 @@
-#include "EndScene.h"
 #include "WinMain.h"
-#include "GameMain.h"
+#include "Vector2.h"
+#include "Scene_Base.h"
+#include "EndScene.h"
+
+
 const int End_Time_MAX = 3;  // ƒGƒ“ƒh•`‰æŠÔ(¡‚¾‚¯3•b)
 //------------------------------------------
 // ‰Šúˆ—

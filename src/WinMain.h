@@ -16,6 +16,11 @@
 
 #include <DxLib.h>
 
+// 画面サイズ
+#define SCREEN_W	800
+#define SCREEN_H	450
+
+#include "InputPad.h" // ゲームパッド
 
 //------------------------
 // 関数の定義

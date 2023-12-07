@@ -1,6 +1,8 @@
 #include "WinMain.h"
-#include "GameMain.h"
+#include "Vector3.h"
+#include "Vector2.h"
 #include "Base.h"
+
 #include "Character_Base.h"
 
 
@@ -45,7 +47,7 @@ void CharacterBase::Update_Status()
 		m_sp_count.x = SP_POINT_MAX;
 		sp_flag = true; // 必殺技を使用できるようにする
 	}
-	sp_flame_count = m_sp_count.x; // わかりやすくするために入れる
+	m_now_sp = m_sp_count.x; // わかりやすくするために入れる
 }
 
 //---------------------------------------------------------------------------
@@ -90,7 +92,24 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 	//GetJoypadXInputState(DX_INPUT_PAD1, &input);
 	// GetJoypadXInputState((int) pad_no, &input);
 
-	GetJoypadXInputState((int)((PAD_NO)pad_no), &input);
+	//GetJoypadXInputState((int)((PAD_NO)pad_no), &input);
+	switch (pad_no)
+	{
+	case PAD_NO::PAD_NO1:
+		GetJoypadXInputState(DX_INPUT_PAD1, &input);
+		break;
+	case PAD_NO::PAD_NO2:
+		GetJoypadXInputState(DX_INPUT_PAD2, &input);
+		break;
+	case PAD_NO::PAD_NO3:
+		GetJoypadXInputState(DX_INPUT_PAD3, &input);
+		break;
+	case PAD_NO::PAD_NO4:
+		GetJoypadXInputState(DX_INPUT_PAD4, &input);
+		break;
+	}
+
+
 
 	// 左スティックの値を設定
 	mov.x = input.ThumbLX;

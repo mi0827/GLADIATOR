@@ -1,5 +1,8 @@
 #include "WinMain.h"
-#include "GameMain.h"
+#include "Vector3.h"
+#include "Vector2.h"
+#include "Base.h"
+#include "Character_Base.h"
 #include "Ninja.h"
 
 #define PANEL_SIZE	5.0f              // ƒpƒlƒ‹‚Ì‘å‚«‚³

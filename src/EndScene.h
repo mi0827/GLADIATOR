@@ -1,6 +1,5 @@
 #pragma once
-#include "Scene_Base.h"
-#include "Vector2.h"
+
 class EndScene : public Scene_Base
 {
 public:

@@ -1,22 +1,21 @@
-#include "GameScene.h"
 #include "WinMain.h"
-#include "GameMain.h"
-
 #include "Vector3.h"
+#include "Vector2.h"
 #include "Hit.h" // あたり判定
-
+#include "Base.h"
 // キャラクター.h
+#include "Character_Base.h"
 #include "Player.h"
 #include "Ninja.h"
+// オブジェクトクラス
+#include "Object.h"
 // フィールド.h
 #include "Field.h"
-
 // カメラ.h
 #include "Camera.h"
 
-// オブジェクトクラス
-#include "Object.h"
-
+#include "Scene_Base.h"
+#include "GameScene.h"
 constexpr int PLAYER_MAX = 2; // プレイヤーの数、カメラの数も一緒
 
 // 各クラスのオブジェクト
@@ -234,8 +233,6 @@ void GameScene::PlayEnd_Update()
 	Time_Update(end_count);
 
 	Play_Victory(players[0],players[1]);
-
-
 
 	if (end_count <= 0) 
 	{

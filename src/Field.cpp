@@ -1,7 +1,10 @@
 #include "WinMain.h"
-#include "GameMain.h"
-#include "Field.h"
+#include "Vector3.h"
+#include "Vector2.h"
+#include "Base.h"
 #include "Object.h"
+#include "Field.h"
+
 
 // フィールドのオブジェクトを置く座標 
 constexpr int MAP_W = 10;  // 縦

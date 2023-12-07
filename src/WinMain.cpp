@@ -71,6 +71,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	ChangeLightTypeDir(VGet(0.8f, -1.2f, 1.0f));
 
+	InputPadInit();
 	GameInit();
 
 	// ４：メインループ
@@ -80,6 +81,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// １１：描画領域をクリア
 		ClearDrawScreen();
+		InputPadUpdate();
 
 		GetHitKeyStateAll(KeyBuffer); // キーボードのすべてのキーの押下状態を取得する
 
@@ -125,6 +127,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	// ゲーム終了処理
 	GameExit();
+	InputPadExit();
 
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 	return 0;				// ソフトの終了 
