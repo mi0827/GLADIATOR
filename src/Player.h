@@ -155,8 +155,4 @@ public:
 
 	Hit_capsule_data* now_hit_area;
 
-
-
-
-
 };

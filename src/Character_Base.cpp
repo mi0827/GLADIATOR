@@ -207,7 +207,7 @@ void CharacterBase::Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* came
 	MATRIX mat_y = MGetRotY(TO_RADIAN(camera_rot->y));
 	//	その行列を使ってベクトルを回転させます。
 	*mov = GetVector3VTransform(*mov, mat_y);
-	// 移動ベクトルのｘｚの多胎から向きを求めます
+	// 移動ベクトルのｘｚのから向きを求めます
 	m_rot.y = TO_DEGREE(atan2f(mov->x, mov->z));
 	// 移動ベクトルの大きさを PLAYER_MOV_SPEED のおおきさにします
 	mov->SetLength(*mov_speed);

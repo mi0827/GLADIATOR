@@ -406,6 +406,7 @@ struct Capsule
 	float   r;
 };
 
+// カプセル同志のあたり判定を使いやすくしたもの
 bool HitCheck_Capsule_Capsule(const Capsule& cp1, const Capsule& cp2)
 {
 	//float angle = atan2f(cp2.bottom_pos.y - cp1.bottom_pos.y, cp2.bottom_pos.x - cp1.bottom_pos.x);
@@ -423,6 +424,16 @@ bool HitCheck_Capsule_Capsule(const Capsule& cp1, const Capsule& cp2)
 //---------------------------------------------------------------------------
 void GameScene::Block_Hit(int player1, int player2)
 {
+	//　プレイヤー１方向ベクトル(殴る方)
+	Vector3 vec1 = players[0]->m_pos - players[1]->m_pos;
+
+	// プレイヤー２の方向ベクトル（殴られる方）
+	Vector3 vec2 = players[1]->m_rot;
+
+	// これでうまくいっているはず
+	float vec = GetVector3Dot(vec1, players[1]->m_rot);
+
+
 	// 当たり判定を取っていいときに当たっていたらダメージを入れる
 	// プレイヤー０の攻撃判定とプレイヤー1のガードの判定
 	
