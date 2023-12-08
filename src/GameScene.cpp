@@ -26,7 +26,7 @@ Camera* camera[2];         // キャラクタと同じ数
 Field field;
 
 
-constexpr int TIME_MAX = 10;  // 制限時間 (今だけ10秒)
+constexpr int TIME_MAX = 90;  // 制限時間 (今だけ10秒)
 constexpr int END_TIME_MAX = 3; // エンドの時間制限
 
 
@@ -425,14 +425,14 @@ bool HitCheck_Capsule_Capsule(const Capsule& cp1, const Capsule& cp2)
 void GameScene::Block_Hit(int player1, int player2)
 {
 	//　プレイヤー１方向ベクトル(殴る方)
-	Vector3 vec1 = players[0]->m_pos - players[1]->m_pos;
-
+	Vector3 vec1 = players[0]->m_rot - players[1]->m_pos;
 	// プレイヤー２の方向ベクトル（殴られる方）
 	Vector3 vec2 = players[1]->m_rot;
-
 	// これでうまくいっているはず
-	float vec = GetVector3Dot(vec1, players[1]->m_rot);
-
+	float vec = GetVector3Dot(vec1, vec2);
+	
+	// 今現在 前から殴ると整数値　後ろから殴るをマイナス値が返ってくる
+	// 横から殴るるとへん
 
 	// 当たり判定を取っていいときに当たっていたらダメージを入れる
 	// プレイヤー０の攻撃判定とプレイヤー1のガードの判定
