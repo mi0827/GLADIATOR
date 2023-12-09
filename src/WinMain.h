@@ -22,6 +22,9 @@
 
 #include "InputPad.h" // ゲームパッド
 
+// EffekseerForDXLib.hをインクルードします。
+#include "EffekseerForDXLib.h"
+
 //------------------------
 // 関数の定義
 bool PushHitKey(int key); // キーボードが押されているかを見る

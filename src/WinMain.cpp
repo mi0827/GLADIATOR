@@ -1,6 +1,9 @@
 #include "WinMain.h"
 #include "GameMain.h"
 
+// EffekseerForDXLib.hをインクルードします。
+#include "EffekseerForDXLib.h"
+
 
 // キー入力に関する変数
 char KeyBuffer[256];
@@ -40,8 +43,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 32 : 色数（32ビットカラー）*直接てな色の数じゃない
 	SetGraphMode(SCREEN_W, SCREEN_H, 32);
 
-	// ＤＸライブラリ初期化処理
-	if (DxLib_Init() == -1)	return -1;			// エラーが起きたら直ちに終了
+	
 
 	// 抜き色の設定(画像の中の　R:255, G:0, B:255)
 	SetTransColor(255, 0, 255);
@@ -53,6 +55,39 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 10 :画面描画設定(描画領域を二つにして後ろに書き込んで完了したものを前にして画面に出す）
 	SetDrawScreen(DX_SCREEN_BACK);
+
+
+	//-----------------------------------------------------------
+	// DirectX11を使用するようにする。(DirectX9も可、一部機能不可)
+	// Effekseerを使用するには必ず設定する。
+	 SetUseDirect3DVersion(DX_DIRECT3D_11);
+	 //-----------------------------------------------------------
+
+
+
+	// ＤＸライブラリ初期化処理
+	if (DxLib_Init() == -1)	return -1;			// エラーが起きたら直ちに終了
+
+
+	// Effekseerを初期化する。
+	// 引数には画面に表示する最大パーティクル数を設定する。
+	if (Effekseer_Init(8000) == -1)
+	{
+		DxLib_End();
+		return -1;
+	}
+
+	//-----------------------------------------------------------
+	// フルスクリーンウインドウの切り替えでリソースが消えるのを防ぐ。
+	// Effekseerを使用する場合は必ず設定する。
+	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
+
+	// DXライブラリのデバイスロストした時のコールバックを設定する。
+	// ウインドウとフルスクリーンの切り替えが発生する場合は必ず実行する。
+	// ただし、DirectX11を使用する場合は実行する必要はない。
+	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+	//-----------------------------------------------------------
+
 
 	srand(GetNowCount() % RAND_MAX);
 
@@ -128,6 +163,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// ゲーム終了処理
 	GameExit();
 	InputPadExit();
+
+	//--------------------------
+	// Effekseerを終了する。
+	Effkseer_End();
+	//--------------------------
 
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 	return 0;				// ソフトの終了 
