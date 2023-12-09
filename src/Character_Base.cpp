@@ -67,14 +67,17 @@ void CharacterBase::Reset_Status()
 void CharacterBase::Draw_Status()
 {
 	// HPバーの描画
-	DrawBox(m_hp_pos.x, m_hp_pos.y, m_hp_pos.x + m_hp_count.x, m_hp_count.y, GetColor(0, 255, 0), TRUE);
-	DrawLineBox(m_hp_pos.x, m_hp_pos.y, HP_MAX + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));
+	DrawBox(m_hp_pos.x, m_hp_pos.y, (m_hp_pos.x + m_hp_count.x), m_hp_count.y, GetColor(0, 255, 0), TRUE);                // 本体バー
+	DrawBox((m_hp_pos.x + m_hp_count.x), m_hp_count.y, (HP_MAX + m_hp_pos.x), m_hp_pos.y, GetColor(255, 20, 20), TRUE);   // 余白バー
+	DrawLineBox(m_hp_pos.x, m_hp_pos.y, HP_MAX + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));                              // 外枠
 	// スキルクールダウンバーの描画
-	DrawBox(m_skill_pos.x, m_skill_pos.y, m_skill_pos.x + m_skill_count.x, m_skill_count.y, GetColor(0, 255, 0), TRUE);
-	DrawLineBox(m_skill_pos.x, m_skill_pos.y, SKILL_POINT_MAX + m_skill_pos.x, m_skill_count.y, GetColor(255, 255, 255));
+	DrawBox(m_skill_pos.x, m_skill_pos.y, (m_skill_pos.x + m_skill_count.x), m_skill_count.y, GetColor(0, 191, 255), TRUE);                       // 本体バー
+	DrawBox((m_skill_pos.x + m_skill_count.x), m_skill_count.y, (SKILL_POINT_MAX + m_skill_pos.x), m_skill_pos.y, GetColor(105, 105, 105), TRUE); // 余白バー
+	DrawLineBox(m_skill_pos.x, m_skill_pos.y, SKILL_POINT_MAX + m_skill_pos.x, m_skill_count.y, GetColor(255, 255, 255));			                        // 外枠
 	// SPバーの描画
-	DrawBox(m_sp_pos.x, m_sp_pos.y, m_sp_pos.x + m_sp_count.x, m_sp_count.y, GetColor(0, 255, 0), TRUE);
-	DrawLineBox(m_sp_pos.x, m_sp_pos.y, SP_POINT_MAX + m_sp_pos.x, m_sp_count.y, GetColor(255, 255, 255));
+	DrawBox(m_sp_pos.x, m_sp_pos.y, (m_sp_pos.x + m_sp_count.x), m_sp_count.y, GetColor(255, 215, 0), TRUE);                    // 本体バー
+	DrawBox((m_sp_pos.x + m_sp_count.x), m_sp_count.y, (SP_POINT_MAX + m_sp_pos.x), m_sp_pos.y, GetColor(105, 105, 105), TRUE); // 余白バー
+	DrawLineBox(m_sp_pos.x, m_sp_pos.y, (SP_POINT_MAX + m_sp_pos.x), m_sp_count.y, GetColor(255, 255, 255));		                      // 外枠
 }
 
 //---------------------------------------------------------------------------

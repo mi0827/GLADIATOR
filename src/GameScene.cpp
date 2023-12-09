@@ -26,7 +26,7 @@ Camera* camera[2];         // キャラクタと同じ数
 Field field;
 
 
-constexpr int TIME_MAX = 90;  // 制限時間 (今だけ10秒)
+constexpr int TIME_MAX = 5;  // 制限時間 (今だけ10秒)
 constexpr int END_TIME_MAX = 3; // エンドの時間制限
 
 
@@ -34,7 +34,7 @@ constexpr int END_TIME_MAX = 3; // エンドの時間制限
 // ゲーム開始の最初の設定
 //------------------------------------------
 GameScene::GameScene()
-{	
+{
 
 }
 
@@ -128,7 +128,7 @@ void GameScene::Draw()
 	switch (play_scene)
 	{
 	case Play_Tutorial:
-		Tutorial_Draw();          
+		Tutorial_Draw();
 		break;
 	case Play_Main:
 		Time_Draw();               // タイマーを描画するのはプレイ中だけ
@@ -137,7 +137,7 @@ void GameScene::Draw()
 		End_Draw();
 		break;
 	};
-	
+
 }
 
 //------------------------------------
@@ -166,15 +166,21 @@ void GameScene::Exit()
 void GameScene::Tutorial_Update()
 {
 	// スペースキーを押されたら
-	if (CheckHitKey(KEY_INPUT_SPACE)) 
+	if (CheckHitKey(KEY_INPUT_SPACE))
 	{
-		for (int i = 0; i < PLAYER_MAX; i++) 
+		for (int i = 0; i < PLAYER_MAX; i++)
 		{
 			players[i]->Reset_Status(); // ステータスをリセットしておく
 		}
 
+		// 座標と向きを最初の設定に戻す
+		players[0]->m_pos.set(0.0f, 0.0f, -50.0f);           // 初期座標の設定
+		players[0]->m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
+		players[1]->m_pos.set(0.0f, 0.0f, 500.0f);           // 初期座標の設定
+		players[1]->m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 		play_scene = Play_Main; // プレイメインに移動
 	}
+	
 }
 
 //------------------------------------
@@ -223,12 +229,6 @@ void GameScene::PlayMain_Update()
 	if (time_count == 0) {
 		play_scene = Play_End; // プレイエンドに進む
 	}
-
-
-
-	
-
-	
 }
 
 //------------------------------------
@@ -238,35 +238,13 @@ void GameScene::PlayEnd_Update()
 {
 	Time_Update(end_count);
 
-	Play_Victory(players[0],players[1]);
+	Play_Victory_Draw(players[0], players[1]);
 
-	if (end_count <= 0) 
+	if (end_count <= 0)
 	{
 		end_count = 0;
 		// タイマーが終わったら
 		scene_change_judge = true; // シーンの切り替えを許可する
-	}
-}
-
-//---------------------------------------------------------------------------
-// 勝者を決める関数
-//---------------------------------------------------------------------------
-void GameScene::Play_Victory(CharacterBase* character1, CharacterBase* character2)
-{
-	// hpをわかりやすいようにする
-	float hp1 = character1->m_now_hp;
-	float hp2 = character2->m_now_hp;
-
-	if (hp1 == hp2) {
-		// 残りhpが同じなら
-	}
-	if (hp1 > hp2)
-	{
-		// hp1のほうが残りhpが多いい場合
-	}
-	if(hp2 > hp1)
-	{
-		// hp2のほうが残りhpが多いい場合
 	}
 }
 
@@ -336,12 +314,11 @@ void GameScene::Time_Update(int& time_count)
 //---------------------------------------------------------------------------
 void GameScene::Time_Draw()
 {
-	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
+	// 文字列の設定
 	const char* name = "[%2d]";
-	// 描画幅の取得
-	float w = GetDrawStringWidth(name, -1);
-	// 文字列の高さ取得
-	float h = GetFontSize();
+	// 描画座標の定義
+	float w, h;
+	Draw_String_Size(&w, &h, name);
 
 	SetFontSize(28); // フォントサイズの変更
 	// 描画
@@ -354,16 +331,15 @@ void GameScene::Time_Draw()
 //---------------------------------------------------------------------------
 void GameScene::Tutorial_Draw()
 {
-	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
+	// 文字列の設定
 	const char* name = "チュートリアル";
-	// 描画幅の取得
-	float w = GetDrawStringWidth(name, -1);
-	// 文字列の高さ取得
-	float h = GetFontSize();
+	// 描画座標の定義
+	float w, h;
+	Draw_String_Size(&w, &h, name);
 
 	SetFontSize(28); // フォントサイズの変更
 	// 描画
-	DrawFormatStringF(SCREEN_W / 2 + 16 - w, h - 16, GetColor(255, 255, 0), name, time_count);
+	DrawFormatStringF(SCREEN_W / 2 - w, h - 15, GetColor(255, 255, 0), name, time_count);
 	SetFontSize(18); // フォントサイズを戻す
 }
 
@@ -372,19 +348,78 @@ void GameScene::Tutorial_Draw()
 //---------------------------------------------------------------------------
 void GameScene::End_Draw()
 {
-	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
+	// 文字列の設定
 	const char* name = "end";
-	// 描画幅の取得
-	float w = GetDrawStringWidth(name, -1);
-	// 文字列の高さ取得
-	float h = GetFontSize();
-	
+	// 描画座標の定義
+	float w, h;
+	Draw_String_Size(&w, &h, name);
+
 	SetFontSize(28); // フォントサイズの変更
-	// 描画
-	DrawFormatStringF(SCREEN_W / 2 + 16 - w, h - 16, GetColor(255, 255, 0), name, time_count);
+	// 描画(今がなんのシーンなのかがわかるように)
+	DrawFormatStringF(SCREEN_W / 2 - w, h, GetColor(255, 255, 0), name, time_count);
+	SetFontSize(18); // フォントサイズを戻す
+
+	Play_Victory_Draw(players[0], players[1]);
+
+}
+
+//---------------------------------------------------------------------------
+// 勝者を描画する用の変数
+//---------------------------------------------------------------------------
+void GameScene::Play_Victory_Draw(CharacterBase* character1, CharacterBase* character2)
+{
+	// hpをわかりやすいようにする
+	float hp1 = character1->m_now_hp;
+	float hp2 = character2->m_now_hp;
+
+	Vector2 draw_pos1; // プレイヤー１に対しての描画座標
+	draw_pos1.set(SCREEN_W / 2 - ((SCREEN_W / 2) / 2), SCREEN_H / 2);
+	Vector2 draw_pos2; // プレイヤー２に対しての描画座標
+	draw_pos2.set(SCREEN_W / 2 + ((SCREEN_W / 2) / 2), SCREEN_H / 2);
+
+	SetFontSize(35); // フォントサイズの変更
+	// 文字列の設定
+	const char* draw_string = "DRAW";
+	const char* winner_string = "WINNER";
+	const char* loser_string = "LOSER";
+	// 描画座標の定義
+	Vector2 draw;
+	Vector2 winner;
+	Vector2 loser;
+	// 描画座標設定
+	Draw_String_Size(&draw.x, &draw.y, draw_string);
+	Draw_String_Size(&winner.x, &winner.y, winner_string);
+	Draw_String_Size(&loser.x, &loser.y, loser_string);
+	if (hp1 == hp2) {
+		// 残りhpが同じなら
+		DrawStringF(draw_pos1.x - draw.x, draw_pos1.y, draw_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos2.x - draw.x, draw_pos2.y, draw_string, GetColor(255, 255, 0));
+	}
+	if (hp1 > hp2)
+	{
+		// hp1のほうが残りhpが多いい場合
+		DrawStringF(draw_pos1.x - winner.x, draw_pos1.y, winner_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos2.x - loser.x, draw_pos2.y, loser_string, GetColor(255, 255, 0));
+	}
+	if (hp2 > hp1)
+	{
+		// hp2のほうが残りhpが多いい場合
+		DrawStringF(draw_pos1.x - loser.x, draw_pos1.y, loser_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos2.x - winner.x, draw_pos2.y, winner_string, GetColor(255, 255, 0));
+	}
 	SetFontSize(18); // フォントサイズを戻す
 }
 
+//---------------------------------------------------------------------------
+// 文字列の幅、高さをとる関数
+//---------------------------------------------------------------------------
+void GameScene::Draw_String_Size(float* w, float* h, const char* sting)
+{
+	// 描画幅の取得,
+	*w = GetDrawStringWidth(sting, -1);
+	// 文字列の高さ取得
+	*h = GetFontSize();
+}
 
 //---------------------------------------------------------------------------
 // 攻撃のあたり判定をとる関数
@@ -436,13 +471,13 @@ void GameScene::Block_Hit(int player1, int player2)
 	Vector3 vec2; vec2.set(sinf(TO_RADIAN(players[1]->m_rot.y)), 0, cosf(TO_RADIAN(players[1]->m_rot.y)));
 	// これでうまくいっているはず
 	float vec = GetVector3Dot(vec1, vec2);
-	
+
 	// 今現在 前から殴ると整数値　後ろから殴るをマイナス値が返ってくる
 	// 横から殴るるとへん
 
 	// 当たり判定を取っていいときに当たっていたらダメージを入れる
 	// プレイヤー０の攻撃判定とプレイヤー1のガードの判定
-	
+
 
 	// 攻撃用カプセル
 	Capsule player2_hit_cp =

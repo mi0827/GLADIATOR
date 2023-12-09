@@ -26,7 +26,9 @@ public:
 	// プレイエンドの更新処理
 	void PlayEnd_Update();
 	// エンドシーンでの勝敗に関する関数
-	void Play_Victory(CharacterBase* character1, CharacterBase* character2); // 勝者を決める関数
+	void Play_Victory_Draw(CharacterBase* character1, CharacterBase* character2); // 勝者を決める関数
+
+	void Draw_String_Size(float* w, float* h, const char* sting);
 
 	// キャラクターの更新処理（移動時のお互いのあたり判定）
 	void Character_Update();
