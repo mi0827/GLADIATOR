@@ -226,14 +226,7 @@ void GameScene::PlayMain_Update()
 
 
 
-	//　プレイヤー１方向ベクトル(殴る方)
-	Vector3 vec1 = players[1]->m_pos - players[0]->m_pos;
-	// プレイヤー２の方向ベクトル（殴られる方）
-	Vector3 vec2; vec2.set(sinf(TO_RADIAN(players[1]->m_rot.y)), 0, cosf(TO_RADIAN(players[1]->m_rot.y)));
-
 	
-	// これでうまくいっているはず
-	float vec = GetVector3Dot(vec1, vec2);
 
 	
 }
@@ -437,7 +430,12 @@ bool HitCheck_Capsule_Capsule(const Capsule& cp1, const Capsule& cp2)
 //---------------------------------------------------------------------------
 void GameScene::Block_Hit(int player1, int player2)
 {
-	
+	//　プレイヤー１方向ベクトル(殴る方)
+	Vector3 vec1 = players[1]->m_pos - players[0]->m_pos;
+	// プレイヤー２の方向ベクトル（殴られる方）
+	Vector3 vec2; vec2.set(sinf(TO_RADIAN(players[1]->m_rot.y)), 0, cosf(TO_RADIAN(players[1]->m_rot.y)));
+	// これでうまくいっているはず
+	float vec = GetVector3Dot(vec1, vec2);
 	
 	// 今現在 前から殴ると整数値　後ろから殴るをマイナス値が返ってくる
 	// 横から殴るるとへん
