@@ -1,5 +1,5 @@
 #pragma once
-//#include "Character_Base.h"
+// #include "Character_Base.h"
 
 
 class GameScene :public Scene_Base
@@ -28,6 +28,7 @@ public:
 	// エンドシーンでの勝敗に関する関数
 	void Play_Victory_Draw(CharacterBase* character1, CharacterBase* character2); // 勝者を決める関数
 
+	// 描画用の文字列のサイズ調整
 	void Draw_String_Size(float* w, float* h, const char* sting);
 
 	// キャラクターの更新処理（移動時のお互いのあたり判定）
@@ -48,7 +49,6 @@ public:
 	// キャラクターのステータス描画処理
 	void Draw_Status();
 
-
 	enum play_scene
 	{
 		Play_Tutorial, // チュートリアルシーン
@@ -57,6 +57,7 @@ public:
 
 		Play_Max       // プレイシーンの最大
 	};
+
 private:
 
 	int time_count;     // フレーム数を現実の時間で計算する用の変数
@@ -64,8 +65,4 @@ private:
 	int play_scene;     // チュートリアルの途中かを判別
 	int end_count;      // エンドシーンの時間
 	bool status_flag;   // ステータス更新処理していいかのフラグ
-
-
-
-
 };

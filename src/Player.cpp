@@ -11,6 +11,7 @@
 //---------------------------------------------------------------------------
 // コンストラクタ（初期化）
 //---------------------------------------------------------------------------
+
 Player::Player()
 {
 	m_pos.set(0.0f, 0.0f, 0.0f);             // 初期座標の設定
@@ -250,7 +251,7 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 	// ステータスの更新のフラグが上がっていたら
 	//if (status_flag) {
 		// ステータスの更新処理
-		CharacterBase::Update_Status();
+	CharacterBase::Update_Status();
 	//}
 }
 
@@ -322,7 +323,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// 近距離攻撃
 	//=================================
 	// マウスの左クリックまたはAボタンで近距離攻撃
-	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no) ){
+	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
 		action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_SHORT_NORMAL_1_ANIM;  // 近距離攻撃アクションを設定
 		CharacterBase::Attack_Action(1);          // 行いたい攻撃アニメーションをセット	
@@ -334,7 +335,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	// マウスの右クリック、または、Yボタンで遠距離攻撃
 	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_Y, pad_no)) {
-	//if (IsPadRepeat(PAD_ID::PAD_Y, PAD_NO::PAD_NO1)) {
+		//if (IsPadRepeat(PAD_ID::PAD_Y, PAD_NO::PAD_NO1)) {
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
 		bead_hit_flag = false;
@@ -357,6 +358,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 			skill_flag = false;                          // skillを使用済みにしておく
 		}
 	}
+
 	//=================================
 	// 必殺技
 	//=================================
@@ -367,6 +369,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 必殺攻撃アクションを設定
 			CharacterBase::Attack_Action(1);   // 行いたい攻撃アニメーションをセット
+			bead_hit_flag = false;
 			action_flag = true;                      // アクションフラグを上げる
 			sp_flag = false;                         // SPを使用済みにしておく
 		}
@@ -410,16 +413,15 @@ void Player::Attack_Update()
 		bead_pos.z += 3 * cosf(TO_RADIAN(m_rot.y));
 		lifespan_count--; // 弾が消えるまでのカウントを進める
 
-		now_hit_area = &hit_areas[THROW_ATTACK_1_HIT];
-		if (attack_anim_frame[THROW_ATTACK_1_HIT] == now_hit_area->hit_anim_frame) {
-			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+		now_hit_area = &hit_areas[THROW_ATTACK_HIT];
 
-			// 当たり判定を見えるようにする物
-			// 向いている方向に座標を設定（今はパンチに位置）
-			m_hit_cd_pos_top.set(bead_pos);
-			m_hit_cd_pos_under.set(bead_pos);
-			m_hit_cd_r = now_hit_area->hit_r;
-		}
+		cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
+		// 当たり判定を見えるようにする物
+		// 向いている方向に座標を設定（今はパンチに位置）
+		m_hit_cd_pos_top.set  (bead_pos.x, bead_pos.y , bead_pos.z);
+		m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y , bead_pos.z);
+		m_hit_cd_r = now_hit_area->hit_r;
 
 		// カウントが一定にまで減るか、当たり判定があったら
 		if (lifespan_count <= 0 || bead_hit_flag) {
@@ -470,13 +472,23 @@ void Player::Attack_Update()
 		if (lifespan_count >= 240.0f) {
 
 			bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
-
 			// 座標の設定
 			bead_pos.set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 300, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
 			bead_r = 100.0f;        // 半径の設定
 		}
 		bead_pos.y--;
 		lifespan_count--; // 弾が消えるまでのカウントを進める
+
+		now_hit_area = &hit_areas[SPECIAL_HIT];
+
+		cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
+		// 当たり判定を見えるようにする物
+		// 向いている方向に座標を設定（今はパンチに位置）
+		m_hit_cd_pos_top.set  (bead_pos.x, bead_pos.y /*+ now_hit_area->hit_r*/, bead_pos.z);
+		m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y /*- now_hit_area->hit_r*/, bead_pos.z);
+		m_hit_cd_r = now_hit_area->hit_r;
+
 		// カウントが一定にまで減るか、当たり判定があったら
 		if (lifespan_count <= 0 || bead_hit_flag) {
 			lifespan_count = NULL;  // 次のために空にしておく

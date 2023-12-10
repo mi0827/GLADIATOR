@@ -16,26 +16,23 @@
 
 #include "Scene_Base.h"
 #include "GameScene.h"
-constexpr int PLAYER_MAX = 2; // プレイヤーの数、カメラの数も一緒
+constexpr int PLAYER_MAX = 2;   // プレイヤーの数、カメラの数も一緒
+
 
 // 各クラスのオブジェクト
-
-CharacterBase* players[2]; // キャラクターの二人呼ぶ用の配列 
-Camera* camera[2];         // キャラクタと同じ数
+CharacterBase* players[2];      // キャラクターの二人呼ぶ用の配列 
+Camera* camera[2];              // キャラクタと同じ数
 
 Field field;
 
-
-constexpr int TIME_MAX = 5;  // 制限時間 (今だけ10秒)
-constexpr int END_TIME_MAX = 3; // エンドの時間制限
-
+constexpr int TIME_MAX = 60;    // 制限時間 (今だけ10秒)
+constexpr int END_TIME_MAX = 5; // エンドの時間制限
 
 //------------------------------------------
 // ゲーム開始の最初の設定
 //------------------------------------------
 GameScene::GameScene()
 {
-
 }
 
 //------------------------------------------------
@@ -137,7 +134,6 @@ void GameScene::Draw()
 		End_Draw();
 		break;
 	};
-
 }
 
 //------------------------------------
@@ -180,7 +176,6 @@ void GameScene::Tutorial_Update()
 		players[1]->m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 		play_scene = Play_Main; // プレイメインに移動
 	}
-	
 }
 
 //------------------------------------
@@ -228,6 +223,14 @@ void GameScene::PlayMain_Update()
 	// タイマーが０になったら
 	if (time_count == 0) {
 		play_scene = Play_End; // プレイエンドに進む
+	}
+
+	// どちらかのキャラの体力がゼロになったらエンドに移動
+	for (int i = 0; i < PLAYER_MAX; i++)
+	{
+		if (players[i]->m_now_hp == 0) {
+			play_scene = Play_End; // プレイエンドに進む
+		}
 	}
 }
 
@@ -315,7 +318,7 @@ void GameScene::Time_Update(int& time_count)
 void GameScene::Time_Draw()
 {
 	// 文字列の設定
-	const char* name = "[%2d]";
+	const char* name = "[%02d]";
 	// 描画座標の定義
 	float w, h;
 	Draw_String_Size(&w, &h, name);
@@ -472,12 +475,11 @@ void GameScene::Block_Hit(int player1, int player2)
 	// これでうまくいっているはず
 	float vec = GetVector3Dot(vec1, vec2);
 
-	// 今現在 前から殴ると整数値　後ろから殴るをマイナス値が返ってくる
-	// 横から殴るるとへん
+	// 今現在前から殴ると整数値後ろから殴るをマイナス値が返ってくる
+	// 横から殴るとへん
 
 	// 当たり判定を取っていいときに当たっていたらダメージを入れる
 	// プレイヤー０の攻撃判定とプレイヤー1のガードの判定
-
 
 	// 攻撃用カプセル
 	Capsule player2_hit_cp =
@@ -509,11 +511,9 @@ void GameScene::Block_Hit(int player1, int player2)
 
 	if (can_check_hit)
 	{
-
 		// どの方向からガードカプセルに攻撃が当たったのかを調べる
 		// その方向がガードカプセル側であれば、”何もしない”
 		// そうじゃなければ、”ダメージ処理”
-
 
 		if (HitCheck_Capsule_Capsule(player1_cp, player2_hit_cp))
 		{
@@ -522,9 +522,12 @@ void GameScene::Block_Hit(int player1, int player2)
 		}
 		else if (HitCheck_Capsule_Capsule(player1_no_cp, player2_hit_cp))
 		{
-			// player1の本体用のカプセルとplayer2の攻撃用カプセルが当たったとき
-			players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
-			players[player1]->damage_flag = true;
+			// ガードの後ろからじゃないとあたらない
+			if (vec > 0.0f) {
+				// player1の本体用のカプセルとplayer2の攻撃用カプセルが当たったとき
+				players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
+				players[player1]->damage_flag = true;
+			}
 		}
 	}
 
