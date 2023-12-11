@@ -28,9 +28,9 @@ int MapData[MAP_H][MAP_W]
 //	初期化処理
 Field::Field()
 {
-	// ここでフィールドモデルの読み込みをする
-	m_model = MV1LoadModel("Data/Model/Field/ground.mv1");
-	m_pos.clear(); // 描画座標の設定
+	//// ここでフィールドモデルの読み込みをする
+	//m_model = MV1LoadModel("Data/Model/Field/z.mv1");
+	m_pos.set(0.0f,-5.0f,0.0f); // 描画座標の設定
 	m_rot.clear(); // 回転量の設定
 }
 
@@ -39,7 +39,7 @@ Field::Field()
 void Field::Init()
 {
 	// ここでフィールドモデルの読み込みをする
-	m_model = MV1LoadModel("Data/Model/Field/ground.mv1");
+	m_model = MV1LoadModel("Data/Model/Field/Ground_2.mv1");
 	obj_max = Field_Init();
 
 	// オブジェクトの初期設定
