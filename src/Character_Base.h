@@ -7,10 +7,11 @@ class CharacterBase : public Base
 {
 public:
 
+	// 全キャラ共通の値
 #define HP_MAX 350          // HPの最大値
 #define SKILL_POINT_MAX 150 // スキルポイントの最大値
 #define SP_POINT_MAX 200    // SPポイントの最大値
-#define PUNCH_MAX 2
+//#define PUNCH_MAX 2
 	//---------------
 	// 関数の定義
 	//---------------
@@ -26,7 +27,7 @@ public:
 	virtual void Move_Hit_Update() = 0;            // 壁擦り用の関数
 	virtual void Attack_PressButton_Update(Vector3* camera_rot) = 0;  // アクションに関するボタン押し用の関数（見やすくするための関数）
 	virtual void Attack_Update() = 0;              // 攻撃が行われた時に行う
-	virtual void Damage_Update() = 0;              // ダメージを食らった時に行う
+	virtual void Damage_Update(int* m_attack_damage) = 0;              // ダメージを食らった時に行う
 	virtual void Block_Update() = 0;               // ガードが行われた時に行う
 
 
@@ -162,11 +163,11 @@ protected:
 	//---------------------------------------------------------------------------
 	// ガードアニメーション用変数
 	//---------------------------------------------------------------------------
-	int* block_anim_model;    // アニメーションモデル
-	int* block_anim_attach;   // モデルにアニメーションをアタッチする用の配列（アタッチ番号を取得する）
-	float* block_anim_total;  // アニメーションが何フレーム科を取得、それを保存する用の配列
-	float* block_anim_rate;	  // それぞれのアニメーションがどのくらうのわりあいになるか（0.0f ~ 1.0f）
-	float* block_anim_frame;  // アニメーションが何フレーム進んでいるのか
+	int* block_anim_model;         // アニメーションモデル
+	int* block_anim_attach;        // モデルにアニメーションをアタッチする用の配列（アタッチ番号を取得する）
+	float* block_anim_total;       // アニメーションが何フレーム科を取得、それを保存する用の配列
+	float* block_anim_rate;	       // それぞれのアニメーションがどのくらうのわりあいになるか（0.0f ~ 1.0f）
+	float* block_anim_frame;       // アニメーションが何フレーム進んでいるのか
 
 
 	//---------------------------------------------------------------------------

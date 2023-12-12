@@ -386,7 +386,7 @@ void CharacterBase::Block_Action(int index)
 {
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
 	block_anim_attach[block_anim_pick] = MV1AttachAnim(m_model, index, block_anim_model[block_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
-	block_flag = true; // 攻撃中にする
+	block_flag = true; // 防御フラグを上げる
 }
 
 

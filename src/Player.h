@@ -37,7 +37,7 @@ public:
 	void Move_Hit_Update()override;           // プレイヤーの移動用当たり判定更新処理（壁擦り）
 	void Attack_PressButton_Update(Vector3* camera_rot)override; // アクションに関するボタン押し用の関数（見やすくするための関数）
 	void Attack_Update()override;   // 攻撃が行われた時に行う
-	void Damage_Update()override;	// ダメージを食らった時に行う
+	void Damage_Update(int* m_attack_damage)override;	// ダメージを食らった時に行う
 	void Block_Update()override;	// ガードが行われた時に行う
 	void Draw() override;		// 描画処理
 	void Exit() override;		//終了処理
@@ -86,7 +86,8 @@ private:
 	// ガードアニメーション用の列挙体　
 	enum BLOCK_ANIM
 	{
-		BLOCK_ANIM, // ブロックアニメーション
+		BLOCK_ANIM,  // ブロックアニメーション
+
 
 		BLOCK_ANIM_MAX
 	};
@@ -115,7 +116,7 @@ public:
 	const int attack_damage[ATTACK_ANIM_MAX]
 	{
 		20,  // 遠距離攻撃
-		100,  // 近距離攻撃１
+		40,  // 近距離攻撃１
 		30,  // 近距離攻撃２
 		10,  // スライディング
 		150, // 必殺技

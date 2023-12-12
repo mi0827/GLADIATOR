@@ -273,7 +273,7 @@ void Ninja::Attack_Update()
 {
 }
 
-void Ninja::Damage_Update()
+void Ninja::Damage_Update(int* m_attack_damage)
 {
 }
 

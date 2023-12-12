@@ -113,6 +113,7 @@ void Player::Animation_Init()
 	// ガードアニメーションの設定
 	CharacterBase::Block_Anim_New(BLOCK_ANIM_MAX);
 	block_anim_model[BLOCK_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Block/block.mv1");
+
 	CharacterBase::Block_Anim_Init(BLOCK_ANIM_MAX, 1);
 }
 
@@ -195,13 +196,13 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 		// アニメーションの再生
 		// 攻撃アニメーション用のフレームカウントを進める
 		attack_anim_frame[attack_anim_pick]++;
-		if (attack_anim_frame[attack_anim_pick] >= attack_anim_total[attack_anim_pick]) { // アニメーションが一周したら
+		if (attack_anim_frame[attack_anim_pick] >= attack_anim_total[attack_anim_pick]) {                                           // アニメーションが一周したら
 			attack_anim_frame[attack_anim_pick] = 0.0f;
 			attack_anim_attach[attack_anim_pick] = MV1DetachAnim(m_model, attack_anim_attach[attack_anim_pick]);  // 攻撃アニメーションをディタッチしておく
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
-			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
-			attack_flag = false; // 攻撃が終わったのでこうげきしていないようにする
-			attack_anim_pick = ATTACK_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
+			action_mode = NORMAL_ACTION;                                                                                         	// アニメーションが１ループしたかrATTACK_ACTIONから出る
+			attack_flag = false;                                                                                                    // 攻撃が終わったのでこうげきしていないようにする
+			attack_anim_pick = ATTACK_ANIM_MAX;                                                                                     // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
 		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
 
@@ -214,17 +215,19 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 
 		// アニメーションの再生
 		// ガードアニメーション用のフレームカウントを進める
+		// 防御フラグが上がっている間は防御アニメーションをループさせる
 		block_anim_frame[block_anim_pick]++;
-		if (block_anim_frame[block_anim_pick] >= block_anim_total[block_anim_pick]) { // アニメーションが一周したら
-			block_anim_frame[block_anim_pick] = 0.0f;
-			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);  // 攻撃アニメーションをディタッチしておく
-			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
-			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたかrATTACK_ACTIONから出る
-			block_flag = false;
-			block_anim_pick = BLOCK_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
+		if (block_anim_frame[block_anim_pick] >= block_anim_total[block_anim_pick]) {                                                // アニメーションが一周したら
+			block_anim_frame[block_anim_pick] = 0.0f;                                                                                 // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
+		}
+		if (block_flag == false) { // ガードフラグが下がったら
+			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);       // 攻撃アニメーションをディタッチしておく
+			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                    // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
+			action_mode = NORMAL_ACTION; 	                                                                                         // アニメーションが１ループしたかrATTACK_ACTIONから出る
+			block_anim_pick = BLOCK_ANIM_MAX;
 		}
 		MV1SetAttachAnimTime(m_model, block_anim_attach[block_anim_pick], block_anim_frame[block_anim_pick]); // アニメーションの再生
-		if (block_flag) {  // ガードフラグが上がったら
+		if (block_flag) {     // ガードフラグが上がったら
 			Block_Update();   // ガード用のアップデート
 		}
 		break;
@@ -232,18 +235,15 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 	case DAMAGE_ACTION:
 
 		damage_anim_frame[damage_anim_pick]++;
-		if (damage_anim_frame[damage_anim_pick] >= damage_anim_total[damage_anim_pick]) { // アニメーションが一周したら
+		if (damage_anim_frame[damage_anim_pick] >= damage_anim_total[damage_anim_pick]) {                                           // アニメーションが一周したら
 			damage_anim_frame[damage_anim_pick] = 0.0f;
-			damage_anim_frame[damage_anim_pick] = MV1DetachAnim(m_model, damage_anim_attach[damage_anim_pick]);  // 攻撃アニメーションをディタッチしておく
+			damage_anim_frame[damage_anim_pick] = MV1DetachAnim(m_model, damage_anim_attach[damage_anim_pick]);   // 攻撃アニメーションをディタッチしておく
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
-			action_mode = NORMAL_ACTION; 	// アニメーションが１ループしたからダメージアニメーションから出る
-			damage_flag = false;         // ダメージアニメーションフラグを下す
-			damage_anim_pick = DAMAGE_ANIM_MAX; // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
+			action_mode = NORMAL_ACTION; 	                                                                                        // アニメーションが１ループしたからダメージアニメーションから出る
+			damage_flag = false;                                                                                                    // ダメージアニメーションフラグを下す
+			damage_anim_pick = DAMAGE_ANIM_MAX;                                                                                     // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
 		MV1SetAttachAnimTime(m_model, damage_anim_attach[damage_anim_pick], damage_anim_frame[damage_anim_pick]);
-		if (damage_flag) { // ダメージを食らったフラグが上がっていたら
-			Damage_Update();  // ダメージ用のアップデート
-		}
 
 		break;
 	}
@@ -379,14 +379,15 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// ガード
 	//=================================
 	// または、Xボタンで遠距離攻撃
-	if (PushHitKey(KEY_INPUT_LSHIFT) || IsPadOn(PAD_ID::PAD_X, pad_no)) {
+	/*if (PushHitKey(KEY_INPUT_LSHIFT) || IsPadOn(PAD_ID::PAD_X, pad_no)) {*/      // ボタンの一度押し
+	if (/*CheckHitKey(KEY_INPUT_LSHIFT) ||*/ IsPadRepeat(PAD_ID::PAD_X, pad_no)) { // ボタンの長押し
 		action_mode = BLOCK_ACTION;           // モデルのアクションをガードに変更
 		block_anim_pick = BLOCK_ANIM;         // ガードアクションを設定
 		CharacterBase::Block_Action(1); // 行いたい攻撃アニメーションをセット
 		action_flag = true;                   // アクションフラグを上げる
 	}
-
 }
+
 
 //---------------------------------------------------------------------------
 // 攻撃用アップデート
@@ -419,8 +420,8 @@ void Player::Attack_Update()
 
 		// 当たり判定を見えるようにする物
 		// 向いている方向に座標を設定（今はパンチに位置）
-		m_hit_cd_pos_top.set  (bead_pos.x, bead_pos.y , bead_pos.z);
-		m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y , bead_pos.z);
+		m_hit_cd_pos_top.set(bead_pos.x, bead_pos.y, bead_pos.z);
+		m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y, bead_pos.z);
 		m_hit_cd_r = now_hit_area->hit_r;
 
 		// カウントが一定にまで減るか、当たり判定があったら
@@ -485,7 +486,7 @@ void Player::Attack_Update()
 
 		// 当たり判定を見えるようにする物
 		// 向いている方向に座標を設定（今はパンチに位置）
-		m_hit_cd_pos_top.set  (bead_pos.x, bead_pos.y /*+ now_hit_area->hit_r*/, bead_pos.z);
+		m_hit_cd_pos_top.set(bead_pos.x, bead_pos.y /*+ now_hit_area->hit_r*/, bead_pos.z);
 		m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y /*- now_hit_area->hit_r*/, bead_pos.z);
 		m_hit_cd_r = now_hit_area->hit_r;
 
@@ -500,14 +501,24 @@ void Player::Attack_Update()
 }
 
 //---------------------------------------------------------------------------
-// ダメージを食らった時用の関数
+// ダメージを食らった時用の関数(食らったダメージに合わせてアニメーションをを変える)
 //---------------------------------------------------------------------------
-void Player::Damage_Update()
+void Player::Damage_Update(int* m_attack_damage)
 {
+	// 与えられたダメージによってアニメーションを変化させる
+	// 今は入っている値は仮です
+	if (*m_attack_damage < 30) {
+		damage_anim_pick = BLOCK_ANIM;
+	}
+	if (*m_attack_damage >= 30 && *m_attack_damage < 70) {
+		damage_anim_pick = DAMAGE_ANIM_1;
+	}
+	if (*m_attack_damage >= 70) {
+		damage_anim_pick = DAMAGE_ANIM_END;
+	}
 }
 
 //---------------------------------------------------------------------------
-// 
 // ガードをした時用の関数
 //---------------------------------------------------------------------------
 void Player::Block_Update()
@@ -527,6 +538,12 @@ void Player::Block_Update()
 		}
 		else {
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
+		}
+
+		// ガードキーを離したとき
+		if (IsPadRelease(PAD_ID::PAD_X, pad_no)) {
+			// はなししている時は
+			block_flag = false; // 防御フラグを下す
 		}
 
 		break;
