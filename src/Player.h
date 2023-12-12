@@ -116,7 +116,7 @@ public:
 	const int attack_damage[ATTACK_ANIM_MAX]
 	{
 		20,  // ‰“‹——£UŒ‚
-		40,  // ‹ß‹——£UŒ‚‚P
+		30,  // ‹ß‹——£UŒ‚‚P
 		30,  // ‹ß‹——£UŒ‚‚Q
 		10,  // ƒXƒ‰ƒCƒfƒBƒ“ƒO
 		150, // •KE‹Z

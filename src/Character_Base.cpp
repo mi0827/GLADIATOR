@@ -346,7 +346,7 @@ void CharacterBase::Damage_Action(int index)
 {
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
 	damage_anim_attach[damage_anim_pick] = MV1AttachAnim(m_model, index, damage_anim_model[damage_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
-	damage_flag = true; // 攻撃中にする
+	// damage_flag = true; // 攻撃中にする
 }
 
 

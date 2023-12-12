@@ -437,11 +437,10 @@ void GameScene::Attack_Hit(int player1, int player2)
 		{
 			players[player2]->m_hp_count.x -= players[player1]->m_attack_damage[players[player1]->attack_anim_pick]; // ダメージを入れる
 			players[player2]->Damage_Update(&players[player1]->m_attack_damage[players[player1]->attack_anim_pick]);
-			players[player2]->damage_flag = true;
+			players[player2]->damage_flag = true; // ダメージを食らってるようにする
 		}
 	}
 }
-
 
 // 当たり判定用の構造体（わかりやすいように）
 struct Capsule

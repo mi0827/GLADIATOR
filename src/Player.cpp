@@ -54,8 +54,6 @@ Player::Player()
 	// SP
 	m_sp_pos.set(10, 112);		   	 // SPのクールダウンバーの描画位置初期化
 	m_sp_count.set(0, m_sp_pos.y + 30); // SPのクールダウンバーの計算用の初期化
-
-
 }
 
 //---------------------------------------------------------------------------
@@ -159,14 +157,16 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 			break;         // 後の処理を飛ばす
 		}
 
-
 		//=================================
 		// ダメージのを食らったら
 		//=================================
 		if (damage_flag) {
-			action_mode = DAMAGE_ACTION;           // モデルのアクションをダメージに変更
-			damage_anim_pick = DAMAGE_ANIM;        // ダメージアクションを設定
-			CharacterBase::Damage_Action(1); // 行いたいダメージアニメーションをセット
+			action_mode = DAMAGE_ACTION;            // モデルのアクションをダメージに変更
+			if (m_now_hp == 0) {                    // 体力がなくなった
+				damage_anim_pick = DAMAGE_ANIM_END; // 死ぬアニメーションにする
+			}
+
+			CharacterBase::Damage_Action(1);  // 行いたいダメージアニメーションをセット
 			break;
 		}
 
@@ -232,16 +232,21 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 		}
 		break;
 
-	case DAMAGE_ACTION:
+	case DAMAGE_ACTION: // ダメージを食らった時のアニメーション再生
 
 		damage_anim_frame[damage_anim_pick]++;
 		if (damage_anim_frame[damage_anim_pick] >= damage_anim_total[damage_anim_pick]) {                                           // アニメーションが一周したら
-			damage_anim_frame[damage_anim_pick] = 0.0f;
+		// 	damage_anim_frame[damage_anim_pick] = 0.0f;
 			damage_anim_frame[damage_anim_pick] = MV1DetachAnim(m_model, damage_anim_attach[damage_anim_pick]);   // 攻撃アニメーションをディタッチしておく
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	                                                                                        // アニメーションが１ループしたからダメージアニメーションから出る
-			damage_flag = false;                                                                                                    // ダメージアニメーションフラグを下す
-			damage_anim_pick = DAMAGE_ANIM_MAX;                                                                                     // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
+		
+			if (m_now_hp != 0) {
+				damage_anim_frame[damage_anim_pick] = 0.0f;
+				damage_flag = false; // ダメージアニメーションフラグを下す
+				damage_anim_pick = DAMAGE_ANIM_MAX;
+			}
+			                                                                                // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
 		MV1SetAttachAnimTime(m_model, damage_anim_attach[damage_anim_pick], damage_anim_frame[damage_anim_pick]);
 
@@ -448,8 +453,6 @@ void Player::Attack_Update()
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
 		}
 		break;
-
-
 	case ATTACK_SLIDE_ANIM: // スライディング（当たり判定の作成）
 		now_hit_area = &hit_areas[ATTACK_SLIDE_ANIM]; // 構造体を触りやすくするために違う変数に入れておく
 		cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
@@ -510,12 +513,14 @@ void Player::Damage_Update(int* m_attack_damage)
 	if (*m_attack_damage < 30) {
 		damage_anim_pick = BLOCK_ANIM;
 	}
-	if (*m_attack_damage >= 30 && *m_attack_damage < 70) {
-		damage_anim_pick = DAMAGE_ANIM_1;
-	}
-	if (*m_attack_damage >= 70) {
-		damage_anim_pick = DAMAGE_ANIM_END;
-	}
+	else
+		if (*m_attack_damage >= 30 && *m_attack_damage < 70) {
+			damage_anim_pick = DAMAGE_ANIM_1;
+		}
+		else
+			if (*m_attack_damage >= 70) {
+				damage_anim_pick = DAMAGE_ANIM_END;
+			}
 }
 
 //---------------------------------------------------------------------------
