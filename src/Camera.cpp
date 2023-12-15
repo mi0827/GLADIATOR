@@ -93,7 +93,9 @@ void Camera::Update(Vector3* player_pos)
 	rot /= 32768.0f;
 	// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
 	if (rot.GetLength() > 0.5f) {
-		m_rot += rot * PAD_CAMERA_ROT_SPEED;  // その移動ベクトル分座標移動
+		m_rot.y += rot.y * PAD_CAMERA_ROT_SPEED;
+		m_rot.x -= rot.x * PAD_CAMERA_ROT_SPEED;
+		// m_rot += rot * PAD_CAMERA_ROT_SPEED;  // その移動ベクトル分座標移動
 	}
 
 	// まずは回転前のベクトルを用意します

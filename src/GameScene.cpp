@@ -479,12 +479,13 @@ bool HitCheck_Capsule_Capsule(const Capsule& cp1, const Capsule& cp2)
 //---------------------------------------------------------------------------
 void GameScene::Block_Hit(int player1, int player2)
 {
-	//　プレイヤー１方向ベクトル(殴る方)
-	Vector3 vec1 = players[1]->m_pos - players[0]->m_pos;
-	// プレイヤー２の方向ベクトル（殴られる方）
-	Vector3 vec2; vec2.set(sinf(TO_RADIAN(players[1]->m_rot.y)), 0, cosf(TO_RADIAN(players[1]->m_rot.y)));
-	// これでうまくいっているはず
-	float vec = GetVector3Dot(vec1, vec2);
+	////　プレイヤー１方向ベクトル(殴る方)
+	//Vector3 vec1 = players[1]->m_pos - players[0]->m_pos;
+	//// プレイヤー２の方向ベクトル（殴られる方）
+	//Vector3 vec2; 
+	//vec2.set(sinf(TO_RADIAN(players[1]->m_rot.y)), 0, cosf(TO_RADIAN(players[1]->m_rot.y)));
+	//// これでうまくいっているはず
+	//float vec = GetVector3Dot(vec1, vec2);
 
 	// 今現在前から殴ると整数値後ろから殴るをマイナス値が返ってくる
 	// 横から殴るとへん
@@ -520,6 +521,14 @@ void GameScene::Block_Hit(int player1, int player2)
 	// 当たり判定をしていいかどうか
 	bool can_check_hit = players[player1]->cd_hit_flag && players[player1]->block_flag;
 
+	//　プレイヤー１方向ベクトル(殴る方)
+	Vector3 vec1 = players[1]->m_pos - players[0]->m_pos;
+	// プレイヤー２の方向ベクトル（殴られる方）
+	Vector3 vec2;
+	vec2.set(sinf(TO_RADIAN(players[1]->m_pos.y)), 0, cosf(TO_RADIAN(players[1]->m_pos.y)));
+	// これでうまくいっているはず
+	float vec = GetVector3Dot(vec1, vec2);
+
 	if (can_check_hit)
 	{
 		// どの方向からガードカプセルに攻撃が当たったのかを調べる
@@ -529,17 +538,18 @@ void GameScene::Block_Hit(int player1, int player2)
 		if (HitCheck_Capsule_Capsule(player1_cp, player2_hit_cp))
 		{
 			// player1のガード用カプセルとplayer2の攻撃用カプセルが当たったとき
-
-		}
-		else if (HitCheck_Capsule_Capsule(player1_no_cp, player2_hit_cp))
-		{
-			// ガードの後ろからじゃないとあたらない
-			if (vec > 0.0f) {
-				// player1の本体用のカプセルとplayer2の攻撃用カプセルが当たったとき
-				players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
-				players[player1]->damage_flag = true;
+			if (HitCheck_Capsule_Capsule(player1_no_cp, player2_hit_cp))
+			{
+				// ガードの後ろからじゃないとあたらない
+				if (vec <= 0.0f) {
+					// player1の本体用のカプセルとplayer2の攻撃用カプセルが当たったとき
+					players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
+					players[player1]->damage_flag = true;
+					
+				}
 			}
 		}
+		
 	}
 
 
