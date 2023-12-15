@@ -76,7 +76,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		DxLib_End();
 		return -1;
 	}
-
+	// Effekseer対応
 	//-----------------------------------------------------------
 	// フルスクリーンウインドウの切り替えでリソースが消えるのを防ぐ。
 	// Effekseerを使用する場合は必ず設定する。
@@ -111,6 +111,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// ４：メインループ
 	while (TRUE) {
+		//// DXライブラリのカメラとEffekseerのカメラを同期する。
+		//Effekseer_Sync3DSetting();
 
 		Time = GetNowCount();
 
@@ -128,19 +130,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// 上の二つのコメントと同様のことをしている
 		if (CheckMouseInput(MOUSE_INPUT_LEFT))	MouseLeftFrame++;
-		else										MouseLeftFrame = 0;
+		else									MouseLeftFrame = 0;
 		// 上と同様
 		if (CheckMouseInput(MOUSE_INPUT_RIGHT))	MouseRightFrame++;
-		else										MouseRightFrame = 0;
+		else									MouseRightFrame = 0;
 
 		NowMouseX = GetMouseX();
 		NowMouseY = GetMouseY();
 
 		// ゲーム更新処理
 		GameUpdate();
+		// Effekseer更新処理
+		UpdateEffekseer3D();
 
 		// ゲーム描画処理
 		GameDraw();
+
 
 		BeforeMouseX = NowMouseX;
 		BeforeMouseY = NowMouseY;

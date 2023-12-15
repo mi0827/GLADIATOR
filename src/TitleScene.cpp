@@ -18,6 +18,11 @@ void TiteleScene::Init()
 	count_time = Title_Time_MAX;
 
 	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
+
+	//effeckt_h = LoadEffekseerEffect("Data/Model/Player/Effekt/Laser01.efkefc", 0.5f);
+	//int play_handle = PlayEffekseer3DEffect(effeckt_h); // エフェクトの更新処理
+	//int ret = SetPosPlayingEffekseer3DEffect(play_handle, 0, 0, 0);
+
 }
 
 //------------------------------------------
@@ -25,6 +30,15 @@ void TiteleScene::Init()
 //------------------------------------------
 void TiteleScene::Update()
 {
+	//// DXライブラリのカメラを設定する。
+	//SetCameraPositionAndTarget_UpVecY(VGet(10, 10, -20), VGet(0, 0, 0));
+	//SetupCamera_Perspective(60.0f * DX_PI_F / 180.0f);
+	//SetCameraNearFar(1.0f, 150.0f);
+
+	//// DXライブラリのカメラとEffekseerのカメラを同期する。
+	//Effekseer_Sync3DSetting();
+
+
 	count_flame--; // フレームのカウントを減らす
 	if (count_flame <= 0) { // フレームが設定された値以上になったら
 		count_flame = FLAME_MAX; // フレームカウントをリセット

@@ -64,6 +64,10 @@ void Player::Init(int player_num)
 	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
 	Animation_Init(); //< アニメーションの設定
 
+
+	effeckt_h = LoadEffekseerEffect("Data/Model/Player/Effekt/Laser01.efkefc", 0.5f); // エフェクトの読み込み
+
+
 	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
 
 	if (player_num == 0) {
@@ -120,7 +124,6 @@ void Player::Animation_Init()
 //---------------------------------------------------------------------------
 void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 {
-
 	before_mov = m_pos; // 移動される前に入れ替えとく
 	action_flag = false; // アクションフラグを下す
 	// アクションモードの判断してそれに合った操作をするようにする
@@ -236,17 +239,17 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 
 		damage_anim_frame[damage_anim_pick]++;
 		if (damage_anim_frame[damage_anim_pick] >= damage_anim_total[damage_anim_pick]) {                                           // アニメーションが一周したら
-		// 	damage_anim_frame[damage_anim_pick] = 0.0f;
+			// 	damage_anim_frame[damage_anim_pick] = 0.0f;
 			damage_anim_frame[damage_anim_pick] = MV1DetachAnim(m_model, damage_anim_attach[damage_anim_pick]);   // 攻撃アニメーションをディタッチしておく
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	                                                                                        // アニメーションが１ループしたからダメージアニメーションから出る
-		
+
 			if (m_now_hp != 0) {
 				damage_anim_frame[damage_anim_pick] = 0.0f;
 				damage_flag = false; // ダメージアニメーションフラグを下す
 				damage_anim_pick = DAMAGE_ANIM_MAX;
 			}
-			                                                                                // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
+			// 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
 		MV1SetAttachAnimTime(m_model, damage_anim_attach[damage_anim_pick], damage_anim_frame[damage_anim_pick]);
 
@@ -286,6 +289,11 @@ void Player::Draw()
 	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z))); // モデルの回転
 	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f)); // モデルの大きさ(10分の１のサイズ)
 	MV1DrawModel(m_model); // モデルの描画
+	
+	
+	
+	// Effekseer描画処理
+	DrawEffekseer3D();
 }
 
 //---------------------------------------------------------------------------
@@ -307,6 +315,7 @@ void Player::Exit()
 	if (!now_hit_area) {
 		now_hit_area = nullptr;
 	}
+	//DrawEffekseer3D_Draw(effeckt_h); // エフェクトの描画
 	// baseでnewした変数たちのdelete
 	CharacterBase::Delete();
 }
@@ -329,6 +338,13 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	// マウスの左クリックまたはAボタンで近距離攻撃
 	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
+
+		 play_handle = PlayEffekseer3DEffect(effeckt_h); // エフェクトの再生
+		
+		SetRotationPlayingEffekseer3DEffect(play_handle, 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+		
+
+
 		action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_SHORT_NORMAL_1_ANIM;  // 近距離攻撃アクションを設定
 		CharacterBase::Attack_Action(1);          // 行いたい攻撃アニメーションをセット	
@@ -377,6 +393,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 			bead_hit_flag = false;
 			action_flag = true;                      // アクションフラグを上げる
 			sp_flag = false;                         // SPを使用済みにしておく
+			
 		}
 	}
 
@@ -439,6 +456,7 @@ void Player::Attack_Update()
 		break;
 
 	case ATTACK_SHORT_NORMAL_1_ANIM: // 近距離普通攻撃１ (当たり判定の作成)
+	
 		now_hit_area = &hit_areas[ATTACK_SHORT_NORMAL_1_HIT];
 		if (attack_anim_frame[ATTACK_SHORT_NORMAL_1_ANIM] == now_hit_area->hit_anim_frame) {
 			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
@@ -448,6 +466,10 @@ void Player::Attack_Update()
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
 			m_hit_cd_r = now_hit_area->hit_r;
+
+			// エフェクトの座標を設定
+			 SetPosPlayingEffekseer3DEffect(play_handle, m_hit_cd_pos_under.x, m_hit_cd_pos_under.y, m_hit_cd_pos_under.z);
+		
 		}
 		else {
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
@@ -468,6 +490,7 @@ void Player::Attack_Update()
 		}
 		break;
 	case ATTACK_SPECIAL_ANIM: // 必殺技 (弾を出す)
+		
 		// カウントがからだったら
 		if (lifespan_count == NULL) {
 			lifespan_count = 240.0f; // カウントのセット

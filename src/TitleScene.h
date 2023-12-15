@@ -4,6 +4,9 @@
 // タイトルシーンのクラス
 class TiteleScene : public Scene_Base 
 {
+	//int effeckt_h;
+
+
 public:
 	// 初期処理
 	void Init()override;

@@ -112,6 +112,8 @@ void GameScene::Draw()
 	// 各クラスの描画処理
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		camera[i]->Draw_Set();       // カメラの描画前設定（ ※ 描画処理の一番最初にすること）
+		// DXライブラリのカメラとEffekseerのカメラを同期する。
+		Effekseer_Sync3DSetting();
 		field.Draw();
 
 		// プレイヤ―を描画させるための配列
@@ -119,9 +121,18 @@ void GameScene::Draw()
 			players[j]->Draw();
 		}
 		players[i]->Draw_Status();
-		camera[i]->Draw(i); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
+		
+
+		// Effekseer描画処理
+		// DrawEffekseer3D();
+
 	}
 
+
+
+	for (int i = 0; i < PLAYER_MAX; i++) {
+		camera[i]->Draw(i); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
+	}
 	switch (play_scene)
 	{
 	case Play_Tutorial:

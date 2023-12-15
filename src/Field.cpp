@@ -30,7 +30,7 @@ Field::Field()
 {
 	//// ここでフィールドモデルの読み込みをする
 	//m_model = MV1LoadModel("Data/Model/Field/z.mv1");
-	m_pos.set(0.0f,-5.0f,0.0f); // 描画座標の設定
+	m_pos.set(550.0f,0.0f,500.0f); // 描画座標の設定
 	m_rot.clear(); // 回転量の設定
 }
 
