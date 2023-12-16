@@ -5,12 +5,12 @@
 #include "Camera.h"
 
 
-constexpr float CAMERA_LENGTH = 40.0f;          // プレイヤーからカメラまでの距離
+constexpr float CAMERA_LENGTH = 50.0f;          // プレイヤーからカメラまでの距離
 // カメラの回転スピード
 constexpr float MOUSE_CAMERA_ROT_SPEED = 0.2f;  // マウス用
 constexpr float PAD_CAMERA_ROT_SPEED = 3.0f;    // パッド用
 constexpr float UP_ANGLE_MAX = 30.0f;           // カメラの上アングルの最大
-constexpr float LOWER_ANGLE = -10.0f;           // カメラの下アングルの最低（地面に埋まらない程度）
+constexpr float LOWER_ANGLE = -5.0f;           // カメラの下アングルの最低（地面に埋まらない程度）
 constexpr float BOX_SIZE = 4.0f;                   // ボックスのサイズ
 constexpr float BOX_SIZE_HALF = (BOX_SIZE / 2.0f); // 半数のサイズ
 

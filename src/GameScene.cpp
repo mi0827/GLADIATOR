@@ -121,7 +121,7 @@ void GameScene::Draw()
 			players[j]->Draw();
 		}
 		players[i]->Draw_Status();
-		
+
 
 		// Effekseer描画処理
 		// DrawEffekseer3D();
@@ -437,6 +437,8 @@ void GameScene::Draw_String_Size(float* w, float* h, const char* sting)
 
 //---------------------------------------------------------------------------
 // 攻撃のあたり判定をとる関数
+// player1が：攻撃側
+// player2が：受ける側
 //---------------------------------------------------------------------------
 void GameScene::Attack_Hit(int player1, int player2)
 {
@@ -476,19 +478,11 @@ bool HitCheck_Capsule_Capsule(const Capsule& cp1, const Capsule& cp2)
 
 //---------------------------------------------------------------------------
 // ガードのあたり判定をとる関数
+// player1が：ガード側
+// player2が：攻撃側
 //---------------------------------------------------------------------------
 void GameScene::Block_Hit(int player1, int player2)
 {
-	////　プレイヤー１方向ベクトル(殴る方)
-	//Vector3 vec1 = players[1]->m_pos - players[0]->m_pos;
-	//// プレイヤー２の方向ベクトル（殴られる方）
-	//Vector3 vec2; 
-	//vec2.set(sinf(TO_RADIAN(players[1]->m_rot.y)), 0, cosf(TO_RADIAN(players[1]->m_rot.y)));
-	//// これでうまくいっているはず
-	//float vec = GetVector3Dot(vec1, vec2);
-
-	// 今現在前から殴ると整数値後ろから殴るをマイナス値が返ってくる
-	// 横から殴るとへん
 
 	// 当たり判定を取っていいときに当たっていたらダメージを入れる
 	// プレイヤー０の攻撃判定とプレイヤー1のガードの判定
@@ -520,13 +514,12 @@ void GameScene::Block_Hit(int player1, int player2)
 	// ------------------------------------------------
 	// 当たり判定をしていいかどうか
 	bool can_check_hit = players[player1]->cd_hit_flag && players[player1]->block_flag;
-
 	//　プレイヤー１方向ベクトル(殴る方)
 	Vector3 vec1 = players[1]->m_pos - players[0]->m_pos;
 	// プレイヤー２の方向ベクトル（殴られる方）
 	Vector3 vec2;
 	vec2.set(sinf(TO_RADIAN(players[1]->m_pos.y)), 0, cosf(TO_RADIAN(players[1]->m_pos.y)));
-	// これでうまくいっているはず
+	// これでうまくいっている
 	float vec = GetVector3Dot(vec1, vec2);
 
 	if (can_check_hit)
@@ -535,28 +528,18 @@ void GameScene::Block_Hit(int player1, int player2)
 		// その方向がガードカプセル側であれば、”何もしない”
 		// そうじゃなければ、”ダメージ処理”
 
-		if (HitCheck_Capsule_Capsule(player1_cp, player2_hit_cp))
-		{
 			// player1のガード用カプセルとplayer2の攻撃用カプセルが当たったとき
-			if (HitCheck_Capsule_Capsule(player1_no_cp, player2_hit_cp))
-			{
-				// ガードの後ろからじゃないとあたらない
-				if (vec <= 0.0f) {
-					// player1の本体用のカプセルとplayer2の攻撃用カプセルが当たったとき
-					players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
-					players[player1]->damage_flag = true;
-					
-				}
+		if (HitCheck_Capsule_Capsule(player1_no_cp, player2_hit_cp))
+		{
+			// ガードの後ろからじゃないとあたらない
+			// と、殴ってくる方のあたり判定を行っていいとき
+			if (vec <= 0.0f && players[player2]->cd_hit_flag) {
+				// player1の本体用のカプセルとplayer2の攻撃用カプセルが当たったとき
+				players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
+				players[player1]->damage_flag = true; // ダメージを受けているフラグを上げる
+				players[player1]->block_flag = false; // ガードを離すためにガード中のフラグを下げる
 			}
 		}
-		
-	}
-
-
-	// パッドの長押し
-	if (IsPadRepeat(PAD_ID::PAD_A, players[0]->GetPadNo()))
-	{
-
 	}
 }
 

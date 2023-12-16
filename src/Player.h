@@ -125,8 +125,11 @@ public:
 	const int* m_damage = attack_damage;
 
 	// 仮でお試しのエフェクトをつける用の変数
-	int effeckt_h;
-	int play_handle;
+	int effeckt_h[2];
+	int play_handle[2];
+
+
+
 	// 近接攻撃にの当たり判定用の構造体
 	struct Hit_capsule_data
 	{
