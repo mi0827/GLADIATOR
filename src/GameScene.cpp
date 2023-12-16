@@ -521,7 +521,7 @@ void GameScene::Block_Hit(int player1, int player2)
 	vec2.set(sinf(TO_RADIAN(players[1]->m_pos.y)), 0, cosf(TO_RADIAN(players[1]->m_pos.y)));
 	// これでうまくいっている
 	float vec = GetVector3Dot(vec1, vec2);
-
+	//printfDx("%d\n", vec);
 	if (can_check_hit)
 	{
 		// どの方向からガードカプセルに攻撃が当たったのかを調べる
