@@ -28,7 +28,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// ６：Log.txtを出力しないようにします
 	SetOutApplicationLogValidFlag(FALSE);
 	// ３：ウィンドウモードでかいします
-	ChangeWindowMode(FALSE);
+	ChangeWindowMode(TRUE);
 	// ７：ウィンドウタイトルの文字列の設定
 	SetMainWindowText("GLADIATOR");
 	// ８：背景の塗りつぶしの色を設定

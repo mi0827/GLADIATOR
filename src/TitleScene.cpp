@@ -14,15 +14,13 @@ void TiteleScene::Init()
 	image_pos.set(0.0f, 0.0f); // 描画座標の設定
 
 	// カウント類は最初はマックススタート
-	count_flame = FLAME_MAX; 
+	count_flame = FLAME_MAX;
 	count_time = Title_Time_MAX;
 
 	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
 
-	//effeckt_h = LoadEffekseerEffect("Data/Model/Player/Effekt/Laser01.efkefc", 0.5f);
-	//int play_handle = PlayEffekseer3DEffect(effeckt_h); // エフェクトの更新処理
-	//int ret = SetPosPlayingEffekseer3DEffect(play_handle, 0, 0, 0);
-
+	// フォントデータの読み込み
+ 	PUBG_font_data = LoadFontDataToHandle("Data/Font/outlast-ii-game/outlast_2_game.otf", 1.0f);
 }
 
 //------------------------------------------
@@ -56,8 +54,13 @@ void TiteleScene::Update()
 //------------------------------------------
 void TiteleScene::Draw()
 {
+	
+
 	// 背景画像の描画
 	SetFontSize(40); // フォントサイズの変更
+
+	ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+
 	DrawGraph(image_pos.x, image_pos.y, background_image, TRUE);
 	DrawFormatString(16, 16, GetColor(0, 0, 0), "スタート:%2d", count_time);
 	SetFontSize(18); // フォントサイズを戻す
