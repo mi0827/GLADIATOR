@@ -5,6 +5,7 @@ class Scene_Base
 {
 public:
 
+
 	// ‰Šúˆ—
 	virtual void Init() = 0;
 	// XVˆ—

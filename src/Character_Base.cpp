@@ -67,6 +67,7 @@ void CharacterBase::Reset_Status()
 void CharacterBase::Draw_Status()
 {
 	// HPバーの描画
+	// SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); // 描画するものを半透明にする
 	DrawBox(m_hp_pos.x, m_hp_pos.y, (m_hp_pos.x + m_hp_count.x), m_hp_count.y, GetColor(0, 255, 0), TRUE);                // 本体バー
 	DrawBox((m_hp_pos.x + m_hp_count.x), m_hp_count.y, (HP_MAX + m_hp_pos.x), m_hp_pos.y, GetColor(255, 20, 20), TRUE);   // 余白バー
 	DrawLineBox(m_hp_pos.x, m_hp_pos.y, HP_MAX + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));                              // 外枠
@@ -78,6 +79,8 @@ void CharacterBase::Draw_Status()
 	DrawBox(m_sp_pos.x, m_sp_pos.y, (m_sp_pos.x + m_sp_count.x), m_sp_count.y, GetColor(255, 215, 0), TRUE);                    // 本体バー
 	DrawBox((m_sp_pos.x + m_sp_count.x), m_sp_count.y, (SP_POINT_MAX + m_sp_pos.x), m_sp_pos.y, GetColor(105, 105, 105), TRUE); // 余白バー
 	DrawLineBox(m_sp_pos.x, m_sp_pos.y, (SP_POINT_MAX + m_sp_pos.x), m_sp_count.y, GetColor(255, 255, 255));		                      // 外枠
+
+	// SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // 元に戻す
 }
 
 //---------------------------------------------------------------------------

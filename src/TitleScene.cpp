@@ -20,9 +20,9 @@ void TiteleScene::Init()
 	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
 
 	// フォントデータの読み込み
- 	PUBG_font_data = LoadFontDataToHandle("Data/Font/outlast-ii-game/outlast_2_game.otf", 1.0f);
+ 	GTA_font_data = LoadFontDataToHandle("Data/Font/Gta/GTA.dft", 1.0f);
 }
-
+ 
 //------------------------------------------
 // 更新処理
 //------------------------------------------
@@ -55,15 +55,16 @@ void TiteleScene::Update()
 void TiteleScene::Draw()
 {
 	
-
+	
 	// 背景画像の描画
-	SetFontSize(40); // フォントサイズの変更
+	//dSetFontSize(40); // フォントサイズの変更
 
-	ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	//ChangeFontType(DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
 	DrawGraph(image_pos.x, image_pos.y, background_image, TRUE);
-	DrawFormatString(16, 16, GetColor(0, 0, 0), "スタート:%2d", count_time);
-	SetFontSize(18); // フォントサイズを戻す
+	DrawFormatStringToHandle(16 + 5, 16 + 5, GetColor(0, 128,128), GTA_font_data, "START:%02d", count_time); // 下
+	DrawFormatStringToHandle(16, 16, GetColor(0, 255, 255), GTA_font_data, "START:%02d", count_time); // 上
+//	SetFontSize(18); // フォントサイズを戻す
 
 
 	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
@@ -72,10 +73,11 @@ void TiteleScene::Draw()
 	float w = GetDrawStringWidth(name, -1);
 	// 文字列の高さ取得
 	float h = GetFontSize();
-	SetFontSize(80); // フォントサイズの変更
+	//SetFontSize(80); // フォントサイズの変更
 	// 描画
-	DrawStringF(SCREEN_W / 2 - w - 85, SCREEN_H / 2, name, GetColor(0, 0, 0), TRUE);
-	SetFontSize(18); // フォントサイズを戻す
+	DrawStringFToHandle(SCREEN_W / 2 - w -80, SCREEN_H / 2 +5, name, GetColor(128, 0, 0), GTA_font_data, TRUE); // 下
+	DrawStringFToHandle(SCREEN_W / 2 - w - 85, SCREEN_H / 2 , name, GetColor(255, 0, 0), GTA_font_data, TRUE);  // 上
+	//SetFontSize(18); // フォントサイズを戻す
 }
 
 
