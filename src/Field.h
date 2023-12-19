@@ -12,7 +12,7 @@ class Field : public Base
 
 private:
 
-	const float MODEL_SIZE = 50.0f; // モデルサイズ
+	const float MODEL_SIZE = 25.0f; // モデルサイズ
 
 public:
 	//---------------

@@ -104,6 +104,16 @@ private:
 		HIT_ACTION_MAX             // 当たり判定の数
 	};
 
+
+	// エフェクトの列挙体
+	enum EFFECT
+	{
+		THROW_EFFECT, // 遠距離技
+		PUNCH_EFFECT, // パンチ
+
+		EFFECT_MAX    // エフェクトの最大数
+	};
+
 public:
 	//------------------------------------
 	// bead 関連
@@ -124,9 +134,7 @@ public:
 	// 引数で使用するために移す
 	const int* m_damage = attack_damage;
 
-	// 仮でお試しのエフェクトをつける用の変数
-	int effeckt_h[2];
-	int play_handle[2];
+
 
 
 

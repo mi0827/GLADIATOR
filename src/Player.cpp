@@ -4,9 +4,11 @@
 #include "Vector2.h"
 #include "Base.h"
 #include "Character_Base.h"
+#include "Effect.h"
 #include "Player.h"
 #define PANEL_SIZE	5.0f              // パネルの大きさ
 #define PANEL_HALF	(PANEL_SIZE/2.0f) // パネルの半分の大きさ
+
 
 //---------------------------------------------------------------------------
 // コンストラクタ（初期化）
@@ -41,19 +43,19 @@ Player::Player()
 
 	// 判断用、フラグ変数
 	m_move_judge = false;                              // 最初は動いてはいけない
-	attack_flag = false;                            // 攻撃していない
+	attack_flag = false;                               // 攻撃していない
 	bead_hit_flag = false;                             // なににもあたってない
 
 	// HP
 	m_hp_pos.set(10, 32);           // HPバーの描画位置初期化
-	m_hp_count.set(HP_MAX, 32 + 30);   // HPの計算用の初期化
+	m_hp_count.set(HP_MAX, 32 + STATUS_BAR_SIZE);   // HPの計算用の初期化
 	m_now_hp = HP_MAX;                    // 最初は体力マックス                         
 	// スキル
-	m_skill_pos.set(10, SCREEN_H - 72);			    // スキルのクールダウンバーの描画位置初期化
-	m_skill_count.set(0, m_skill_pos.y + 30);// スキルのクールダウンバーの計算用の初期化
+	m_skill_pos.set(10, SCREEN_H - 70);			    // スキルのクールダウンバーの描画位置初期化
+	m_skill_count.set(0, m_skill_pos.y + STATUS_BAR_SIZE);// スキルのクールダウンバーの計算用の初期化
 	// SP
-	m_sp_pos.set(10, SCREEN_H - 112);		   	 // SPのクールダウンバーの描画位置初期化
-	m_sp_count.set(0, m_sp_pos.y + 30); // SPのクールダウンバーの計算用の初期化
+	m_sp_pos.set(10, SCREEN_H - 110);		   	 // SPのクールダウンバーの描画位置初期化
+	m_sp_count.set(0, m_sp_pos.y + STATUS_BAR_SIZE); // SPのクールダウンバーの計算用の初期化
 }
 
 //---------------------------------------------------------------------------
@@ -64,9 +66,11 @@ void Player::Init(int player_num)
 	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
 	Animation_Init(); //< アニメーションの設定
 
+	//Effect_New(EFFECT_MAX, m_effect_container, m_effect_handle);
+	//*m_effect_container[0] = LoadEffekseerEffect("Data/Model/Player/Effect/Laser01.efkefc", 0.5f); // エフェクトの読み込み
+	//*m_effect_container[1] = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc", 0.5);
 
-	effeckt_h[0] = LoadEffekseerEffect("Data/Model/Player/Effekt/Laser01.efkefc", 0.5f); // エフェクトの読み込み
-	effeckt_h[1] = LoadEffekseerEffect("Data/Model/Player/Effekt/Aura01.efkefc", 0.5);
+
 
 	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
 
@@ -332,9 +336,12 @@ void Player::Exit()
 	if (!now_hit_area) {
 		now_hit_area = nullptr;
 	}
-	//DrawEffekseer3D_Draw(effeckt_h); // エフェクトの描画
+	
 	// baseでnewした変数たちのdelete
 	CharacterBase::Delete();
+
+	// エフェクトのdelete
+	Effect_Delete(*m_effect_container, *m_effect_handle);
 }
 
 //---------------------------------------------------------------------------
@@ -356,9 +363,9 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// マウスの左クリックまたはAボタンで近距離攻撃
 	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
 
-		play_handle[0] = PlayEffekseer3DEffect(effeckt_h[0]); // エフェクトの再生
+		*m_effect_handle[0] = PlayEffekseer3DEffect(*m_effect_container[0]); // エフェクトの再生
 
-		SetRotationPlayingEffekseer3DEffect(play_handle[0], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+		SetRotationPlayingEffekseer3DEffect(*m_effect_handle[0], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 
 
 
@@ -375,9 +382,9 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_Y, pad_no)) {
 		//if (IsPadRepeat(PAD_ID::PAD_Y, PAD_NO::PAD_NO1)) {
 
-		play_handle[1] = PlayEffekseer3DEffect(effeckt_h[1]); // エフェクトの再生
+		*m_effect_handle[1] = PlayEffekseer3DEffect(*m_effect_container[1]); // エフェクトの再生
 
-		SetRotationPlayingEffekseer3DEffect(play_handle[1], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+		SetRotationPlayingEffekseer3DEffect(*m_effect_handle[1], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 
 
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
@@ -548,12 +555,12 @@ void Player::Attack_Update()
 		}
 	}
 
-
 	// エフェクトの座標を設定
 	for (int i = 0; i < 2; i++) {
-		SetPosPlayingEffekseer3DEffect(play_handle[i], m_hit_cd_pos_under.x, m_hit_cd_pos_under.y, m_hit_cd_pos_under.z);
+		SetPosPlayingEffekseer3DEffect(*m_effect_handle[i], m_hit_cd_pos_under.x, m_hit_cd_pos_under.y, m_hit_cd_pos_under.z);
 	}
 }
+
 
 //---------------------------------------------------------------------------
 // ダメージを食らった時用の関数(食らったダメージに合わせてアニメーションをを変える)

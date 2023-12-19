@@ -11,6 +11,7 @@ public:
 #define HP_MAX 350          // HPの最大値
 #define SKILL_POINT_MAX 150 // スキルポイントの最大値
 #define SP_POINT_MAX 200    // SPポイントの最大値
+#define STATUS_BAR_SIZE 20  // ステータスバーの太さのサイズ
 //#define PUNCH_MAX 2
 	//---------------
 	// 関数の定義
@@ -179,6 +180,14 @@ protected:
 	float* damage_anim_rate;   // それぞれのアニメーションがどのくらうのわりあいになるか（0.0f ~ 1.0f）
 	float* damage_anim_frame;  // アニメーションが何フレーム進んでいるのか
 
+	//---------------------------------------------------------------------------
+	// エフェクト用の変数
+	//---------------------------------------------------------------------------
+	// 今はとりあえず適当な値を入れておく
+     int* m_effect_container[2]; // エフェクトを入れる用の変数
+	 int* m_effect_handle[2];    // エフェクトを使う時用のハンドル
+	//int *m_effect_container = 0; // エフェクトを入れる用の変数
+	//int *m_effect_handle = 0;    // エフェクトを使う時用のハンドル
 public:
 	int attack_anim_pick;     // どのアニメーションをしているのかを判断する用
 	int block_anim_pick;      // どのアニメーションをしているのかを判断する用

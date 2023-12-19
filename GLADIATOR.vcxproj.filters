@@ -83,6 +83,9 @@
     <ClCompile Include="src\Scene_Base.cpp">
       <Filter>ソース ファイル\Scene\Scene_Base</Filter>
     </ClCompile>
+    <ClCompile Include="src\Effect.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Base.h">
@@ -135,6 +138,9 @@
     </ClInclude>
     <ClInclude Include="src\Scene_Base.h">
       <Filter>ソース ファイル\Scene\Scene_Base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Effect.h">
+      <Filter>ソース ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

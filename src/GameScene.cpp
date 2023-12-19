@@ -5,6 +5,7 @@
 #include "Base.h"
 // キャラクター.h
 #include "Character_Base.h"
+#include "Effect.h"
 #include "Player.h"
 #include "Ninja.h"
 // オブジェクトクラス

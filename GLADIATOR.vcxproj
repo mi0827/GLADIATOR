@@ -143,6 +143,7 @@
     <ClCompile Include="src\Base.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Character_Base.cpp" />
+    <ClCompile Include="src\Effect.cpp" />
     <ClCompile Include="src\EndScene.cpp" />
     <ClCompile Include="src\GameMain.cpp" />
     <ClCompile Include="src\Field.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="src\Base.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Character_Base.h" />
+    <ClInclude Include="src\Effect.h" />
     <ClInclude Include="src\EndScene.h" />
     <ClInclude Include="src\GameMain.h" />
     <ClInclude Include="src\Field.h" />
