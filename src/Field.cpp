@@ -14,16 +14,16 @@ constexpr int MAP_H = 10;  // 横
 // フィールドのオブジェクトを置く座標用の二次元配列
 int MapData[MAP_H][MAP_W]
 {
-	{ 1,1,1,1,1,1,1,1,1,1},
-	{ 1,0,0,0,0,0,0,0,0,1},
-	{ 1,0,0,1,0,0,1,0,0,1},
-	{ 1,0,0,0,0,0,0,0,0,1},
-	{ 1,0,0,1,0,0,1,0,0,1},
-	{ 1,0,0,0,0,0,0,0,0,1},
-	{ 1,0,0,1,0,0,1,0,0,1},
-	{ 1,0,0,0,0,0,0,0,0,1},
-	{ 1,0,0,1,0,0,1,0,0,1},
-	{ 1,1,1,1,1,1,1,1,1,1},
+	{ 2,2,2,2,2,2,2,2,2,2},
+	{ 2,0,0,0,0,0,0,0,0,2},
+	{ 2,0,0,1,0,0,1,0,0,2},
+	{ 2,0,0,0,0,0,0,0,0,2},
+	{ 2,0,0,1,0,0,1,0,0,2},
+	{ 2,0,0,0,0,0,0,0,0,2},
+	{ 2,0,0,1,0,0,1,0,0,2},
+	{ 2,0,0,0,0,0,0,0,0,2},
+	{ 2,0,0,1,0,0,1,0,0,2},
+	{ 2,2,2,2,2,2,2,2,2,2},
 };
 //	初期化処理
 Field::Field()
@@ -41,18 +41,21 @@ void Field::Init()
 	// ここでフィールドモデルの読み込みをする
 	m_model = MV1LoadModel("Data/Model/Field/Ground_2.mv1");
 	obj_max = Field_Init();
-
+	//wall_obj_max = Wall_Field_Init();
 	// オブジェクトの初期設定
 	for (int i = 0; i < obj_max; ++i) {
 		// ここでNEWする
 		Object* object = new Object;
 		// 追加登録(これでオブジェクトクラスの配列が増えていく)
 		objects.push_back(object);
-		// delete object; // objectの解放
+		
 	}
 
+	
 	Field_Init();  // フィールド上にオブジェクトの置く数を返す
 	Object_Init(); // オブジェクトの座標、サイズの初期設定
+
+	
 }
 
 //---------------------------------------------------------------------------
@@ -60,12 +63,11 @@ void Field::Init()
 //---------------------------------------------------------------------------
 int Field::Field_Init()
 {
-
 	// 何個のオブジェクトが必要か数える
 	int object_count = 0;
 	for (int h = 0; h < MAP_H; h++) {
 		for (int w = 0; w < MAP_W; w++) {
-			if (MapData[h][w] == 1) {
+			if (MapData[h][w] != 0) {
 				object_count++;
 			}
 		}
@@ -82,10 +84,15 @@ void Field::Object_Init()
 	int object_count = 0;
 	for (int h = 0; h < MAP_H; h++) {
 		for (int w = 0; w < MAP_W; w++) {
-			if (MapData[h][w] == 1) {
+			if (MapData[h][w] == 1) { // フィールドの上の置物
 				// 最初の０個目を触るために上に置く
 				objects[object_count]->Field_Object_Init(m_field_size, h, w);
 				object_count++; // 次の分のカウントを進めておく
+			}
+			if (MapData[h][w] == 2) { // 壁
+				// 最初の2個目を触るために上に置く
+				objects[object_count]->Field_Wall_Object_Init(m_wall_size, h, w);
+				object_count++; // 次の分のカウントを進めてお
 			}
 		}
 	}
@@ -129,6 +136,5 @@ void Field::Exit()
 
 	// オブジェクトの配列の解放
 	objects.clear();
+	wall_objects.clear();
 }
-
-

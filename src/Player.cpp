@@ -66,20 +66,20 @@ void Player::Init(int player_num)
 	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
 	Animation_Init(); //< アニメーションの設定
 
-	//Effect_New(EFFECT_MAX, m_effect_container, m_effect_handle);
-	//*m_effect_container[0] = LoadEffekseerEffect("Data/Model/Player/Effect/Laser01.efkefc", 0.5f); // エフェクトの読み込み
-	//*m_effect_container[1] = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc", 0.5);
+	Effect_New(EFFECT_MAX, m_effect_container, m_effect_handle);
+	m_effect_container[0] = LoadEffekseerEffect("Data/Model/Player/Effect/Laser01.efkefc", 0.5f); // エフェクトの読み込み
+	m_effect_container[1] = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc", 0.5);
 
 
 
 	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
 
 	if (player_num == 0) {
-		m_pos.set(0.0f, 0.0f, -50.0f);           // 初期座標の設定
+		m_pos.set(350.0f, 0.0f, 150.0f);           // 初期座標の設定
 		m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
 	}
 	else {
-		m_pos.set(0.0f, 0.0f, 500.0f);            // 初期座標の設定
+		m_pos.set(350.0f, 0.0f, 450.0f);            // 初期座標の設定
 		m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 	}
 
@@ -164,7 +164,7 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 		if (action_flag) { // アクションフラグが上がっていたら
 			break;         // 後の処理を飛ばす
 		}
-		
+
 
 		//=================================
 		// ダメージのを食らったら
@@ -178,7 +178,7 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 			break;
 		}
 
-		
+
 
 
 		// アニメーション用のフレームカウントを進める
@@ -336,12 +336,12 @@ void Player::Exit()
 	if (!now_hit_area) {
 		now_hit_area = nullptr;
 	}
-	
+
 	// baseでnewした変数たちのdelete
 	CharacterBase::Delete();
 
 	// エフェクトのdelete
-	Effect_Delete(*m_effect_container, *m_effect_handle);
+	//Effect_Delete(m_effect_container, m_effect_handle);
 }
 
 //---------------------------------------------------------------------------
@@ -363,9 +363,9 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// マウスの左クリックまたはAボタンで近距離攻撃
 	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
 
-		*m_effect_handle[0] = PlayEffekseer3DEffect(*m_effect_container[0]); // エフェクトの再生
+		m_effect_handle[0] = PlayEffekseer3DEffect(m_effect_container[0]); // エフェクトの再生
 
-		SetRotationPlayingEffekseer3DEffect(*m_effect_handle[0], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+		SetRotationPlayingEffekseer3DEffect(m_effect_handle[0], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 
 
 
@@ -382,9 +382,9 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_Y, pad_no)) {
 		//if (IsPadRepeat(PAD_ID::PAD_Y, PAD_NO::PAD_NO1)) {
 
-		*m_effect_handle[1] = PlayEffekseer3DEffect(*m_effect_container[1]); // エフェクトの再生
+		m_effect_handle[1] = PlayEffekseer3DEffect(m_effect_container[1]); // エフェクトの再生
 
-		SetRotationPlayingEffekseer3DEffect(*m_effect_handle[1], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+		SetRotationPlayingEffekseer3DEffect(m_effect_handle[1], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 
 
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
@@ -557,7 +557,7 @@ void Player::Attack_Update()
 
 	// エフェクトの座標を設定
 	for (int i = 0; i < 2; i++) {
-		SetPosPlayingEffekseer3DEffect(*m_effect_handle[i], m_hit_cd_pos_under.x, m_hit_cd_pos_under.y, m_hit_cd_pos_under.z);
+		SetPosPlayingEffekseer3DEffect(m_effect_handle[i], m_hit_cd_pos_under.x, m_hit_cd_pos_under.y, m_hit_cd_pos_under.z);
 	}
 }
 

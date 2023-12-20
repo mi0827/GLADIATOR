@@ -184,8 +184,8 @@ protected:
 	// エフェクト用の変数
 	//---------------------------------------------------------------------------
 	// 今はとりあえず適当な値を入れておく
-     int* m_effect_container[2]; // エフェクトを入れる用の変数
-	 int* m_effect_handle[2];    // エフェクトを使う時用のハンドル
+     int m_effect_container[2]; // エフェクトを入れる用の変数
+	 int m_effect_handle[2];    // エフェクトを使う時用のハンドル
 	//int *m_effect_container = 0; // エフェクトを入れる用の変数
 	//int *m_effect_handle = 0;    // エフェクトを使う時用のハンドル
 public:

@@ -61,16 +61,52 @@ void Object::Field_Object_Init(const int m_field_size, int pos_z, int pos_x)
 }
 
 //---------------------------------------------------------------------------
+// フィールドに置く壁オブジェクトの初期処理(立方体関係)
+//---------------------------------------------------------------------------
+void Object::Field_Wall_Object_Init(const int field_Wall_size, int pos_x, int pos_z)
+{
+	Vector3 m_field_pos; // フィールド内の一つのスペースの座標を保存する変数
+
+	//=================================
+	// 立方体の描画が用座標の設定１(下の位置)
+	//=================================
+	Vector3 bottom_pos = Set_Cube_Bottom_Pos(field_Wall_size, pos_z, pos_x, &m_field_pos);
+	m_cube_bottom_pos.set(bottom_pos);
+
+	//=================================
+	// サイズの設定
+	//=================================
+	Vector3 size = Set_Size_Cube(field_Wall_size,pos_z, pos_x); // ランダムに作られたサイズを入れる変数
+	m_cube_size.set(size);
+
+	//=================================
+	// 当たり判定用の半分のサイズの設定
+	//=================================
+	m_cube_size_half.set(m_cube_size.x / 2.0f, m_cube_size.y / 2.0f, m_cube_size.z / 2.0f);  // サイズの半分のサイズ
+
+	//=================================
+	// 立方体の描画が用座標の設定１(上の位置)
+	//=================================
+	m_cube_top_pos.set(m_cube_bottom_pos.x + m_cube_size.x, m_cube_bottom_pos.y + m_cube_size.y, m_cube_bottom_pos.z + m_cube_size.z);
+
+	//=================================
+	// 色の設定
+	//=================================
+	m_cube_color = GetColor(50, 50, 50);
+	m_line_color = GetColor(255, 255, 255);
+	//=================================
+	// 当たり判定用の座標の設定
+	//=================================
+	// 当たり判定用に描画用の立方体の中心に座標を置いたバージョン
+	m_cube_hit_pos.set(m_cube_bottom_pos.x + m_cube_size_half.x, m_cube_bottom_pos.y + m_cube_size_half.y, m_cube_bottom_pos.z + m_cube_size_half.z);
+}
+
+//---------------------------------------------------------------------------
 // 更新処理
 //---------------------------------------------------------------------------
 void Object::Update()
 {
 
-}
-void Object::CreateObjects()
-{
-
-	void CreateObjects(); // オブジェクトを作る関数
 }
 
 //---------------------------------------------------------------------------
@@ -90,6 +126,7 @@ void Object::Draw()
 //---------------------------------------------------------------------------
 void Object::Exit()
 {
+
 }
 
 //---------------------------------------------------------------------------
@@ -106,7 +143,21 @@ Vector3 Object::Rand_Size_Cube(float m_field_size, float filed_pos_z, float file
 }
 
 //---------------------------------------------------------------------------
-// 立方体のの下の座標（元の座標）を返す
+// 立方体のサイズをきめて返す
+//---------------------------------------------------------------------------
+Vector3 Object::Set_Size_Cube(float m_field_size, float filed_pos_z, float filed_pos_x)
+{
+	Vector3 size; // サイズを一時保存する
+	// ランダムで取ってくるサイズの最低の値と最高の値を計算しながらランダムの幅を決める
+	size.x = m_field_size; // Xの幅
+	size.y = 80.0f;         // Yの高さ
+	size.z = m_field_size; // Zの幅
+	return size; // サイズを返す
+	
+}
+
+//---------------------------------------------------------------------------
+// 立方体の下の座標（元の座標）を返す
 //---------------------------------------------------------------------------
 Vector3 Object::Set_Cube_Bottom_Pos(float m_field_size, int pos_z, int pos_x, Vector3* field_pos)
 {
@@ -114,9 +165,9 @@ Vector3 Object::Set_Cube_Bottom_Pos(float m_field_size, int pos_z, int pos_x, Ve
 	//=====================================================
 	// フィールド内の一つのスペースでのランダム座標の設定
 	//=====================================================
-	field_pos->x = GetRand(m_field_size); // X座標
-	field_pos->y = 0.0f;                  // Y座標
-	field_pos->z = GetRand(m_field_size); // Z座標
+	field_pos->x = 0.0f; // X座標
+	field_pos->y = 0.0f; // Y座標
+	field_pos->z = 0.0f; // Z座標
 
 	//========================================================
 	// 上でも止めた座標をワールド座標に戻す（全体のフィールド）
