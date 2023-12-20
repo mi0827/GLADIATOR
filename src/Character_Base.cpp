@@ -6,9 +6,10 @@
 #include "Character_Base.h"
 
 
-
+const int MAX_ = 3;
 CharacterBase::CharacterBase()
 {
+
 }
 
 //---------------------------------------------------------------------------

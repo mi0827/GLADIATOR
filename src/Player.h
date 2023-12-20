@@ -135,9 +135,6 @@ public:
 	const int* m_damage = attack_damage;
 
 
-
-
-
 	// ‹ßÚUŒ‚‚É‚Ì“–‚½‚è”»’è—p‚Ì\‘¢‘Ì
 	struct Hit_capsule_data
 	{

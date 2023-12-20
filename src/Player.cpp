@@ -20,10 +20,10 @@ Player::Player()
 	m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
 	before_mov.set(m_pos);                       // 最初は最初の座標を入れとく
 
-	anim_num = 0;                                     // 最初は０ばんのアニメーションをする
-	action_mode = 0;                                  // 最初は普通アニメーションモードにしておく
-	attack_anim_pick = -1;                            // 最初はなんのアニメーションも入っていない
-	m_check_move = false;                             // 最初は走っていいない
+	anim_num = 0;                                    // 最初は０ばんのアニメーションをする
+	action_mode = 0;                                 // 最初は普通アニメーションモードにしておく
+	attack_anim_pick = -1;                           // 最初はなんのアニメーションも入っていない
+	m_check_move = false;                            // 最初は走っていいない
 
 	//------------------------------
 	// 当たり判定用変数
@@ -66,12 +66,11 @@ void Player::Init(int player_num)
 	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
 	Animation_Init(); //< アニメーションの設定
 
-	Effect_New(EFFECT_MAX, m_effect_container, m_effect_handle);
+	//Effect_New(EFFECT_MAX, m_effect_container, m_effect_handle);
 	m_effect_container[0] = LoadEffekseerEffect("Data/Model/Player/Effect/Laser01.efkefc", 0.5f); // エフェクトの読み込み
 	m_effect_container[1] = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc", 0.5);
-
-
-
+	m_effect_container[2] = LoadEffekseerEffect("Data/Model/Player/Effect/throw.efkefc", 0.5f);
+	m_effect_container[3] = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.5f);
 	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
 
 	if (player_num == 0) {
@@ -400,6 +399,11 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	if (skill_flag) { // スキルが使用できるなら
 		// スペースキークリック、または、Bボタンで遠距離攻撃
 		if (PushHitKey(KEY_INPUT_SPACE) || IsPadOn(PAD_ID::PAD_B, pad_no)) {
+
+			m_effect_handle[3] = PlayEffekseer3DEffect(m_effect_container[3]); // エフェクトの再生
+			SetRotationPlayingEffekseer3DEffect(m_effect_handle[3], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+
+
 			m_skill_count.x = 0; // スキルの使用なのでカウントをリセット
 			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
@@ -556,7 +560,7 @@ void Player::Attack_Update()
 	}
 
 	// エフェクトの座標を設定
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 4; i++) {
 		SetPosPlayingEffekseer3DEffect(m_effect_handle[i], m_hit_cd_pos_under.x, m_hit_cd_pos_under.y, m_hit_cd_pos_under.z);
 	}
 }

@@ -182,9 +182,9 @@ void GameScene::Tutorial_Update()
 		}
 
 		// 座標と向きを最初の設定に戻す
-		players[0]->m_pos.set(0.0f, 0.0f, -50.0f);           // 初期座標の設定
+		players[0]->m_pos.set(350.0f, 0.0f, 150.0f);           // 初期座標の設定
 		players[0]->m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
-		players[1]->m_pos.set(0.0f, 0.0f, 500.0f);           // 初期座標の設定
+		players[1]->m_pos.set(350.0f, 0.0f, 450.0f);           // 初期座標の設定
 		players[1]->m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 		play_scene = Play_Main; // プレイメインに移動
 	}
