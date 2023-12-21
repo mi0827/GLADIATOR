@@ -26,8 +26,6 @@ TiteleScene titel_scene; // タイトル
 GameScene play_scene;    // ゲームプレイシーン
 EndScene end_scene;      // エンド
 
-
-
 int scene_num; // 今どのシーン名のを見る用の変数
 // 各シーンでの使い分けをするためのシーンの列挙隊
 enum Scene

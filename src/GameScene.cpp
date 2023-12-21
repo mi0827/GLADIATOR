@@ -336,7 +336,7 @@ void GameScene::Time_Draw()
 
 	SetFontSize(28); // フォントサイズの変更
 	// 描画
-	DrawFormatStringF(SCREEN_W / 2 + 30 - w, h - 16, GetColor(255, 255, 0), name, time_count);
+	DrawFormatStringF(SCREEN_W / 2 - w / 2, h - 16, GetColor(255, 255, 0), name, time_count);
 	SetFontSize(18); // フォントサイズを戻す
 }
 
@@ -345,16 +345,16 @@ void GameScene::Time_Draw()
 //---------------------------------------------------------------------------
 void GameScene::Tutorial_Draw()
 {
+	int original_font_size = GetFontSize();
+	SetFontSize(28); // フォントサイズの変更
 	// 文字列の設定
 	const char* name = "チュートリアル";
 	// 描画座標の定義
 	float w, h;
 	Draw_String_Size(&w, &h, name);
-
-	SetFontSize(28); // フォントサイズの変更
 	// 描画
-	DrawFormatStringF(SCREEN_W / 2 - w + 30 , h - 15, GetColor(255, 255, 0), name, time_count);
-	SetFontSize(18); // フォントサイズを戻す
+	DrawFormatStringF(SCREEN_W / 2 - w / 2 , h - 25, GetColor(255, 255, 0), name, time_count);
+	SetFontSize(original_font_size); // フォントサイズを戻す
 }
 
 //---------------------------------------------------------------------------
@@ -362,19 +362,20 @@ void GameScene::Tutorial_Draw()
 //---------------------------------------------------------------------------
 void GameScene::End_Draw()
 {
+	int original_font_size = GetFontSize();
+	SetFontSize(28); // フォントサイズの変更
 	// 文字列の設定
 	const char* name = "end";
 	// 描画座標の定義
 	float w, h;
 	Draw_String_Size(&w, &h, name);
 
-	SetFontSize(28); // フォントサイズの変更
 	// 描画(今がなんのシーンなのかがわかるように)
-	DrawFormatStringF(SCREEN_W / 2 - w, h, GetColor(255, 255, 0), name, time_count);
-	SetFontSize(18); // フォントサイズを戻す
+	DrawFormatStringF(SCREEN_W / 2 - w / 2, h, GetColor(255, 255, 0), name, time_count);
+	SetFontSize(original_font_size); // フォントサイズを戻す
 
+	// 勝敗の描画
 	Play_Victory_Draw(players[0], players[1]);
-
 }
 
 //---------------------------------------------------------------------------
@@ -406,20 +407,20 @@ void GameScene::Play_Victory_Draw(CharacterBase* character1, CharacterBase* char
 	Draw_String_Size(&loser.x, &loser.y, loser_string);
 	if (hp1 == hp2) {
 		// 残りhpが同じなら
-		DrawStringF(draw_pos1.x - draw.x, draw_pos1.y, draw_string, GetColor(255, 255, 0));
-		DrawStringF(draw_pos2.x - draw.x, draw_pos2.y, draw_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos1.x - draw.x / 2, draw_pos1.y, draw_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos2.x - draw.x / 2, draw_pos2.y, draw_string, GetColor(255, 255, 0));
 	}
 	if (hp1 > hp2)
 	{
 		// hp1のほうが残りhpが多いい場合
-		DrawStringF(draw_pos1.x - winner.x, draw_pos1.y, winner_string, GetColor(255, 255, 0));
-		DrawStringF(draw_pos2.x - loser.x, draw_pos2.y, loser_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos1.x - winner.x / 2, draw_pos1.y, winner_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos2.x - loser.x / 2,  draw_pos2.y, loser_string,  GetColor(255, 255, 0));
 	}
 	if (hp2 > hp1)
 	{
 		// hp2のほうが残りhpが多いい場合
-		DrawStringF(draw_pos1.x - loser.x, draw_pos1.y, loser_string, GetColor(255, 255, 0));
-		DrawStringF(draw_pos2.x - winner.x, draw_pos2.y, winner_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos1.x - loser.x / 2 , draw_pos1.y, loser_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos2.x - winner.x / 2, draw_pos2.y, winner_string, GetColor(255, 255, 0));
 	}
 	SetFontSize(18); // フォントサイズを戻す
 }

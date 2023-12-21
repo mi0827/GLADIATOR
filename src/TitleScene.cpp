@@ -3,7 +3,7 @@
 #include "Scene_Base.h"
 #include "TitleScene.h"
 
-const int Title_Time_MAX = 10;  // タイトル描画時間(今だけ3秒)
+const int Title_Time_MAX = 3;  // タイトル描画時間(今だけ3秒)
 
 //------------------------------------------
 // 初期処理
@@ -109,5 +109,5 @@ void TiteleScene::Exit()
 	else {
 		MessageBox(NULL, "remove failure", "", MB_OK);
 	}
-	ChangeFont("MS ゴシック", DX_CHARSET_DEFAULT);
+	ChangeFont("ＭＳ 明朝", DX_CHARSET_DEFAULT);
 }

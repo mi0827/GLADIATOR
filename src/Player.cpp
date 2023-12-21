@@ -388,8 +388,8 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	// 遠距離攻撃
 	//=================================
-	// マウスの右クリック、または、Yボタンで遠距離攻撃
-	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_Y, pad_no)) {
+	// マウスの右クリック、または、Bボタンで遠距離攻撃
+	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_B, pad_no)) {
 		//if (IsPadRepeat(PAD_ID::PAD_Y, PAD_NO::PAD_NO1)) {
 
 		m_effect_handle[1] = PlayEffekseer3DEffect(m_effect_container[1]); // エフェクトの再生
@@ -408,8 +408,8 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// スライディング
 	//=================================
 	if (skill_flag) { // スキルが使用できるなら
-		// スペースキークリック、または、Bボタンで遠距離攻撃
-		if (PushHitKey(KEY_INPUT_SPACE) || IsPadOn(PAD_ID::PAD_B, pad_no)) {
+		// スペースキークリック、または、Yボタンで遠距離攻撃
+		if (PushHitKey(KEY_INPUT_SPACE) || IsPadOn(PAD_ID::PAD_Y, pad_no)) {
 
 			m_effect_handle[3] = PlayEffekseer3DEffect(m_effect_container[3]); // エフェクトの再生
 			SetRotationPlayingEffekseer3DEffect(m_effect_handle[3], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
