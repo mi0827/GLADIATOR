@@ -121,8 +121,7 @@ void GameScene::Draw()
 		for (int j = 0; j < PLAYER_MAX; j++) {
 			players[j]->Draw();
 		}
-		players[i]->Draw_Status();
-
+		players[i]->Draw_Status(i);
 
 		// Effekseer描画処理
 		// DrawEffekseer3D();
@@ -337,7 +336,7 @@ void GameScene::Time_Draw()
 
 	SetFontSize(28); // フォントサイズの変更
 	// 描画
-	DrawFormatStringF(SCREEN_W / 2 + 16 - w, h - 16, GetColor(255, 255, 0), name, time_count);
+	DrawFormatStringF(SCREEN_W / 2 + 30 - w, h - 16, GetColor(255, 255, 0), name, time_count);
 	SetFontSize(18); // フォントサイズを戻す
 }
 
@@ -354,7 +353,7 @@ void GameScene::Tutorial_Draw()
 
 	SetFontSize(28); // フォントサイズの変更
 	// 描画
-	DrawFormatStringF(SCREEN_W / 2 - w, h - 15, GetColor(255, 255, 0), name, time_count);
+	DrawFormatStringF(SCREEN_W / 2 - w + 30 , h - 15, GetColor(255, 255, 0), name, time_count);
 	SetFontSize(18); // フォントサイズを戻す
 }
 

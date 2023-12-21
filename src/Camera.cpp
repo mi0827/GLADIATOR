@@ -187,7 +187,7 @@ void Camera::Draw(int camera_No)
 		// ‚RD‚ª•`‰æ‚³‚ê‚½‰æ‘œ‚ð•`‰æ
 		DrawGraphF(m_field_pos.x + m_field_size.x, m_field_pos.y, m_screen_field, TRUE);
 		// ‚Ç‚Á‚¿‚Ì‰æ–Ê‚ªˆÚ‚Á‚Ä‚¢‚é‚Ì‚©‚ª‚í‚©‚é‚æ‚¤‚É
-		DrawString(SCREEN_W / 2 + 16, 16, "PLAYER 2", GetColor(255, 255, 255));
+		DrawString(SCREEN_W / 2 + 300, 16, "PLAYER 2", GetColor(255, 255, 255));
 		// ‰æ‘œ‚ª‚í‚©‚è‚â‚·‚¢‚æ‚¤‚É
 		DrawLineBox(m_field_pos.x + m_field_size.x, m_field_pos.y, m_field_pos.x + m_field_size.x * 2, m_field_pos.y + m_field_size.y, GetColor(0, 255, 255));
 	}

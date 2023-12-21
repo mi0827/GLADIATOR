@@ -18,3 +18,5 @@ void Effect_New(int Effect_MAX, int* effect_container, int* m_effect_handle);
 // １：エフェクトを入れておく用の変数
 // ２：エフェクトを使う時に使うハンドル用の変数
 void Effect_Delete(int* effect_container, int* effect_handle);
+
+int* EffectContainerNew(int size);

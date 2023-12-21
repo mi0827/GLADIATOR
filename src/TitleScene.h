@@ -28,4 +28,5 @@ public:
 
 	// フォントデータ用
 	int GTA_font_data; // GTAのフォントデータ用の変数
+	LPCSTR GTA_font_path;
 };

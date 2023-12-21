@@ -66,12 +66,17 @@ void Player::Init(int player_num)
 	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
 	Animation_Init(); //< アニメーションの設定
 
-	//Effect_New(EFFECT_MAX, m_effect_container, m_effect_handle);
+
+	//Effect_New(EFFECT_MAX, m_effect_container_ptr, m_effect_handle);
+	//m_effect_container_ptr = new int[EFFECT_MAX + 2];
+	m_effect_container = EffectContainerNew(EFFECT_MAX);
+	m_effect_handle = EffectContainerNew(EFFECT_MAX);
 	m_effect_container[0] = LoadEffekseerEffect("Data/Model/Player/Effect/Laser01.efkefc", 0.5f); // エフェクトの読み込み
 	m_effect_container[1] = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc", 0.5);
 	m_effect_container[2] = LoadEffekseerEffect("Data/Model/Player/Effect/throw.efkefc", 0.5f);
 	m_effect_container[3] = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.5f);
 	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
+
 
 	if (player_num == 0) {
 		m_pos.set(350.0f, 0.0f, 150.0f);           // 初期座標の設定
@@ -289,21 +294,27 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 void Player::Draw()
 {
 	// 玉を描画する(今だけ)
+#ifdef DEBUG
 	if (!bead_hit_flag) {
 		DrawSphere3D(bead_pos.VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
-	}
-	// プレイヤー自身の当たり判定
+}
+
+	// プレイヤー自身の当たり判定を見えるようにしている
 	DrawCapsule3D(m_hit_body_pos_top.VGet(), m_hit_body_pos_under.VGet(), m_hit_body_r, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), FALSE);
 
 	// 当たり判定を見えるようにする物
 	// 向いている方向に座標を設定（今はパンチに位置）
 	//hit_areas[ATTACK_LONG_NORMAL_ANIM].hit_top = Vector3();
+
 	if (cd_hit_flag && attack_flag) {
 		DrawCapsule3D(m_hit_cd_pos_top.VGet(), m_hit_cd_pos_under.VGet(), m_hit_cd_r, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
-	}
+}
 	if (cd_hit_flag && block_flag) {
 		DrawCapsule3D(m_block_top.VGet(), m_block_under.VGet(), m_block_r, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
 	}
+#endif // DEBUG
+
+	
 	// プレイヤーの描画設定
 	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z)); // 描画するプレイヤーモデルの座標の設定
 	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z))); // モデルの回転
@@ -600,9 +611,11 @@ void Player::Block_Update()
 
 			// 当たり判定を見えるようにする物
 			// 向いている方向に座標を設定（今はパンチに位置）
+
 			m_block_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
 			m_block_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
-			m_block_r = now_hit_area->hit_r;
+			m_block_r = now_hit_area->hit_r; 
+
 		}
 		else {
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す

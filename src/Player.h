@@ -110,8 +110,9 @@ private:
 	{
 		THROW_EFFECT, // 遠距離技
 		PUNCH_EFFECT, // パンチ
+		
 
-		EFFECT_MAX    // エフェクトの最大数
+		EFFECT_MAX = 4    // エフェクトの最大数
 	};
 
 public:

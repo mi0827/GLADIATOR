@@ -14,6 +14,11 @@ void Effect_New(int Effect_MAX, int* effect_container, int* effect_handle)
 	}
 }
 
+int* EffectContainerNew(int size)
+{
+	return new int[size];
+}
+
 //---------------------------------------------------------------------------
 //  エフェクト用変数のdelete用関数
 //---------------------------------------------------------------------------
