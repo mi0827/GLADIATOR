@@ -71,8 +71,9 @@ void Player::Init(int player_num)
 	//m_effect_container_ptr = new int[EFFECT_MAX + 2];
 	m_effect_container = EffectContainerNew(EFFECT_MAX);
 	m_effect_handle = EffectContainerNew(EFFECT_MAX);
-	m_effect_container[0] = LoadEffekseerEffect("Data/Model/Player/Effect/Laser01.efkefc", 0.5f); // エフェクトの読み込み
-	m_effect_container[1] = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc", 0.5);
+	// エフェクトの読み込み
+	m_effect_container[0] = LoadEffekseerEffect("Data/Model/Player/Effect/Laser01.efkefc", 0.5f); // パンチエフェクト
+	m_effect_container[1] = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc", 1.0);   // 投げものエフェクト
 	m_effect_container[2] = LoadEffekseerEffect("Data/Model/Player/Effect/throw.efkefc", 0.5f);
 	m_effect_container[3] = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.5f);
 	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
@@ -293,11 +294,12 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 //---------------------------------------------------------------------------
 void Player::Draw()
 {
-	// 玉を描画する(今だけ)
-#ifdef DEBUG
 	if (!bead_hit_flag) {
 		DrawSphere3D(bead_pos.VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
-}
+	}
+	// 玉を描画する(今だけ)
+#ifdef DEBUG
+
 
 	// プレイヤー自身の当たり判定を見えるようにしている
 	DrawCapsule3D(m_hit_body_pos_top.VGet(), m_hit_body_pos_under.VGet(), m_hit_body_r, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), FALSE);
@@ -405,7 +407,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	}
 
 	//=================================
-	// スライディング
+	// ワープ
 	//=================================
 	if (skill_flag) { // スキルが使用できるなら
 		// スペースキークリック、または、Yボタンで遠距離攻撃

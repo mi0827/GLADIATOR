@@ -65,4 +65,15 @@ private:
 	int play_scene;     // チュートリアルの途中かを判別
 	int end_count;      // エンドシーンの時間
 	bool status_flag;   // ステータス更新処理していいかのフラグ
+
+	//-------------------------------------------
+	// チュートリアルで使う変数
+	//-------------------------------------------
+	const float BUTTON_COUNT_MAX = 180; // ３秒
+	// 準備完了フラグ
+	bool ready_flag1 = false;
+	bool ready_flag2 = false;
+	// ボタンの長押しをカウントする用の変数
+    float button_count1 = 0;
+	int button_count2 = 0;
 };

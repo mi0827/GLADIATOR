@@ -172,14 +172,47 @@ void GameScene::Exit()
 //------------------------------------
 void GameScene::Tutorial_Update()
 {
-	// スペースキーを押されたら
-	if (CheckHitKey(KEY_INPUT_SPACE))
-	{
+	// プレイヤー１
+	if (IsPadRepeat(PAD_ID::PAD_X, players[0]->pad_no) ){
+		button_count1++; // ボタンの長押しカウントを増やす
+		if (button_count1 >= BUTTON_COUNT_MAX) {
+			// カウントが一定以上になると準備完了
+			ready_flag1 = true;
+		}
+	}
+	else {
+		// 押されていない時はカウントを減らす
+		button_count1--;
+		if (button_count1 < 0) {
+			// ボタンカウントがマイナスにならないようにする
+			button_count1 = 0; 
+		}
+	}
+	// プレイヤー２
+	if (IsPadRepeat(PAD_ID::PAD_X, players[1]->pad_no)) {
+		button_count2++; // ボタンの長押しカウントを増やす
+		if (button_count2 >= BUTTON_COUNT_MAX) {
+			// カウントが一定以上になると準備完了
+			ready_flag2 = true;
+		}
+	}
+	else {
+		// 押されていない時はカウントを減らす
+		button_count2--;
+		if (button_count2 < 0) {
+			// ボタンカウントがマイナスにならないようにする
+			button_count2 = 0;
+		}
+	}
+	clsDx();
+	printfDx("button_count2 %3d", button_count1);
+	
+	// 両プレイヤーが準備完了なら
+	if(ready_flag1 && ready_flag2){
 		for (int i = 0; i < PLAYER_MAX; i++)
 		{
 			players[i]->Reset_Status(); // ステータスをリセットしておく
 		}
-
 		// 座標と向きを最初の設定に戻す
 		players[0]->m_pos.set(350.0f, 0.0f, 150.0f);           // 初期座標の設定
 		players[0]->m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
@@ -187,6 +220,21 @@ void GameScene::Tutorial_Update()
 		players[1]->m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 		play_scene = Play_Main; // プレイメインに移動
 	}
+	// スペースキーを押されたら
+	//if (CheckHitKey(KEY_INPUT_SPACE))
+	//{
+	//	for (int i = 0; i < PLAYER_MAX; i++)
+	//	{
+	//		players[i]->Reset_Status(); // ステータスをリセットしておく
+	//	}
+
+	//	// 座標と向きを最初の設定に戻す
+	//	players[0]->m_pos.set(350.0f, 0.0f, 150.0f);           // 初期座標の設定
+	//	players[0]->m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
+	//	players[1]->m_pos.set(350.0f, 0.0f, 450.0f);           // 初期座標の設定
+	//	players[1]->m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
+	//	play_scene = Play_Main; // プレイメインに移動
+	//}
 }
 
 //------------------------------------
@@ -353,8 +401,107 @@ void GameScene::Tutorial_Draw()
 	float w, h;
 	Draw_String_Size(&w, &h, name);
 	// 描画
-	DrawFormatStringF(SCREEN_W / 2 - w / 2 , h - 25, GetColor(255, 255, 0), name, time_count);
+	DrawFormatStringF(SCREEN_W / 2 - w / 2, h - 25, GetColor(255, 255, 0), name, time_count);
 	SetFontSize(original_font_size); // フォントサイズを戻す
+
+	
+
+	{
+		//	スピードメータ用の定数
+		const float CENTER_X = SCREEN_W /2 -100;		//	円の中心Ｘ座標
+		const float CENTER_Y = SCREEN_H - 100.0f;		//	Ｙ座標
+		const float RADIUS = 50.0f;			//	半径
+		//	線を上向きから開始したいので開始角度
+		const float OFFSET = -90.0f;
+		//	今のスピードが PLAYER_MOV_SPEED を最大としたときにどのくらいの割合か（ 0.0f ～ 1.0f ）
+		float rate = button_count1 / BUTTON_COUNT_MAX;
+		// 三角形のをいくつかくか
+		int count = 360.0f * rate;
+		if (ready_flag1) {
+			// 準備が完了したら常に円を描画する
+			count = 360.0f * 1;
+		}
+		// この数分だけ三角形描画を繰り返す
+		for (int i = 0; i < count; i++) {
+			// 一つ目のの点の角度
+			float r1 = i + OFFSET;
+			// この方向にRADIS 分先に進めら座標
+			float x1 = CENTER_X + RADIUS * cosf(TO_RADIAN(r1));
+			float y1 = CENTER_Y + RADIUS * sinf(TO_RADIAN(r1));
+
+			// 二つ目の
+			float r2 = r1 + 1;
+			// この方向にRADIS 分先に進めら座標
+			float x2 = CENTER_X + RADIUS * cosf(TO_RADIAN(r2));
+			float y2 = CENTER_Y + RADIUS * sinf(TO_RADIAN(r2));
+
+			DrawTriangleAA(CENTER_X, CENTER_Y, x1, y1, x2, y2, GetColor(0, 255, 255), TRUE);
+		}
+		//	この割合的に角度はどのくらい進んでいるのか（ -90.0f から始めた時に何度か）
+		float rot = 360.0f * rate + OFFSET;
+		float rot_triangle = 360.0f * rate;
+		//	線を引くための１点目は CENTER_X CENTER_Y
+		//	２点目は CENTER_X CENTER_Y から rot の方向に RADIUS 分進んだところ
+		float x = CENTER_X + RADIUS * cosf(TO_RADIAN(rot));
+		float y = CENTER_Y + RADIUS * sinf(TO_RADIAN(rot));
+
+		//	この２点を結んで線の描画
+		if (!ready_flag1) {
+			// 準備が完了していない時だけ描画する
+			DrawLineAA(CENTER_X, CENTER_Y, x, y, GetColor(255, 255, 0), 5.0f);
+		}
+		//	メーター枠の円の描画
+		DrawCircleAA(CENTER_X, CENTER_Y, RADIUS, 100, GetColor(255, 255, 255), FALSE, 5.0f);
+	}
+	{
+		//	スピードメータ用の定数
+		const float CENTER_X = SCREEN_W / 2 + 100;		//	円の中心Ｘ座標
+		const float CENTER_Y = SCREEN_H - 100.0f;		//	Ｙ座標
+		const float RADIUS = 50.0f;			//	半径
+		//	線を上向きから開始したいので開始角度
+		const float OFFSET = -90.0f;
+		//	今のスピードが PLAYER_MOV_SPEED を最大としたときにどのくらいの割合か（ 0.0f ～ 1.0f ）
+		float rate = button_count2 / BUTTON_COUNT_MAX;
+		// 三角形のをいくつかくか
+		int count = 360.0f * rate;
+		if (ready_flag2) {
+			// 準備が完了したら常に円を描画する
+			count = 360.0f * 1;
+		}
+		// この数分だけ三角形描画を繰り返す
+		for (int i = 0; i < count; i++) {
+			// 一つ目のの点の角度
+			float r1 = i + OFFSET;
+			// この方向にRADIS 分先に進めら座標
+			float x1 = CENTER_X + RADIUS * cosf(TO_RADIAN(r1));
+			float y1 = CENTER_Y + RADIUS * sinf(TO_RADIAN(r1));
+
+			// 二つ目の
+			float r2 = r1 + 1;
+			// この方向にRADIS 分先に進めら座標
+			float x2 = CENTER_X + RADIUS * cosf(TO_RADIAN(r2));
+			float y2 = CENTER_Y + RADIUS * sinf(TO_RADIAN(r2));
+
+			DrawTriangleAA(CENTER_X, CENTER_Y, x1, y1, x2, y2, GetColor(0, 255, 255), TRUE);
+		}
+		//	この割合的に角度はどのくらい進んでいるのか（ -90.0f から始めた時に何度か）
+		float rot = 360.0f * rate + OFFSET;
+		float rot_triangle = 360.0f * rate;
+		//	線を引くための１点目は CENTER_X CENTER_Y
+		//	２点目は CENTER_X CENTER_Y から rot の方向に RADIUS 分進んだところ
+		float x = CENTER_X + RADIUS * cosf(TO_RADIAN(rot));
+		float y = CENTER_Y + RADIUS * sinf(TO_RADIAN(rot));
+
+		//	この２点を結んで線の描画
+		if (!ready_flag2) {
+			// 準備が完了していない時だけ描画する
+			DrawLineAA(CENTER_X, CENTER_Y, x, y, GetColor(255, 255, 0), 5.0f);
+		}
+	
+
+		//	メーター枠の円の描画
+		DrawCircleAA(CENTER_X, CENTER_Y, RADIUS, 100, GetColor(255, 255, 255), FALSE, 5.0f);
+	}
 }
 
 //---------------------------------------------------------------------------
