@@ -39,6 +39,8 @@ public:
 	void Time_Draw();
 	// チュートリアルでの描画処理
 	void Tutorial_Draw();
+	// 準備完了を描画させるだけの関数
+	void Ready_Draw();
 	// エンドでの描画処理
 	void End_Draw();
 

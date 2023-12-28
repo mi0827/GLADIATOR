@@ -173,7 +173,7 @@ void GameScene::Exit()
 void GameScene::Tutorial_Update()
 {
 	// プレイヤー１
-	if (IsPadRepeat(PAD_ID::PAD_X, players[0]->pad_no) ){
+	if (IsPadRepeat(PAD_ID::PAD_X, players[0]->pad_no)) {
 		button_count1++; // ボタンの長押しカウントを増やす
 		if (button_count1 >= BUTTON_COUNT_MAX) {
 			// カウントが一定以上になると準備完了
@@ -185,7 +185,7 @@ void GameScene::Tutorial_Update()
 		button_count1--;
 		if (button_count1 < 0) {
 			// ボタンカウントがマイナスにならないようにする
-			button_count1 = 0; 
+			button_count1 = 0;
 		}
 	}
 	// プレイヤー２
@@ -204,11 +204,10 @@ void GameScene::Tutorial_Update()
 			button_count2 = 0;
 		}
 	}
-	clsDx();
-	printfDx("button_count2 %3d", button_count1);
-	
+
+
 	// 両プレイヤーが準備完了なら
-	if(ready_flag1 && ready_flag2){
+	if (ready_flag1 && ready_flag2) {
 		for (int i = 0; i < PLAYER_MAX; i++)
 		{
 			players[i]->Reset_Status(); // ステータスをリセットしておく
@@ -220,21 +219,7 @@ void GameScene::Tutorial_Update()
 		players[1]->m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 		play_scene = Play_Main; // プレイメインに移動
 	}
-	// スペースキーを押されたら
-	//if (CheckHitKey(KEY_INPUT_SPACE))
-	//{
-	//	for (int i = 0; i < PLAYER_MAX; i++)
-	//	{
-	//		players[i]->Reset_Status(); // ステータスをリセットしておく
-	//	}
 
-	//	// 座標と向きを最初の設定に戻す
-	//	players[0]->m_pos.set(350.0f, 0.0f, 150.0f);           // 初期座標の設定
-	//	players[0]->m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
-	//	players[1]->m_pos.set(350.0f, 0.0f, 450.0f);           // 初期座標の設定
-	//	players[1]->m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
-	//	play_scene = Play_Main; // プレイメインに移動
-	//}
 }
 
 //------------------------------------
@@ -404,11 +389,22 @@ void GameScene::Tutorial_Draw()
 	DrawFormatStringF(SCREEN_W / 2 - w / 2, h - 25, GetColor(255, 255, 0), name, time_count);
 	SetFontSize(original_font_size); // フォントサイズを戻す
 
-	
+	Ready_Draw();
 
+
+}
+
+//---------------------------------------------------------------------------
+// 準備完了を描画させるだけの関数
+//---------------------------------------------------------------------------
+void GameScene::Ready_Draw()
+{
+	//=====================
+	// 一つ目の円
+	//=====================
 	{
-		//	スピードメータ用の定数
-		const float CENTER_X = SCREEN_W /2 -100;		//	円の中心Ｘ座標
+		//	準備オッケー用円の定数
+		const float CENTER_X = SCREEN_W / 2 - 100;		//	円の中心Ｘ座標
 		const float CENTER_Y = SCREEN_H - 100.0f;		//	Ｙ座標
 		const float RADIUS = 50.0f;			//	半径
 		//	線を上向きから開始したいので開始角度
@@ -451,10 +447,38 @@ void GameScene::Tutorial_Draw()
 			DrawLineAA(CENTER_X, CENTER_Y, x, y, GetColor(255, 255, 0), 5.0f);
 		}
 		//	メーター枠の円の描画
-		DrawCircleAA(CENTER_X, CENTER_Y, RADIUS, 100, GetColor(255, 255, 255), FALSE, 5.0f);
+		DrawCircleAA(CENTER_X, CENTER_Y, RADIUS, 100, GetColor(255, 255, 255), FALSE, 3.0f);
+		// ここでとってきた文字をセットしておく
+		// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
+		int original_font_size = GetFontSize();
+		
+		SetFontSize(40); // フォントサイズの変更
+		if (ready_flag1) {
+			const char* name = "ready";
+			// 描画幅の取得
+			float w = GetDrawStringWidth(name, -1);
+			// 文字列の高さ取得
+			float h = GetFontSize();			
+			// 描画文字の
+			DrawString(CENTER_X - w / 2, CENTER_Y - h / 2 , name, GetColor(128, 0, 0)); // 下
+		}
+		else {
+			const char* name = "OK:X";
+			float w = GetDrawStringWidth(name, -1);
+			// 文字列の高さ取得
+			float h = GetFontSize();
+			// 描画文字の
+			DrawString(CENTER_X - w / 2, CENTER_Y - h / 2 , name, GetColor(128, 0, 0)); // 下
+		}
+
+		SetFontSize(original_font_size); // フォントサイズを戻す
 	}
+
+	//=====================
+	// 二つ目の円
+	//=====================
 	{
-		//	スピードメータ用の定数
+		//	準備オッケー用円の定数
 		const float CENTER_X = SCREEN_W / 2 + 100;		//	円の中心Ｘ座標
 		const float CENTER_Y = SCREEN_H - 100.0f;		//	Ｙ座標
 		const float RADIUS = 50.0f;			//	半径
@@ -497,10 +521,37 @@ void GameScene::Tutorial_Draw()
 			// 準備が完了していない時だけ描画する
 			DrawLineAA(CENTER_X, CENTER_Y, x, y, GetColor(255, 255, 0), 5.0f);
 		}
-	
 
 		//	メーター枠の円の描画
 		DrawCircleAA(CENTER_X, CENTER_Y, RADIUS, 100, GetColor(255, 255, 255), FALSE, 5.0f);
+		// ここでとってきた文字をセットしておく
+		// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
+		int original_font_size = GetFontSize();
+
+		SetFontSize(50); // フォントサイズの変更
+		if (ready_flag2) {
+			{
+				const char* name = "ready";
+				// 描画幅の取得
+				float w = GetDrawStringWidth(name, -1);
+				// 文字列の高さ取得
+				float h = GetFontSize();
+				// 描画文字の
+				DrawString(CENTER_X - w / 2, CENTER_Y - h / 2, name, GetColor(128, 0, 0)); // 下
+
+			}
+		}
+		else {
+			{
+				const char* name = "OK:X";
+				float w = GetDrawStringWidth(name, -1);
+				// 文字列の高さ取得
+				float h = GetFontSize();
+				// 描画文字の
+				DrawString(CENTER_X - w / 2, CENTER_Y - h / 2, name, GetColor(128, 0, 0)); // 下
+			}
+		}
+		SetFontSize(original_font_size); // フォントサイズを戻す
 	}
 }
 
@@ -561,12 +612,12 @@ void GameScene::Play_Victory_Draw(CharacterBase* character1, CharacterBase* char
 	{
 		// hp1のほうが残りhpが多いい場合
 		DrawStringF(draw_pos1.x - winner.x / 2, draw_pos1.y, winner_string, GetColor(255, 255, 0));
-		DrawStringF(draw_pos2.x - loser.x / 2,  draw_pos2.y, loser_string,  GetColor(255, 255, 0));
+		DrawStringF(draw_pos2.x - loser.x / 2, draw_pos2.y, loser_string, GetColor(255, 255, 0));
 	}
 	if (hp2 > hp1)
 	{
 		// hp2のほうが残りhpが多いい場合
-		DrawStringF(draw_pos1.x - loser.x / 2 , draw_pos1.y, loser_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos1.x - loser.x / 2, draw_pos1.y, loser_string, GetColor(255, 255, 0));
 		DrawStringF(draw_pos2.x - winner.x / 2, draw_pos2.y, winner_string, GetColor(255, 255, 0));
 	}
 	SetFontSize(18); // フォントサイズを戻す

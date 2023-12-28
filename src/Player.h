@@ -63,12 +63,26 @@ private:
 	enum ATTACK_ANIM
 	{
 		ATTACK_LONG_NORMAL_ANIM,    // 遠距離普通攻撃
-		ATTACK_SHORT_NORMAL_1_ANIM, // 近距離普通攻撃１
-		ATTACK_SHORT_NORMAL_2_ANIM, // 近距離普通攻撃２
+		ATTACK_PUNCH_1_ANIM,        // パンチ１
+		ATTACK_PUNCH_2_ANIM,        // パンチ２
+		ATTACK_PUNCH_3_ANIM,        // パンチ３
 		ATTACK_SLIDE_ANIM,          // スライディング
 		ATTACK_SPECIAL_ANIM,        // スペシャル
 
-		ATTACK_ANIM_MAX // 攻撃アニメーションの数
+		ATTACK_ANIM_MAX             // 攻撃アニメーションの数
+	};
+
+	// アクション用の当たり判定用の列挙体
+	enum HIT_ACTION
+	{
+		THROW_ATTACK_HIT,          // 遠距離普通攻撃当たり判定
+		ATTACK_PUNCH_1_HIT,        // パンチ攻撃１用の当たり判定
+		ATTACK_PUNCH_2_HIT,        // パンチ攻撃２用の当たり判定
+		ATTACK_PUNCH_3_HIT,        // パンチ攻撃３用の当たり判定
+		BLOCK_HIT,                 // ブロック用の当たり判定
+		SPECIAL_HIT,               // 必殺技の当たり判定
+
+		HIT_ACTION_MAX             // 当たり判定の数
 	};
 
 	// ダメージアニメーション用の列挙体
@@ -91,19 +105,6 @@ private:
 
 		BLOCK_ANIM_MAX
 	};
-
-
-	// アクション用の当たり判定用の列挙体
-	enum HIT_ACTION
-	{
-		THROW_ATTACK_HIT,          // 遠距離普通攻撃当たり判定
-		ATTACK_SHORT_NORMAL_1_HIT, // 近距離普通攻撃１用の当たり判定
-		BLOCK_HIT,                 // ブロック用の当たり判定
-		SPECIAL_HIT,               // 必殺技の当たり判定
-
-		HIT_ACTION_MAX             // 当たり判定の数
-	};
-
 
 	// エフェクトの列挙体
 	enum EFFECT

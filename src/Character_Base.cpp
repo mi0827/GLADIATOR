@@ -250,6 +250,7 @@ void CharacterBase::Nomal_Anim_New(int ANIM_MAX)
 	anim_total = new float[ANIM_MAX]; // アニメーションが何フレームあるか
 	anim_rate = new float[ANIM_MAX];  // アニメーションのブレンド率
 	anim_frame = new float[ANIM_MAX]; // アニメーションの進めるフレーム
+
 	// アニメーションが何フレーム進んでいるか用の変数
 	// 最初は０から開始
 	for (int i = 0; i < ANIM_MAX; i++)
@@ -264,8 +265,9 @@ void CharacterBase::Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX, int index)
 {
 	for (int i = 0; i < ANIM_MAX; i++)
 	{
-		anim_attach[i] = MV1AttachAnim(m_model, index, anim_model[i]);             // モデルにアニメーションをアタッチ（つける）する
+		anim_attach[i] = MV1AttachAnim(m_model, index, anim_model[i]);         // モデルにアニメーションをアタッチ（つける）する
 		anim_total[i] = MV1GetAttachAnimTotalTime(m_model, anim_attach[i]);               // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		anim_rate[i] = MV1GetAttachAnimBlendRate(m_model, anim_attach[i]);                // ブレンド率の取得
 		// 不必要なものにはブレンド率を0.0fにしておく（最初はアイドルにしておく）
 		if (i != ANIM_IDLE)  // アイドル以外のアニメーションをモデルから外す
 		{
@@ -302,8 +304,9 @@ void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX, int index)
 	for (int i = 0; i < ATTACK_ANIM_MAX; i++)
 	{
 		attack_anim_attach[i] = MV1AttachAnim(m_model, index, attack_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
-		attack_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		attack_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+		attack_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);        // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		attack_anim_rate[i] = MV1GetAttachAnimBlendRate(m_model, attack_anim_attach[i]);         // ブレンド率の取得
+		attack_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);                   // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
 }
 //---------------------------------------------------------------------------
@@ -342,8 +345,9 @@ void CharacterBase::Damage_Anim_Init(int DAMAGE_ANIM_MAX, int index)
 	for (int i = 0; i < DAMAGE_ANIM_MAX; i++)
 	{
 		damage_anim_attach[i] = MV1AttachAnim(m_model, index, damage_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
-		damage_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, damage_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		damage_anim_attach[i] = MV1DetachAnim(m_model, damage_anim_attach[i]);               // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+		damage_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, damage_anim_attach[i]);        // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		damage_anim_rate[i] = MV1GetAttachAnimBlendRate(m_model, damage_anim_attach[i]);         // ブレンド率の取得
+		damage_anim_attach[i] = MV1DetachAnim(m_model, damage_anim_attach[i]);                   // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
 }
 //---------------------------------------------------------------------------

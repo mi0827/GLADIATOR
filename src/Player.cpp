@@ -106,8 +106,9 @@ void Player::Animation_Init()
 	// 攻撃アニメーションの初期化
 	CharacterBase::Attack_Anim_New(ATTACK_ANIM_MAX); //< 攻撃アニメーションに必要な変数の配列を作る
 	attack_anim_model[ATTACK_LONG_NORMAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/long_normal_attack.mv1");       // 遠距離普通攻撃
-	attack_anim_model[ATTACK_SHORT_NORMAL_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch.mv1");                 // 近距離攻撃１
-	attack_anim_model[ATTACK_SHORT_NORMAL_2_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/short_normal_attack_2.mv1"); // 近距離攻撃２
+	attack_anim_model[ATTACK_PUNCH_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch.mv1");                        // パンチ１
+	attack_anim_model[ATTACK_PUNCH_2_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch2.mv1");                       // パンチ２
+	attack_anim_model[ATTACK_PUNCH_3_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch3.mv1");                       // パンチ３
 	attack_anim_model[ATTACK_SLIDE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/slide.mv1");                          // スライディング
 	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/special_attack.mv1");               // 必殺技
 	CharacterBase::Attack_Anim_Init(ATTACK_ANIM_MAX, 1); //< 攻撃アニメーションの初期設定
@@ -164,12 +165,10 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 			}
 		}
 
-
 		Attack_PressButton_Update(camera_rot); // アクションに関するボタン押し用の関数（見やすくするための関数）
 		if (action_flag) { // アクションフラグが上がっていたら
 			break;         // 後の処理を飛ばす
 		}
-
 
 		//=================================
 		// ダメージのを食らったら
@@ -182,9 +181,6 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 			CharacterBase::Damage_Action(1);  // 行いたいダメージアニメーションをセット
 			break;
 		}
-
-
-
 
 		// アニメーション用のフレームカウントを進める
 		for (int i = 0; i < ANIM_MAX; ++i) {
@@ -372,17 +368,15 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	// 近距離攻撃
 	//=================================
-	// マウスの左クリックまたはAボタンで近距離攻撃
+	// マウスの左クリックまたはAボタンでパンチ攻撃
 	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
 
 		m_effect_handle[0] = PlayEffekseer3DEffect(m_effect_container[0]); // エフェクトの再生
 
 		SetRotationPlayingEffekseer3DEffect(m_effect_handle[0], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 
-
-
 		action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
-		attack_anim_pick = ATTACK_SHORT_NORMAL_1_ANIM;  // 近距離攻撃アクションを設定
+		attack_anim_pick = ATTACK_PUNCH_1_ANIM;  // 近距離攻撃アクションを設定
 		CharacterBase::Attack_Action(1);          // 行いたい攻撃アニメーションをセット	
 		action_flag = true;                             // アクションフラグを上げる
 	}
@@ -464,8 +458,6 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 //---------------------------------------------------------------------------
 void Player::Attack_Update()
 {
-
-
 	switch (attack_anim_pick)
 	{
 	case ATTACK_LONG_NORMAL_ANIM: // 遠距離攻撃（弾を出す）
@@ -505,10 +497,10 @@ void Player::Attack_Update()
 		}
 		break;
 
-	case ATTACK_SHORT_NORMAL_1_ANIM: // 近距離普通攻撃１ (当たり判定の作成)
+	case ATTACK_PUNCH_1_ANIM: // 近距離普通攻撃１ (当たり判定の作成)
 
-		now_hit_area = &hit_areas[ATTACK_SHORT_NORMAL_1_HIT];
-		if (attack_anim_frame[ATTACK_SHORT_NORMAL_1_ANIM] == now_hit_area->hit_anim_frame) {
+		now_hit_area = &hit_areas[ATTACK_PUNCH_1_HIT];
+		if (attack_anim_frame[ATTACK_PUNCH_1_ANIM] == now_hit_area->hit_anim_frame) {
 			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
 
 			// 当たり判定を見えるようにする物

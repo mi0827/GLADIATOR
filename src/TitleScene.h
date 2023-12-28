@@ -2,7 +2,7 @@
 #include "Scene_Base.h"
 #include "Vector2.h"
 // タイトルシーンのクラス
-class TiteleScene : public Scene_Base 
+class TiteleScene : public Scene_Base
 {
 	//int effeckt_h;
 
@@ -26,7 +26,25 @@ public:
 	int count_flame; // フレームカウント用の変数 
 	int count_time;  // フレームから実際の割り出して入れる用の時間
 
+
+
 	// フォントデータ用
 	int GTA_font_data; // GTAのフォントデータ用の変数
 	LPCSTR GTA_font_path;
+
+
+private:
+
+	// タイトル画面での切り替え用
+	enum Title_SCENES
+	{
+		TITLE, // タイトル画面
+		MOVIE, // 動画画面
+	};
+
+	// 画面切り替え用の変数
+	int title_scene = 0;
+
+	bool start_flag = false; // タイトル画面でボタンが押されたかどうかのフラグ
+
 };
