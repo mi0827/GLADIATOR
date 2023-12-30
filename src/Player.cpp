@@ -8,7 +8,7 @@
 #include "Player.h"
 #define PANEL_SIZE	5.0f              // パネルの大きさ
 #define PANEL_HALF	(PANEL_SIZE/2.0f) // パネルの半分の大きさ
-
+#define ATTACK_ANIM_SPEED 1.4f
 
 //---------------------------------------------------------------------------
 // コンストラクタ（初期化）
@@ -56,6 +56,8 @@ Player::Player()
 	// SP
 	m_sp_pos.set(10, SCREEN_H - 110);		   	 // SPのクールダウンバーの描画位置初期化
 	m_sp_count.set(0, m_sp_pos.y + STATUS_BAR_SIZE); // SPのクールダウンバーの計算用の初期化
+
+	combo_flag = false; // 攻撃を何もしていないのでフラグをげる
 }
 
 //---------------------------------------------------------------------------
@@ -65,7 +67,6 @@ void Player::Init(int player_num)
 {
 	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
 	Animation_Init(); //< アニメーションの設定
-
 
 	//Effect_New(EFFECT_MAX, m_effect_container_ptr, m_effect_handle);
 	//m_effect_container_ptr = new int[EFFECT_MAX + 2];
@@ -109,6 +110,7 @@ void Player::Animation_Init()
 	attack_anim_model[ATTACK_PUNCH_1_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch.mv1");                        // パンチ１
 	attack_anim_model[ATTACK_PUNCH_2_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch2.mv1");                       // パンチ２
 	attack_anim_model[ATTACK_PUNCH_3_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch3.mv1");                       // パンチ３
+	attack_anim_model[ATTACK_PUNCH_4_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/Punch_Kick.mv1");                   // コンボ攻撃の最後の攻撃（キックになってる）
 	attack_anim_model[ATTACK_SLIDE_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/slide.mv1");                          // スライディング
 	attack_anim_model[ATTACK_SPECIAL_ANIM] = MV1LoadModel("Data/Model/Player/Animation/Attack/special_attack.mv1");               // 必殺技
 	CharacterBase::Attack_Anim_Init(ATTACK_ANIM_MAX, 1); //< 攻撃アニメーションの初期設定
@@ -165,10 +167,14 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 			}
 		}
 
-		Attack_PressButton_Update(camera_rot); // アクションに関するボタン押し用の関数（見やすくするための関数）
+		//=================================
+		// アクションに関するボタン押し用の関数（見やすくするための関数）
+		//=================================
+		Attack_PressButton_Update(camera_rot);
 		if (action_flag) { // アクションフラグが上がっていたら
 			break;         // 後の処理を飛ばす
 		}
+
 
 		//=================================
 		// ダメージのを食らったら
@@ -203,18 +209,33 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 			MV1SetAttachAnimBlendRate(m_model, anim_attach[i], anim_rate[i]);   // それぞれにアニメーションの割合分再生します
 		}
 		break;
+
 	case ATTACK_ACTION: // 攻撃アクション
 
 		// アニメーションの再生
 		// 攻撃アニメーション用のフレームカウントを進める
-		attack_anim_frame[attack_anim_pick]++;
-		if (attack_anim_frame[attack_anim_pick] >= attack_anim_total[attack_anim_pick]) {                                           // アニメーションが一周したら
-			attack_anim_frame[attack_anim_pick] = 0.0f;
-			attack_anim_attach[attack_anim_pick] = MV1DetachAnim(m_model, attack_anim_attach[attack_anim_pick]);  // 攻撃アニメーションをディタッチしておく
-			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
-			action_mode = NORMAL_ACTION;                                                                                         	// アニメーションが１ループしたかrATTACK_ACTIONから出る
-			attack_flag = false;                                                                                                    // 攻撃が終わったのでこうげきしていないようにする
-			attack_anim_pick = ATTACK_ANIM_MAX;                                                                                     // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
+		attack_anim_frame[attack_anim_pick] += ATTACK_ANIM_SPEED;
+		if (combo_flag) {
+			// コンボフラグが立っていたら
+			if (attack_anim_frame[attack_anim_pick] >= attack_anim_total[attack_anim_pick]) {                                           // アニメーションが一周したら
+				attack_anim_frame[attack_anim_pick] = 0.0f;
+				attack_anim_attach[attack_anim_pick] = MV1DetachAnim(m_model, attack_anim_attach[attack_anim_pick]);  // 攻撃アニメーションをディタッチしておく
+				attack_anim_attach[next_combo] = MV1AttachAnim(m_model, 1, attack_anim_model[next_combo]); // 次のコンボ攻撃アニメーションをモデルにつけなおす
+				attack_anim_pick = next_combo;                                                                                          // 次の攻撃に差し替える
+				combo_flag = false;                                                                                                     // コンボフラグを下げる
+			}
+		}
+		else {
+			// コンボフラグが降りていたら
+			if (attack_anim_frame[attack_anim_pick] >= attack_anim_total[attack_anim_pick]) {                                           // アニメーションが一周したら
+				attack_anim_frame[attack_anim_pick] = 0.0f;
+				attack_anim_attach[attack_anim_pick] = MV1DetachAnim(m_model, attack_anim_attach[attack_anim_pick]);  // 攻撃アニメーションをディタッチしておく
+				anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
+				action_mode = NORMAL_ACTION;                                                                                         	// アニメーションが１ループしたかrATTACK_ACTIONから出る
+				attack_flag = false;                                                                                                    // 攻撃が終わったのでこうげきしていないようにする
+				attack_anim_pick = ATTACK_ANIM_MAX;                                                                                     // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
+				combo_flag = false;                                                                                                     // コンボフラグを下げる
+			}
 		}
 		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
 
@@ -228,7 +249,7 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 		// アニメーションの再生
 		// ガードアニメーション用のフレームカウントを進める
 		// 防御フラグが上がっている間は防御アニメーションをループさせる
-		block_anim_frame[block_anim_pick]++;
+		block_anim_frame[block_anim_pick] ++;
 
 		if (block_anim_frame[block_anim_pick] >= block_anim_total[block_anim_pick]) {                              // アニメーションが一周したら
 			block_anim_frame[block_anim_pick] = 0.0f;                                                              // アニメーションを最初からにしておく
@@ -294,7 +315,7 @@ void Player::Draw()
 		DrawSphere3D(bead_pos.VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 	}
 	// 玉を描画する(今だけ)
-#ifdef DEBUG
+//#ifdef DEBUG
 
 
 	// プレイヤー自身の当たり判定を見えるようにしている
@@ -305,15 +326,15 @@ void Player::Draw()
 	//hit_areas[ATTACK_LONG_NORMAL_ANIM].hit_top = Vector3();
 
 	if (cd_hit_flag && attack_flag) {
-		DrawCapsule3D(m_hit_cd_pos_top.VGet(), m_hit_cd_pos_under.VGet(), m_hit_cd_r, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
-}
-	if (cd_hit_flag && block_flag) {
-		DrawCapsule3D(m_block_top.VGet(), m_block_under.VGet(), m_block_r, 8, GetColor(0, 255, 0), GetColor(255, 0, 0), FALSE);
+		DrawCapsule3D(m_hit_cd_pos_top.VGet(), m_hit_cd_pos_under.VGet(), m_hit_cd_r, 8, GetColor(0, 255, 0), GetColor(0, 255, 0), TRUE);
 	}
-#endif // DEBUG
+	if (cd_hit_flag && block_flag) {
+		DrawCapsule3D(m_block_top.VGet(), m_block_under.VGet(), m_block_r, 8, GetColor(255, 255, 0), GetColor(255, 255, 0), FALSE);
+	}
+	//#endif // DEBUG
 
-	
-	// プレイヤーの描画設定
+
+		// プレイヤーの描画設定
 	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z)); // 描画するプレイヤーモデルの座標の設定
 	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z))); // モデルの回転
 	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f)); // モデルの大きさ(10分の１のサイズ)
@@ -372,13 +393,12 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
 
 		m_effect_handle[0] = PlayEffekseer3DEffect(m_effect_container[0]); // エフェクトの再生
-
 		SetRotationPlayingEffekseer3DEffect(m_effect_handle[0], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
-
 		action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
-		attack_anim_pick = ATTACK_PUNCH_1_ANIM;  // 近距離攻撃アクションを設定
+		attack_anim_pick = ATTACK_PUNCH_1_ANIM;         // 近距離攻撃アクションを設定
 		CharacterBase::Attack_Action(1);          // 行いたい攻撃アニメーションをセット	
 		action_flag = true;                             // アクションフラグを上げる
+
 	}
 
 	//=================================
@@ -391,7 +411,6 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 		m_effect_handle[1] = PlayEffekseer3DEffect(m_effect_container[1]); // エフェクトの再生
 
 		SetRotationPlayingEffekseer3DEffect(m_effect_handle[1], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
-
 
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
@@ -497,13 +516,13 @@ void Player::Attack_Update()
 		}
 		break;
 
-	case ATTACK_PUNCH_1_ANIM: // 近距離普通攻撃１ (当たり判定の作成)
+	case ATTACK_PUNCH_1_ANIM: // パンチ通攻撃１ 
 
+		// 当たり判定の作成
 		now_hit_area = &hit_areas[ATTACK_PUNCH_1_HIT];
-		if (attack_anim_frame[ATTACK_PUNCH_1_ANIM] == now_hit_area->hit_anim_frame) {
+		if (attack_anim_frame[ATTACK_PUNCH_1_ANIM] >= now_hit_area->hit_anim_frame) {
 			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
 
-			// 当たり判定を見えるようにする物
 			// 向いている方向に座標を設定（今はパンチに位置）
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
@@ -513,6 +532,78 @@ void Player::Attack_Update()
 		else {
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
 		}
+		// アニメーションの中に
+		// マウスの左クリックまたはAボタンでパンチコンボ
+		if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
+			combo_flag = true;                // コンボフラグを立てる
+			next_combo = ATTACK_PUNCH_2_ANIM; // 次の攻撃にセットする
+		}
+		break;
+
+
+	case ATTACK_PUNCH_2_ANIM: // パンチ攻撃２（コンボ攻撃）
+
+		// 当たり判定の作成
+		now_hit_area = &hit_areas[ATTACK_PUNCH_2_HIT];
+		if (attack_anim_frame[ATTACK_PUNCH_2_ANIM] >= now_hit_area->hit_anim_frame) {
+			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
+			// 向いている方向に座標を設定（今のパンチに位置に座標と向きをいじる）
+			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y - 10)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y - 10)) * now_hit_area->hit_top.z);
+			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 3)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 3)) * now_hit_area->hit_under.z);
+			m_hit_cd_r = now_hit_area->hit_r;
+
+		}
+		else {
+			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
+		}
+		// アニメーションの中に
+		// マウスの左クリックまたはAボタンでパンチコンボ
+		if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
+			combo_flag = true;                // コンボフラグを立てる
+			next_combo = ATTACK_PUNCH_3_ANIM; // 次の攻撃にセットする
+		}
+		break;
+	case ATTACK_PUNCH_3_ANIM: // パンチ攻撃3（コンボ攻撃）
+
+		// 当たり判定の作成
+		now_hit_area = &hit_areas[ATTACK_PUNCH_3_HIT];
+		if (attack_anim_frame[ATTACK_PUNCH_3_ANIM] >= now_hit_area->hit_anim_frame) {
+			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
+			// 向いている方向に座標を設定（今のパンチに位置に座標と向きをいじる）
+			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y +15)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_top.z);
+			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y +25 )) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 25)) * now_hit_area->hit_under.z);
+			m_hit_cd_r = now_hit_area->hit_r;
+
+		}
+		else {
+			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
+		}
+		// アニメーションの中に
+		// マウスの左クリックまたはAボタンでパンチコンボ
+		if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
+			combo_flag = true;                // コンボフラグを立てる
+			next_combo = ATTACK_PUNCH_4_ANIM; // 次の攻撃にセットする
+		}
+		break;
+	case ATTACK_PUNCH_4_ANIM: // パンチ攻撃3（コンボ攻撃）
+
+		// 当たり判定の作成
+		now_hit_area = &hit_areas[ATTACK_PUNCH_4_HIT];
+		if (attack_anim_frame[ATTACK_PUNCH_4_ANIM] >= now_hit_area->hit_anim_frame) {
+			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
+			// 向いている方向に座標を設定（今のパンチに位置に座標と向きをいじる）
+			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y +5 )) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 5)) * now_hit_area->hit_top.z);
+			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y +15 )) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_under.z);
+			m_hit_cd_r = now_hit_area->hit_r;
+
+		}
+		else {
+			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
+		}
+		
 		break;
 	case ATTACK_SLIDE_ANIM: // スライディング（当たり判定の作成）
 		now_hit_area = &hit_areas[ATTACK_SLIDE_ANIM]; // 構造体を触りやすくするために違う変数に入れておく
@@ -608,7 +699,7 @@ void Player::Block_Update()
 
 			m_block_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
 			m_block_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
-			m_block_r = now_hit_area->hit_r; 
+			m_block_r = now_hit_area->hit_r;
 
 		}
 		else {
