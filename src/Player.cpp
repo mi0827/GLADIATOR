@@ -73,7 +73,7 @@ void Player::Init(int player_num)
 	m_effect_container = EffectContainerNew(EFFECT_MAX);
 	m_effect_handle = EffectContainerNew(EFFECT_MAX);
 	// エフェクトの読み込み
-	m_effect_container[0] = LoadEffekseerEffect("Data/Model/Player/Effect/Laser01.efkefc", 0.5f); // パンチエフェクト
+	m_effect_container[0] = LoadEffekseerEffect("Data/Model/Player/Effect/Punch0.efkefc", 0.5f); // パンチエフェクト
 	m_effect_container[1] = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc", 1.0);   // 投げものエフェクト
 	m_effect_container[2] = LoadEffekseerEffect("Data/Model/Player/Effect/throw.efkefc", 0.5f);
 	m_effect_container[3] = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.5f);
