@@ -205,7 +205,6 @@ void GameScene::Tutorial_Update()
 		}
 	}
 
-
 	// 両プレイヤーが準備完了なら
 	if (ready_flag1 && ready_flag2) {
 		for (int i = 0; i < PLAYER_MAX; i++)
@@ -219,7 +218,6 @@ void GameScene::Tutorial_Update()
 		players[1]->m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 		play_scene = Play_Main; // プレイメインに移動
 	}
-
 }
 
 //------------------------------------
@@ -451,16 +449,16 @@ void GameScene::Ready_Draw()
 		// ここでとってきた文字をセットしておく
 		// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
 		int original_font_size = GetFontSize();
-		
+
 		SetFontSize(40); // フォントサイズの変更
 		if (ready_flag1) {
 			const char* name = "ready";
 			// 描画幅の取得
 			float w = GetDrawStringWidth(name, -1);
 			// 文字列の高さ取得
-			float h = GetFontSize();			
+			float h = GetFontSize();
 			// 描画文字の
-			DrawString(CENTER_X - w / 2, CENTER_Y - h / 2 , name, GetColor(128, 0, 0)); // 下
+			DrawString(CENTER_X - w / 2, CENTER_Y - h / 2, name, GetColor(128, 0, 0)); // 下
 		}
 		else {
 			const char* name = "OK:X";
@@ -468,7 +466,7 @@ void GameScene::Ready_Draw()
 			// 文字列の高さ取得
 			float h = GetFontSize();
 			// 描画文字の
-			DrawString(CENTER_X - w / 2, CENTER_Y - h / 2 , name, GetColor(128, 0, 0)); // 下
+			DrawString(CENTER_X - w / 2, CENTER_Y - h / 2, name, GetColor(128, 0, 0)); // 下
 		}
 
 		SetFontSize(original_font_size); // フォントサイズを戻す
@@ -647,9 +645,11 @@ void GameScene::Attack_Hit(int player1, int player2)
 		if (HitCheck_Capsule_Capsule(players[player1]->m_hit_cd_pos_top.VGet(), players[player1]->m_hit_cd_pos_under.VGet(), players[player1]->m_hit_cd_r,
 			players[player2]->m_hit_body_pos_top.VGet(), players[player2]->m_hit_body_pos_under.VGet(), players[player2]->m_hit_body_r))
 		{
-			players[player2]->m_hp_count.x -= players[player1]->m_attack_damage[players[player1]->attack_anim_pick]; // ダメージを入れる
-			players[player2]->Damage_Update(&players[player1]->m_attack_damage[players[player1]->attack_anim_pick]);
-			players[player2]->damage_flag = true; // ダメージを食らってるようにする
+			if (!players[player2]->damage_flag) {
+				players[player2]->m_hp_count.x -= players[player1]->m_attack_damage[players[player1]->attack_anim_pick]; // ダメージを入れる
+				players[player2]->Damage_Update(&players[player1]->m_attack_damage[players[player1]->attack_anim_pick]);
+				players[player2]->damage_flag = true; // ダメージを食らってるようにする
+			}
 		}
 	}
 }

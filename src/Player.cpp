@@ -340,8 +340,6 @@ void Player::Draw()
 	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f)); // モデルの大きさ(10分の１のサイズ)
 	MV1DrawModel(m_model); // モデルの描画
 
-
-
 	// Effekseer描画処理
 	DrawEffekseer3D();
 }
@@ -369,8 +367,6 @@ void Player::Exit()
 	// baseでnewした変数たちのdelete
 	CharacterBase::Delete();
 
-	// エフェクトのdelete
-	//Effect_Delete(m_effect_container, m_effect_handle);
 }
 
 //---------------------------------------------------------------------------
@@ -391,14 +387,12 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	// マウスの左クリックまたはAボタンでパンチ攻撃
 	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
-
 		m_effect_handle[0] = PlayEffekseer3DEffect(m_effect_container[0]); // エフェクトの再生
 		SetRotationPlayingEffekseer3DEffect(m_effect_handle[0], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 		action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_PUNCH_1_ANIM;         // 近距離攻撃アクションを設定
 		CharacterBase::Attack_Action(1);          // 行いたい攻撃アニメーションをセット	
 		action_flag = true;                             // アクションフラグを上げる
-
 	}
 
 	//=================================
@@ -407,9 +401,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// マウスの右クリック、または、Bボタンで遠距離攻撃
 	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_B, pad_no)) {
 		//if (IsPadRepeat(PAD_ID::PAD_Y, PAD_NO::PAD_NO1)) {
-
 		m_effect_handle[1] = PlayEffekseer3DEffect(m_effect_container[1]); // エフェクトの再生
-
 		SetRotationPlayingEffekseer3DEffect(m_effect_handle[1], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
@@ -428,8 +420,6 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 
 			m_effect_handle[3] = PlayEffekseer3DEffect(m_effect_container[3]); // エフェクトの再生
 			SetRotationPlayingEffekseer3DEffect(m_effect_handle[3], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
-
-
 			m_skill_count.x = 0; // スキルの使用なのでカウントをリセット
 			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
@@ -453,7 +443,6 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 			bead_hit_flag = false;
 			action_flag = true;                      // アクションフラグを上げる
 			sp_flag = false;                         // SPを使用済みにしておく
-
 		}
 	}
 
@@ -462,7 +451,6 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	// または、Xボタンで遠距離攻撃
 	/*if (PushHitKey(KEY_INPUT_LSHIFT) || IsPadOn(PAD_ID::PAD_X, pad_no)) {*/      // ボタンの一度押し
-
 	if (/*CheckHitKey(KEY_INPUT_LSHIFT) ||*/ IsPadRepeat(PAD_ID::PAD_X, pad_no)) { // ボタンの長押し
 		action_mode = BLOCK_ACTION;           // モデルのアクションをガードに変更
 		block_anim_pick = BLOCK_ANIM;         // ガードアクションを設定
@@ -480,11 +468,12 @@ void Player::Attack_Update()
 	switch (attack_anim_pick)
 	{
 	case ATTACK_LONG_NORMAL_ANIM: // 遠距離攻撃（弾を出す）
-		// カウントがからだったら
 
+		// カウントがからだったら
 		if (lifespan_count == NULL) {
 			lifespan_count = 120.0f; // カウントのセット
 		}
+
 		// 弾用の変数
 		if (lifespan_count >= 120.0f) {
 
@@ -492,10 +481,11 @@ void Player::Attack_Update()
 			bead_pos.y += 10.0f; // y座標をずらして空中に浮かべる
 			bead_r = 2.0f;        // 半径の設定
 		}
+
 		// 一旦前に飛ばす
 		bead_pos.x += 3 * sinf(TO_RADIAN(m_rot.y));
 		bead_pos.z += 3 * cosf(TO_RADIAN(m_rot.y));
-		lifespan_count--; // 弾が消えるまでのカウントを進める
+		lifespan_count -= ATTACK_ANIM_SPEED; // 弾が消えるまでのカウントを進める
 
 		now_hit_area = &hit_areas[THROW_ATTACK_HIT];
 
