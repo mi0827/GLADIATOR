@@ -73,13 +73,13 @@ void Player::Init(int player_num)
 	m_effect_container = EffectContainerNew(EFFECT_MAX);
 	m_effect_handle = EffectContainerNew(EFFECT_MAX);
 	// エフェクトの読み込み
-	m_effect_container[THROW_EFFECT]   = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc" , 1.0);   // 投げものエフェクト
-	m_effect_container[PUNCH_EFFECT]   = LoadEffekseerEffect("Data/Model/Player/Effect/Punch0.efkefc" , 0.5f);  // パンチエフェクト
-	m_effect_container[PUNCH2_EFFECT]  = LoadEffekseerEffect("Data/Model/Player/Effect/Punch1.efkefc" , 1.0f);  // パンチ２エフェクト
-	m_effect_container[GUARD_EFFECT]   = LoadEffekseerEffect("Data/Model/Player/Effect/guard.efkefc"  , 1.0f);  // ガード用
+	m_effect_container[THROW_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc", 1.0);   // 投げものエフェクト
+	m_effect_container[PUNCH_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/Punch0.efkefc", 0.5f);  // パンチエフェクト
+	m_effect_container[PUNCH2_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/Punch1.efkefc", 0.3f);  // パンチ２エフェクト
+	m_effect_container[GUARD_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/guard.efkefc", 1.0f);  // ガード用
 	m_effect_container[SPECIAL_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.1f);  // 必殺技１
 	m_effect_container[SPECIAL_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.5f);  // 必殺技２
-	m_effect_container[WARP_EFFECT]    = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.5f);  // ワープエフェクト
+	m_effect_container[WARP_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.5f);  // ワープエフェクト
 	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
 
 
@@ -252,7 +252,7 @@ void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
 		// アニメーションの再生
 		// ガードアニメーション用のフレームカウントを進める
 		// 防御フラグが上がっている間は防御アニメーションをループさせる
-		block_anim_frame[block_anim_pick] ++;
+		block_anim_frame[block_anim_pick]++;
 
 		if (block_anim_frame[block_anim_pick] >= block_anim_total[block_anim_pick]) {                              // アニメーションが一周したら
 			block_anim_frame[block_anim_pick] = 0.0f;                                                              // アニメーションを最初からにしておく
@@ -390,13 +390,13 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	// マウスの左クリックまたはAボタンでパンチ攻撃
 	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
-		
+
 		action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_PUNCH_1_ANIM;         // 近距離攻撃アクションを設定
 		CharacterBase::Attack_Action(1);          // 行いたい攻撃アニメーションをセット	
 		action_flag = true;                             // アクションフラグを上げる
-		m_effect_handle[PUNCH2_EFFECT] = PlayEffekseer3DEffect(m_effect_container[PUNCH2_EFFECT]); // エフェクトの再生
-		SetRotationPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+		//m_effect_handle[PUNCH2_EFFECT] = PlayEffekseer3DEffect(m_effect_container[PUNCH2_EFFECT]); // エフェクトの再生
+		//SetRotationPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 	}
 
 	//=================================
@@ -521,9 +521,14 @@ void Player::Attack_Update()
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
 			m_hit_cd_r = now_hit_area->hit_r;
-			//m_effect_handle[PUNCH2_EFFECT] = PlayEffekseer3DEffect(m_effect_container[PUNCH2_EFFECT]); // エフェクトの再生
-			//SetRotationPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
-		
+			// エフェクトが再生中か沿うてないかを調べる
+			int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[PUNCH2_EFFECT]);
+			// 再生中でなければ
+			if (play_effect == -1) {
+				// エフェクトの再生
+				m_effect_handle[PUNCH2_EFFECT] = PlayEffekseer3DEffect(m_effect_container[PUNCH2_EFFECT]); // エフェクトの再生
+				SetRotationPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+			}
 		}
 		else {
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
@@ -537,7 +542,7 @@ void Player::Attack_Update()
 
 		// エフェクト再生
 		if (attack_anim_frame[ATTACK_PUNCH_1_ANIM] == now_hit_area->hit_anim_frame) {
-			
+
 		}
 		break;
 
@@ -553,7 +558,14 @@ void Player::Attack_Update()
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y - 10)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y - 10)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 3)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 3)) * now_hit_area->hit_under.z);
 			m_hit_cd_r = now_hit_area->hit_r;
-
+			// エフェクトが再生中か沿うてないかを調べる
+			int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[PUNCH2_EFFECT]);
+			// 再生中でなければ
+			if (play_effect == -1) {
+				// エフェクトの再生
+				m_effect_handle[PUNCH2_EFFECT] = PlayEffekseer3DEffect(m_effect_container[PUNCH2_EFFECT]); // エフェクトの再生
+				SetRotationPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+			}
 		}
 		else {
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
@@ -573,10 +585,17 @@ void Player::Attack_Update()
 			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
 
 			// 向いている方向に座標を設定（今のパンチに位置に座標と向きをいじる）
-			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y +15)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_top.z);
-			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y +25 )) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 25)) * now_hit_area->hit_under.z);
+			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_top.z);
+			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 25)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 25)) * now_hit_area->hit_under.z);
 			m_hit_cd_r = now_hit_area->hit_r;
-
+			// エフェクトが再生中か沿うてないかを調べる
+			int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[PUNCH2_EFFECT]);
+			// 再生中でなければ
+			if (play_effect == -1) {
+				// エフェクトの再生
+				m_effect_handle[PUNCH2_EFFECT] = PlayEffekseer3DEffect(m_effect_container[PUNCH2_EFFECT]); // エフェクトの再生
+				SetRotationPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+			}
 		}
 		else {
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
@@ -596,15 +615,22 @@ void Player::Attack_Update()
 			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
 
 			// 向いている方向に座標を設定（今のパンチに位置に座標と向きをいじる）
-			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y +5 )) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 5)) * now_hit_area->hit_top.z);
-			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y +15 )) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_under.z);
+			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 5)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 5)) * now_hit_area->hit_top.z);
+			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_under.z);
 			m_hit_cd_r = now_hit_area->hit_r;
-
+			// エフェクトが再生中か沿うてないかを調べる
+			int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[PUNCH2_EFFECT]);
+			// 再生中でなければ
+			if (play_effect == -1) {
+				// エフェクトの再生
+				m_effect_handle[PUNCH2_EFFECT] = PlayEffekseer3DEffect(m_effect_container[PUNCH2_EFFECT]); // エフェクトの再生
+				SetRotationPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+			}
 		}
 		else {
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
 		}
-		
+
 		break;
 	case ATTACK_SLIDE_ANIM: // スライディング（当たり判定の作成）
 		now_hit_area = &hit_areas[ATTACK_SLIDE_ANIM]; // 構造体を触りやすくするために違う変数に入れておく
