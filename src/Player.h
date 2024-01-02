@@ -111,11 +111,15 @@ private:
 	// エフェクトの列挙体
 	enum EFFECT
 	{
-		THROW_EFFECT, // 遠距離技
-		PUNCH_EFFECT, // パンチ
+		THROW_EFFECT,    // 遠距離技
+		PUNCH_EFFECT,    // パンチ
+		PUNCH2_EFFECT,   // パンチ２
+		GUARD_EFFECT,    // ガード用
+		SPECIAL_EFFECT,  // 必殺技１
+		SPECIAL2_EFFECT, // 必殺技２
+		WARP_EFFECT,     // ワープ
 
-
-		EFFECT_MAX = 4    // エフェクトの最大数
+		EFFECT_MAX       // エフェクトの最大数
 	};
 
 public:

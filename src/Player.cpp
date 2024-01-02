@@ -73,10 +73,13 @@ void Player::Init(int player_num)
 	m_effect_container = EffectContainerNew(EFFECT_MAX);
 	m_effect_handle = EffectContainerNew(EFFECT_MAX);
 	// エフェクトの読み込み
-	m_effect_container[0] = LoadEffekseerEffect("Data/Model/Player/Effect/Punch0.efkefc", 0.5f); // パンチエフェクト
-	m_effect_container[1] = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc", 1.0);   // 投げものエフェクト
-	m_effect_container[2] = LoadEffekseerEffect("Data/Model/Player/Effect/throw.efkefc", 0.5f);
-	m_effect_container[3] = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.5f);
+	m_effect_container[THROW_EFFECT]   = LoadEffekseerEffect("Data/Model/Player/Effect/Aura01.efkefc" , 1.0);   // 投げものエフェクト
+	m_effect_container[PUNCH_EFFECT]   = LoadEffekseerEffect("Data/Model/Player/Effect/Punch0.efkefc" , 0.5f);  // パンチエフェクト
+	m_effect_container[PUNCH2_EFFECT]  = LoadEffekseerEffect("Data/Model/Player/Effect/Punch1.efkefc" , 1.0f);  // パンチ２エフェクト
+	m_effect_container[GUARD_EFFECT]   = LoadEffekseerEffect("Data/Model/Player/Effect/guard.efkefc"  , 1.0f);  // ガード用
+	m_effect_container[SPECIAL_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.1f);  // 必殺技１
+	m_effect_container[SPECIAL_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.5f);  // 必殺技２
+	m_effect_container[WARP_EFFECT]    = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 0.5f);  // ワープエフェクト
 	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
 
 
@@ -387,12 +390,13 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	// マウスの左クリックまたはAボタンでパンチ攻撃
 	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
-		m_effect_handle[0] = PlayEffekseer3DEffect(m_effect_container[0]); // エフェクトの再生
-		SetRotationPlayingEffekseer3DEffect(m_effect_handle[0], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+		
 		action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_PUNCH_1_ANIM;         // 近距離攻撃アクションを設定
 		CharacterBase::Attack_Action(1);          // 行いたい攻撃アニメーションをセット	
 		action_flag = true;                             // アクションフラグを上げる
+		m_effect_handle[PUNCH2_EFFECT] = PlayEffekseer3DEffect(m_effect_container[PUNCH2_EFFECT]); // エフェクトの再生
+		SetRotationPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 	}
 
 	//=================================
@@ -401,8 +405,8 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// マウスの右クリック、または、Bボタンで遠距離攻撃
 	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_B, pad_no)) {
 		//if (IsPadRepeat(PAD_ID::PAD_Y, PAD_NO::PAD_NO1)) {
-		m_effect_handle[1] = PlayEffekseer3DEffect(m_effect_container[1]); // エフェクトの再生
-		SetRotationPlayingEffekseer3DEffect(m_effect_handle[1], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+		m_effect_handle[THROW_EFFECT] = PlayEffekseer3DEffect(m_effect_container[THROW_EFFECT]); // エフェクトの再生
+		SetRotationPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
@@ -517,7 +521,9 @@ void Player::Attack_Update()
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
 			m_hit_cd_r = now_hit_area->hit_r;
-
+			//m_effect_handle[PUNCH2_EFFECT] = PlayEffekseer3DEffect(m_effect_container[PUNCH2_EFFECT]); // エフェクトの再生
+			//SetRotationPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+		
 		}
 		else {
 			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
@@ -527,6 +533,11 @@ void Player::Attack_Update()
 		if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
 			combo_flag = true;                // コンボフラグを立てる
 			next_combo = ATTACK_PUNCH_2_ANIM; // 次の攻撃にセットする
+		}
+
+		// エフェクト再生
+		if (attack_anim_frame[ATTACK_PUNCH_1_ANIM] == now_hit_area->hit_anim_frame) {
+			
 		}
 		break;
 
@@ -646,8 +657,8 @@ void Player::Attack_Update()
 	}
 
 	// エフェクトの座標を設定
-	for (int i = 0; i < 4; i++) {
-		SetPosPlayingEffekseer3DEffect(m_effect_handle[i], m_hit_cd_pos_under.x, m_hit_cd_pos_under.y, m_hit_cd_pos_under.z);
+	for (int i = 0; i < EFFECT_MAX; i++) {
+		SetPosPlayingEffekseer3DEffect(m_effect_handle[i], m_hit_cd_pos_top.x, m_hit_cd_pos_top.y, m_hit_cd_pos_top.z);
 	}
 }
 
