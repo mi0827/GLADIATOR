@@ -67,7 +67,7 @@ private:
 		ATTACK_PUNCH_2_ANIM,        // パンチ２
 		ATTACK_PUNCH_3_ANIM,        // パンチ３
 		ATTACK_PUNCH_4_ANIM,        // パンチ４（コンボの最後の技*キックになってる）
-		ATTACK_SLIDE_ANIM,          // スライディング
+		ATTACK_WARP_ANIM,          // スライディング
 		ATTACK_SPECIAL_ANIM,        // スペシャル
 
 		ATTACK_ANIM_MAX             // 攻撃アニメーションの数
