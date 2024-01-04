@@ -19,6 +19,9 @@ public:
 	// 終了処理
 	void Exit()override;
 
+	// SEの初期化
+	void SE_Init();
+
 	// チュートリアルの更新処理
 	void Tutorial_Update();
 	// メインプレイシーンの更新処理
@@ -51,6 +54,7 @@ public:
 	// キャラクターのステータス描画処理
 	void Draw_Status();
 
+	// ゲームシーン
 	enum play_scene
 	{
 		Play_Tutorial, // チュートリアルシーン
@@ -58,6 +62,14 @@ public:
 		Play_End,      // プレイENDシーン
 
 		Play_Max       // プレイシーンの最大
+	};
+
+	// SE
+	enum play_se
+	{
+		READY, // チュートリアルの準備完了
+
+		SE_MAX // SEの最大数
 	};
 
 private:

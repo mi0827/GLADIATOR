@@ -154,6 +154,7 @@
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Ninja.cpp" />
     <ClCompile Include="src\Scene_Base.cpp" />
+    <ClCompile Include="src\SE.cpp" />
     <ClCompile Include="src\TitleScene.cpp" />
     <ClCompile Include="src\Vector2.cpp" />
     <ClCompile Include="src\Vector3.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Ninja.h" />
     <ClInclude Include="src\Scene_Base.h" />
+    <ClInclude Include="src\SE.h" />
     <ClInclude Include="src\TitleScene.h" />
     <ClInclude Include="src\Vector2.h" />
     <ClInclude Include="src\Vector3.h" />

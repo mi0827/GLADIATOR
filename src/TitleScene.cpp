@@ -1,9 +1,11 @@
 #include "WinMain.h"
 #include "Vector2.h"
+#include "SE.h"
 #include "Scene_Base.h"
 #include "TitleScene.h"
 
 const int Title_Time_MAX = 5;  // タイトル描画時間(今だけ3秒)
+SE se; // SEクラスのオブジェクト
 
 //------------------------------------------
 // 初期処理
@@ -30,6 +32,10 @@ void TiteleScene::Init()
 	}
 	ChangeFont("Pricedown Bl", DX_CHARSET_DEFAULT);
 
+	// SE用の配列の用意
+	se.SE_ContainerNew(SE_MAX);
+	// SEの読み込み
+	se.Load_SE("Data/SE/Title/Title_start.mp3", DECISION);
 }
 
 //------------------------------------------
@@ -57,8 +63,12 @@ void TiteleScene::Update()
 		}
 
 
-		// スタートフラグがたっていたら次のシーンに進む
+		// スタートフラグがたっていたらSEの再生
 		if (start_flag) {
+			se.Play_SE(DECISION, DX_PLAYTYPE_BACKBIT, TRUE);	
+		}
+		// スタートフラグがたっていたら次のシーンに進む
+		if (start_flag && se.Playing_SE(DECISION)) {
 			scene_change_judge = true; // シーンの切り替えを許可する
 		}
 		else {
@@ -177,4 +187,5 @@ void TiteleScene::Exit()
 		MessageBox(NULL, "remove failure", "", MB_OK);
 	}
 	ChangeFont("ＭＳ 明朝", DX_CHARSET_DEFAULT);
+	
 }

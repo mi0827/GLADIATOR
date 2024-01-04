@@ -2,6 +2,7 @@
 #include "Vector3.h"
 #include "Vector2.h"
 #include "Hit.h" // あたり判定
+#include "SE.h"
 #include "Base.h"
 // キャラクター.h
 #include "Character_Base.h"
@@ -21,6 +22,7 @@ constexpr int PLAYER_MAX = 2;   // プレイヤーの数、カメラの数も一緒
 
 
 // 各クラスのオブジェクト
+SE se_game;
 CharacterBase* players[2];      // キャラクターの二人呼ぶ用の配列 
 Camera* camera[2];              // キャラクタと同じ数
 
@@ -71,6 +73,7 @@ void GameScene::Init()
 	status_flag = false;        // 最初はステータス更新をしてほしくない
 	play_scene = Play_Tutorial; // 最初はチュートリアルシーン
 
+	SE_Init(); // SEの初期化
 }
 
 //----------------------------------------
@@ -168,6 +171,16 @@ void GameScene::Exit()
 }
 
 //------------------------------------
+// SEの初期化
+//------------------------------------
+void GameScene::SE_Init()
+{
+	se_game.SE_ContainerNew(SE_MAX); // SEの配列作成
+	// SEの読み込み
+	se_game.Load_SE("Data/SE/Game/ready.mp3", READY);
+}
+
+//------------------------------------
 // チュートリアルの更新処理
 //------------------------------------
 void GameScene::Tutorial_Update()
@@ -178,6 +191,11 @@ void GameScene::Tutorial_Update()
 		if (button_count1 >= BUTTON_COUNT_MAX) {
 			// カウントが一定以上になると準備完了
 			ready_flag1 = true;
+			// 指定のSEが再生中じゃなかったら
+			if (!se_game.Playing_SE(READY)) {
+				// SEの再生
+				se_game.Play_SE(READY, DX_PLAYTYPE_BACK, true);
+			}
 		}
 	}
 	else {
@@ -194,6 +212,11 @@ void GameScene::Tutorial_Update()
 		if (button_count2 >= BUTTON_COUNT_MAX) {
 			// カウントが一定以上になると準備完了
 			ready_flag2 = true;
+			// 指定のSEが再生中じゃなかったら
+			if (!se_game.Playing_SE(READY)) {
+				// SEの再生
+				se_game.Play_SE(READY, DX_PLAYTYPE_BACK, true);
+			}
 		}
 	}
 	else {
