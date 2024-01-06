@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Base.cpp" />
+    <ClCompile Include="src\BGM.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Character_Base.cpp" />
     <ClCompile Include="src\Effect.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="src\Hit.cpp" />
     <ClCompile Include="src\InputPad.cpp" />
     <ClCompile Include="src\Object.cpp" />
+    <ClCompile Include="src\Option.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Ninja.cpp" />
     <ClCompile Include="src\Scene_Base.cpp" />
@@ -162,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Base.h" />
+    <ClInclude Include="src\BGM.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Character_Base.h" />
     <ClInclude Include="src\Effect.h" />
@@ -172,6 +175,7 @@
     <ClInclude Include="src\Hit.h" />
     <ClInclude Include="src\InputPad.h" />
     <ClInclude Include="src\Object.h" />
+    <ClInclude Include="src\Option.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Ninja.h" />
     <ClInclude Include="src\Scene_Base.h" />

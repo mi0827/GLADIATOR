@@ -3,6 +3,8 @@
 #include "Vector2.h"
 #include "Hit.h" // あたり判定
 #include "Base.h"
+#include "InputPad.h"
+#include "Option.h"
 // キャラクター.h
 #include "Character_Base.h"
 #include "Player.h"
@@ -19,12 +21,15 @@
 #include "TitleScene.h"
 #include "EndScene.h"
 #include "GameMain.h"
-Scene_Base* scene;
 
+Option option;
+
+Scene_Base* scene;
 // 各シーンのオブジェクト
 TiteleScene titel_scene; // タイトル
 GameScene play_scene;    // ゲームプレイシーン
 EndScene end_scene;      // エンド
+
 
 int scene_num; // 今どのシーン名のを見る用の変数
 // 各シーンでの使い分けをするためのシーンの列挙隊
@@ -37,6 +42,10 @@ enum Scene
 	Scene_Max // シーンの最大数
 };
 
+
+
+
+
 // 初期処理
 void GameInit()
 {
@@ -45,16 +54,22 @@ void GameInit()
 	scene->Init(); // タイトルシーンの初期化
 
 	scene_num = Titele; // 最初はタイトルシーンから始める
+	 
+	option.Init(); 
+	option.option_flag = false; // 最初は開かない
+
 }
 
 // 更新処理
 void GameUpdate()
 {
+	// サウンド変更用関数
+	option.Update();
 	switch (scene_num)
 	{
 	case Titele: // タイトルシーン
 
-		scene->Update();
+		scene->Update(option.BGM_Volume, option.SE_Volume);
 		if (scene->scene_change_judge) {                             // シーンの切り替えの許可が下りれば
 			scene->Exit();                                           // dekete前に終了処理を回す
 			Scene_Change_Judge(scene_num, Play);                     // シーンの切り替え
@@ -65,7 +80,7 @@ void GameUpdate()
 		break;
 
 	case Play:  // プレイシーン
-		scene->Update();
+		scene->Update(option.BGM_Volume, option.SE_Volume);
 		if (scene->scene_change_judge) {                              // シーンの切り替えの許可が下りれば
 			scene->Exit();                                            // dekete前に終了処理を回す
 			Scene_Change_Judge(scene_num, End);  // シーンの切り替え	                                                        
@@ -75,7 +90,7 @@ void GameUpdate()
 		}
 		break;
 	case End:  // エンドシーン
-		scene->Update();
+		scene->Update(option.BGM_Volume, option.SE_Volume);
 		if (scene->scene_change_judge) {                             // シーンの切り替えの許可が下りれば
 			scene->Exit();                                           // dekete前に終了処理を回す
 			Scene_Change_Judge(scene_num, Titele);                   // シーンの切り替え
@@ -92,13 +107,15 @@ void GameUpdate()
 // 描画処理
 void GameDraw()
 {
-	scene->Draw();
+	
+	scene->Draw(); // 各シーン
+	option.Draw(); // オプション画面
 }
 
 // 終了処理
 void GameExit()
 {
-	
+
 	scene->Exit();
 }
 
@@ -111,3 +128,5 @@ void Scene_Change_Judge(int& now_scene, const int& next_scene)
 	// 今のシーン番号に次行いたいシーン番号を入れる
 	now_scene = next_scene;
 }
+
+

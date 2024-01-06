@@ -29,6 +29,12 @@ public:
 	// ３：再生後再生位置をデータの先頭に移動するかどうか
 	void Play_SE(int No, int type, bool loop);
 
+	// SEのボリューム調整用の関数
+	// 引数
+	// １：ボリュームの大きさ
+	// ２：SEの数
+	void SE_ChangeVolume(int se_volume,int size);
+
 	// SEが再生中かを返す関数
 	// 引数
 	// １：配列の何番目のSEを調べるか

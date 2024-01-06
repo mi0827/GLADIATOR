@@ -10,7 +10,7 @@ public:
 	void Init()override;
 
 	// 更新処理
-	void Update()override;
+	void Update(int bgm_volume, int se_volume)override;
 
 	// 描画処理
 	void Draw()override;
@@ -33,6 +33,13 @@ public:
 		DECISION, // タイトル画面で指定のボタンを押された時
 
 		SE_MAX,   // SEの最大数
+	};
+
+	enum BGM
+	{
+		TITLE_BGM,  // タイトル画面で流すBGM
+
+		BGM_MAX // BGMの最大数
 	};
 
 private:

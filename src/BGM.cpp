@@ -1,63 +1,72 @@
 #include "WinMain.h"
-#include "SE.h"
+#include "BGM.h"
 
 //---------------------------------------------------------------------------
-//  SE用の終了処理
+//  BGM用の終了処理
 //---------------------------------------------------------------------------
-SE::~SE()
+BGM::~BGM()
 {
-	SE_Delete();
+	// 終わったときに終了処理を呼ぶ
+	BGM_Delete();
 }
 
 //---------------------------------------------------------------------------
-//  SE用の配列変数の獲得用関数
+//  BGM用の配列を作る関数
 //---------------------------------------------------------------------------
-void SE::SE_ContainerNew(int size)
+void BGM::BGM_ContainerNew(int size)
 {
-	// SE分の配列の確保
-	se_container = new int[size];
+	// BGM分の配列の確保
+	bgm_container = new int[size];
 }
 
 //---------------------------------------------------------------------------
-//  SEの読み込み用関数
+//  BGMの読み込み用関数
 //---------------------------------------------------------------------------
-void SE::Load_SE(const char name[256], int No)
+void BGM::Load_BGM(const char name[256],int No)
 {
-	// SEデータの読み込み
-	se_container[No] = LoadSoundMem(name);
+	// BGMのデータを読み込む
+	bgm_container[No] = LoadSoundMem(name);
 }
 
 //---------------------------------------------------------------------------
-//  SEの再生用関数
+//  BGMの再生用関数
 //---------------------------------------------------------------------------
-void SE::Play_SE(int No, int type, bool loop)
+void BGM::Play_BGM(int type, bool loop, int No)
 {
-	// SEの再生
-	PlaySoundMem(se_container[No], type, loop);
+	// BGMの再生
+	PlaySoundMem(bgm_container[No], type, loop);
 }
 
 //---------------------------------------------------------------------------
-//  SEのボリューム変更用関数
+//  BGMのボリューム変更用関数
 //---------------------------------------------------------------------------
-void SE::SE_ChangeVolume(int se_volume, int size)
+void BGM::BGM_ChangeVolume(int bgm_volume, int size)
 {
-	// SEの数分ボリュームを変更する
-	for (int i = 0; i < size; i++) {
-		ChangeVolumeSoundMem(se_volume,se_container[i]);
+	// BGMの数分ボリュームを変更する
+	for (int i = 0; i < size; ++i) {
+		ChangeVolumeSoundMem(bgm_volume, bgm_container[i]);
 	}
 }
 
 //---------------------------------------------------------------------------
-//  SEの再生中かを返す用関数
+//  BGMを止める用関数
 //---------------------------------------------------------------------------
-bool SE::Playing_SE(int No)
+void BGM::Stop_BGM(int No)
+{
+	StopSoundMem(bgm_container[No]);
+}
+
+//---------------------------------------------------------------------------
+//  BGMが再生中かを返す用関数
+//---------------------------------------------------------------------------
+bool BGM::Playing_BGM(int No)
 {
 	int playing; // 再生中かの番号を入れる用の変数
 	// 再生中か調べる
 	// 再生中          ：  １
 	// 再生されていない：  ０
 	// エラー          ：－１
-	playing = CheckSoundMem(se_container[No]);
+	playing = CheckSoundMem(bgm_container[No]);
 	if (playing == 1) {
 		return true;
 	}
@@ -66,15 +75,11 @@ bool SE::Playing_SE(int No)
 	}
 }
 
-
 //---------------------------------------------------------------------------
-// SEのデリート（配列の解放）
+// BGMのデリート（配列の解放）
 //---------------------------------------------------------------------------
-void SE::SE_Delete()
+void BGM::BGM_Delete()
 {
-	InitSoundMem();        // 読み込んだSEの削除
-	delete[] se_container; // 
-
+	InitSoundMem();        // 読み込んだBGMの削除
+	delete[] bgm_container;
 }
-
-

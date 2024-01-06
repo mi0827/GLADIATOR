@@ -9,7 +9,10 @@ public:
 	// 初期処理
 	virtual void Init() = 0;
 	// 更新処理
-	virtual void Update() = 0;
+	// 引数
+	// １：BGMのボリューム
+	// ２：SEのボリューム
+	virtual void Update(int bgm_volume, int se_volume) = 0;
 	// 描画処理
 	virtual void Draw() = 0;
 	// 終了処理

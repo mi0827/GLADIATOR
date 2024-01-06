@@ -11,7 +11,7 @@ public:
 	void Init()override;
 
 	// 更新処理
-	void Update()override;
+	void Update(int bgm_volume, int se_volume)override;
 
 	// 描画処理
 	void Draw()override;
@@ -21,7 +21,8 @@ public:
 
 	// SEの初期化
 	void SE_Init();
-
+	// BGMの初期化
+	void BGM_Init();
 	// チュートリアルの更新処理
 	void Tutorial_Update();
 	// メインプレイシーンの更新処理
@@ -70,6 +71,16 @@ public:
 		READY, // チュートリアルの準備完了
 
 		SE_MAX // SEの最大数
+	};
+
+	// BGM
+	enum BGM
+	{
+		TUTORIAL_BGM,  // チュートリアルのBGM
+		BATTLE_1_BGM,  // プレイメインのBGM１
+		BATTLE_2_BGM,  // プレイメインのBGM２
+
+		BGM_MAX        // BGMの最大数
 	};
 
 private:

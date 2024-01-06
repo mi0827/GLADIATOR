@@ -1,11 +1,13 @@
 #include "WinMain.h"
 #include "Vector2.h"
+#include "BGM.h"
 #include "SE.h"
 #include "Scene_Base.h"
 #include "TitleScene.h"
 
 const int Title_Time_MAX = 5;  // タイトル描画時間(今だけ3秒)
-SE se; // SEクラスのオブジェクト
+BGM title_bgm; // BGMクラスのオブジェクト
+SE title_se; // SEクラスのオブジェクト
 
 //------------------------------------------
 // 初期処理
@@ -32,20 +34,36 @@ void TiteleScene::Init()
 	}
 	ChangeFont("Pricedown Bl", DX_CHARSET_DEFAULT);
 
+	// BGMの配列の確保
+	title_bgm.BGM_ContainerNew(BGM_MAX);
+	// BGMの読み込み
+	title_bgm.Load_BGM("Data/BGM/Title/Title.mp3", TITLE_BGM);
+	// BGMの再生
+	title_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, TITLE_BGM);
 	// SE用の配列の用意
-	se.SE_ContainerNew(SE_MAX);
+	title_se.SE_ContainerNew(SE_MAX);
 	// SEの読み込み
-	se.Load_SE("Data/SE/Title/Title_start.mp3", DECISION);
+	title_se.Load_SE("Data/SE/Title/Title_start.mp3", DECISION);
+	
 }
 
 //------------------------------------------
 // 更新処理
 //------------------------------------------
-void TiteleScene::Update()
+void TiteleScene::Update(int bgm_volume, int se_volume)
 {
+	
+	title_bgm.BGM_ChangeVolume(bgm_volume, BGM_MAX); // BGMのボリューム変更処理
+	title_se.SE_ChangeVolume(se_volume, SE_MAX);     // SEのボリューム変更処理
 	switch (title_scene)
 	{
 	case TITLE:
+
+		// BGMが終わったら
+		if (!title_bgm.Playing_BGM(TITLE_BGM)) {
+			// BGMの再生
+			title_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, TITLE_BGM);
+		}
 
 		// ゲームパッドの情報を丸ごと取得
 		if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_A) {
@@ -62,14 +80,15 @@ void TiteleScene::Update()
 			start_flag = false;
 		}
 
-
+		
 		// スタートフラグがたっていたらSEの再生
 		if (start_flag) {
-			se.Play_SE(DECISION, DX_PLAYTYPE_BACKBIT, TRUE);	
+			title_se.Play_SE(DECISION, DX_PLAYTYPE_BACKBIT, TRUE);
 		}
 		// スタートフラグがたっていたら次のシーンに進む
-		if (start_flag && se.Playing_SE(DECISION)) {
+		if (start_flag && title_se.Playing_SE(DECISION)) {
 			scene_change_judge = true; // シーンの切り替えを許可する
+			title_bgm.Stop_BGM(TITLE_BGM); // BGMを止める
 		}
 		else {
 			// フラグが下がっていたら
@@ -83,11 +102,12 @@ void TiteleScene::Update()
 				title_scene = MOVIE; // 動画のシーンの切り替える
 			}
 		}
-
+		
 		break;
 
 	case MOVIE:
-
+		
+		title_bgm.Stop_BGM(TITLE_BGM); // BGMを止める
 		// ゲームパッドの情報を丸ごと取得
 		if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_A) {
 			// Aボタンを押されたらタイトル描画に戻る
@@ -102,6 +122,7 @@ void TiteleScene::Update()
 		break;
 
 	}
+
 }
 
 //------------------------------------------

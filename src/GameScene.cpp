@@ -2,6 +2,7 @@
 #include "Vector3.h"
 #include "Vector2.h"
 #include "Hit.h" // あたり判定
+#include "BGM.h"
 #include "SE.h"
 #include "Base.h"
 // キャラクター.h
@@ -22,6 +23,7 @@ constexpr int PLAYER_MAX = 2;   // プレイヤーの数、カメラの数も一緒
 
 
 // 各クラスのオブジェクト
+BGM game_bgm;
 SE se_game;
 CharacterBase* players[2];      // キャラクターの二人呼ぶ用の配列 
 Camera* camera[2];              // キャラクタと同じ数
@@ -74,13 +76,17 @@ void GameScene::Init()
 	play_scene = Play_Tutorial; // 最初はチュートリアルシーン
 
 	SE_Init(); // SEの初期化
+	BGM_Init(); // BGMの初期化
+	
 }
 
 //----------------------------------------
 // 更新処理
 //----------------------------------------
-void GameScene::Update()
+void GameScene::Update(int bgm_volume, int se_volume)
 {
+	game_bgm.BGM_ChangeVolume(bgm_volume, BGM_MAX); // BGMのボリューム変更処理
+	se_game.SE_ChangeVolume(se_volume, SE_MAX);	 // SEのボリューム変更処理   
 
 	Character_Update(); // キャラクターたちの更新処理
 
@@ -181,10 +187,28 @@ void GameScene::SE_Init()
 }
 
 //------------------------------------
+// BGMの初期化
+//------------------------------------
+void GameScene::BGM_Init()
+{
+	// bgm用の配列の準備
+	game_bgm.BGM_ContainerNew(BGM_MAX);
+	game_bgm.Load_BGM("Data/BGM/Game/tutorial.mp3", TUTORIAL_BGM); // チュートリアルのBGM
+	game_bgm.Load_BGM("Data/BGM/Game/battle1.mp3", BATTLE_1_BGM);  // プレイメインのBGM１
+	game_bgm.Load_BGM("Data/BGM/Game/battle2.mp3", BATTLE_2_BGM);  // プレイメインのBGM２
+
+	// 最初はチュートリアルbgmを流す
+	game_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, TUTORIAL_BGM);
+}
+
+//------------------------------------
 // チュートリアルの更新処理
 //------------------------------------
 void GameScene::Tutorial_Update()
 {
+	
+	
+
 	// プレイヤー１
 	if (IsPadRepeat(PAD_ID::PAD_X, players[0]->pad_no)) {
 		button_count1++; // ボタンの長押しカウントを増やす
@@ -240,6 +264,8 @@ void GameScene::Tutorial_Update()
 		players[1]->m_pos.set(350.0f, 0.0f, 450.0f);           // 初期座標の設定
 		players[1]->m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 		play_scene = Play_Main; // プレイメインに移動
+		game_bgm.Stop_BGM(TUTORIAL_BGM); // チュートリアルBGMを止める
+		game_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, BATTLE_2_BGM); // バトル用のBGMに変える
 	}
 }
 

@@ -23,7 +23,7 @@ void EndScene::Init()
 //------------------------------------------
 // 更新処理
 //------------------------------------------
-void EndScene::Update()
+void EndScene::Update(int bgm_volume, int se_volume)
 {
 	count_flame--; // フレームのカウントを減らす
 	if (count_flame <= 0) { // フレームが設定された値以上になったら
