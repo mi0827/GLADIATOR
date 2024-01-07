@@ -28,5 +28,5 @@ private:
 
 	int image_box; // 背景画像用の入れ物
 	int menu_count; // メニューボタンが押されてから閉じるまでにかかる最低時間をカウントするための物
-
+	int select; // SEかBGMを洗濯するためのもの
 };

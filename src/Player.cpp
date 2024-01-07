@@ -28,10 +28,11 @@ Player::Player()
 	//------------------------------
 	// 当たり判定用変数
 	//=============
+	// 本体の当たり判定
 	// カプセル
 	m_hit_body_pos_top.clear();                       // 上側
 	m_hit_body_pos_under.clear();                     // 下側
-	m_hit_body_r = 2.0f;                              // 半径
+	m_hit_body_r = 2.5f;                              // 半径
 
 	// あたり判定用
 	m_hit_cd_pos_top.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 13, m_pos.z + 8 * cosf(TO_RADIAN(m_rot.y)));
@@ -65,7 +66,12 @@ Player::Player()
 //---------------------------------------------------------------------------
 void Player::Init(int player_num)
 {
+	m_player_num = player_num; // 1pか2pかを入れる
 	m_model = MV1LoadModel("Data/Model/Player/Player.mv1");   // プレイヤーモデルの読み込み
+	// このキャラのモデルのマテリアルの色を取得
+	m_color[0] = MV1GetMaterialDifColor(m_model, 0);
+	m_color[1] = MV1GetMaterialDifColor(m_model, 1);
+
 	Animation_Init(); //< アニメーションの設定
 
 	//Effect_New(EFFECT_MAX, m_effect_container_ptr, m_effect_handle);
@@ -318,7 +324,7 @@ void Player::Draw()
 		DrawSphere3D(bead_pos.VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 	}*/
 	// 玉を描画する(今だけ)
-#ifdef DEBUG
+//#ifdef DEBUG
 
 
 	// プレイヤー自身の当たり判定を見えるようにしている
@@ -334,8 +340,16 @@ void Player::Draw()
 	if (cd_hit_flag && block_flag) {
 		DrawCapsule3D(m_block_top.VGet(), m_block_under.VGet(), m_block_r, 8, GetColor(255, 255, 0), GetColor(255, 255, 0), FALSE);
 	}
-#endif // DEBUG
-
+//#endif // DEBUG
+	// 1P,2Pに応じてキャラの色を変える
+	if (m_player_num == 0) {
+		MV1SetMaterialDifColor(m_model, 0, GetColorF(0.8f, 0.0f, 0.0f, 1.0f));
+		MV1SetMaterialDifColor(m_model, 1, GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
+	}
+	else {
+		MV1SetMaterialDifColor(m_model, 0, GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
+		MV1SetMaterialDifColor(m_model, 1, GetColorF(0.0f, 0.0f, 0.0f, 1.0f));
+	}
 
 	// プレイヤーの描画設定
 	MV1SetPosition(m_model, VGet(m_pos.x, m_pos.y, m_pos.z)); // 描画するプレイヤーモデルの座標の設定

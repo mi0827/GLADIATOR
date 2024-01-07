@@ -134,8 +134,10 @@ public:
 	const int attack_damage[ATTACK_ANIM_MAX]
 	{
 		20,  // 遠距離攻撃
-		30,  // 近距離攻撃１
-		30,  // 近距離攻撃２
+		10,  // パンチ１
+		15,  // パンチ２
+		20,  // パンチ３
+		30,  // パンチ４
 		10,  // スライディング
 		150, // 必殺技
 	};
@@ -206,4 +208,6 @@ public:
 
 	Hit_capsule_data* now_hit_area;
 
+	int m_player_num; // 1pか2pかを判断する用の変数
+	COLOR_F m_color[2]; // このキャラの色
 };
