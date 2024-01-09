@@ -88,7 +88,7 @@ void GameScene::Update(int bgm_volume, int se_volume)
 	game_bgm.BGM_ChangeVolume(bgm_volume, BGM_MAX); // BGMのボリューム変更処理
 	se_game.SE_ChangeVolume(se_volume, SE_MAX);	 // SEのボリューム変更処理   
 
-	Character_Update(); // キャラクターたちの更新処理
+	Character_Update(se_volume); // キャラクターたちの更新処理
 
 	// 各クラスの更新処理
 	field.Update();
@@ -207,8 +207,6 @@ void GameScene::BGM_Init()
 void GameScene::Tutorial_Update()
 {
 	
-	
-
 	// プレイヤー１
 	if (IsPadRepeat(PAD_ID::PAD_X, players[0]->pad_no)) {
 		button_count1++; // ボタンの長押しカウントを増やす
@@ -339,17 +337,18 @@ void GameScene::PlayEnd_Update()
 		end_count = 0;
 		// タイマーが終わったら
 		scene_change_judge = true; // シーンの切り替えを許可する
+		game_bgm.Stop_BGM(BATTLE_2_BGM); // BGMを止める
 	}
 }
 
 //---------------------------------------------------------------------------
 // キャラクターの更新処理（移動時のお互いのあたり判定）
 //---------------------------------------------------------------------------
-void GameScene::Character_Update()
+void GameScene::Character_Update( int se_volume)
 {
 	// キャラクターの移動（壁擦り）処理
 	for (int player = 0; player < PLAYER_MAX; player++) {
-		players[player]->Update(&camera[player]->m_rot/*, status_flag*/);
+		players[player]->Update(&camera[player]->m_rot, se_volume/*, status_flag*/);
 		// 立方体とプレイヤーのあたり判定
 		for (int i = 0; i < field.obj_max; i++) {
 			if (CheckBoxHit3D(players[player]->m_pos, players[player]->m_move_hit_box_size, field.objects[i]->m_cube_hit_pos, field.objects[i]->m_cube_size_half))

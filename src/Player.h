@@ -33,15 +33,15 @@ public:
 	void Animation_Init()override;              // アニメーション用の初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
-	void Update(Vector3* camera_rot/*, bool status_*/) override;  // 更新処理
+	void Update(Vector3* camera_rot, int SE_Volume/*, bool status_*/) override;  // 更新処理
 	void Move_Hit_Update()override;           // プレイヤーの移動用当たり判定更新処理（壁擦り）
 	void Attack_PressButton_Update(Vector3* camera_rot)override; // アクションに関するボタン押し用の関数（見やすくするための関数）
 	void Attack_Update()override;   // 攻撃が行われた時に行う
 	void Damage_Update(int* m_attack_damage)override;	// ダメージを食らった時に行う
 	void Block_Update()override;	// ガードが行われた時に行う
 	void Draw() override;		// 描画処理
-	void Exit() override;		//終了処理
-
+	void Exit() override;		// 終了処理
+	void SE_Init()override;     // SEの初期化関数
 
 	//---------------
 	// 変数の定義
@@ -71,6 +71,18 @@ private:
 		ATTACK_SPECIAL_ANIM,        // スペシャル
 
 		ATTACK_ANIM_MAX             // 攻撃アニメーションの数
+	};
+
+	// SE用の列挙体
+	enum SE
+	{
+		SE_PUNCH_1, // パンチ１
+		SE_PUNCH_2, //	パンチ２
+		SE_PUNCH_3, //	パンチ３
+		SE_KICK,	// キック
+		SE_SPECIAL, // 必殺技 
+
+		SE_MAX // SEの最大数
 	};
 
 	// アクション用の当たり判定用の列挙体
@@ -134,10 +146,10 @@ public:
 	const int attack_damage[ATTACK_ANIM_MAX]
 	{
 		20,  // 遠距離攻撃
-		10,  // パンチ１
-		15,  // パンチ２
-		20,  // パンチ３
-		30,  // パンチ４
+		20,  // パンチ１
+		20,  // パンチ２
+		30,  // パンチ３
+		40,  // パンチ４
 		10,  // スライディング
 		150, // 必殺技
 	};

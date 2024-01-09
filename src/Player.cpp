@@ -2,6 +2,7 @@
 #include "GameMain.h"
 #include "Vector3.h"
 #include "Vector2.h"
+#include "SE.h"
 #include "Base.h"
 #include "Character_Base.h"
 #include "Effect.h"
@@ -10,6 +11,8 @@
 #define PANEL_HALF	(PANEL_SIZE/2.0f) // パネルの半分の大きさ
 #define ATTACK_ANIM_SPEED 1.4f
 
+// SEクラスのオブジェクト
+SE player_se;
 //---------------------------------------------------------------------------
 // コンストラクタ（初期化）
 //---------------------------------------------------------------------------
@@ -84,8 +87,8 @@ void Player::Init(int player_num)
 	m_effect_container[PUNCH2_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/Punch1.efkefc", 0.3f);  // パンチ２エフェクト
 	m_effect_container[GUARD_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/guard.efkefc", 3.0f);  // ガード用
 	m_effect_container[SPECIAL_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/special.efkefc", 3.0f);  // 必殺技１
-	m_effect_container[SPECIAL2_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/special2.efkefc", 10.0f);  // 必殺技２
-	m_effect_container[WARP_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/warp.efkefc", 0.5f);  // ワープエフェクト
+	m_effect_container[SPECIAL2_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/special2.efkefc", 13.0f);  // 必殺技２
+	m_effect_container[WARP_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/warp.efkefc", 1.0f);  // ワープエフェクト
 	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
 
 
@@ -100,6 +103,8 @@ void Player::Init(int player_num)
 
 	// 攻撃力の設定
 	CharacterBase::Set_Attack_Damage(ATTACK_ANIM_MAX, m_damage);
+
+	SE_Init(); // SEの初期化
 }
 
 //---------------------------------------------------------------------------
@@ -143,8 +148,11 @@ void Player::Animation_Init()
 //---------------------------------------------------------------------------
 // 更新処理
 //---------------------------------------------------------------------------
-void Player::Update(Vector3* camera_rot/*, bool status_flag*/)
+void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 {
+	// SEのボリューム調整
+	player_se.SE_ChangeVolume(SE_Volume, SE_MAX);
+
 	before_mov = m_pos; // 移動される前に入れ替えとく
 	action_flag = false; // アクションフラグを下す
 	// アクションモードの判断してそれに合った操作をするようにする
@@ -324,7 +332,7 @@ void Player::Draw()
 		DrawSphere3D(bead_pos.VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 	}*/
 	// 玉を描画する(今だけ)
-//#ifdef DEBUG
+#ifdef DEBUG
 
 
 	// プレイヤー自身の当たり判定を見えるようにしている
@@ -340,7 +348,7 @@ void Player::Draw()
 	if (cd_hit_flag && block_flag) {
 		DrawCapsule3D(m_block_top.VGet(), m_block_under.VGet(), m_block_r, 8, GetColor(255, 255, 0), GetColor(255, 255, 0), FALSE);
 	}
-//#endif // DEBUG
+#endif // DEBUG
 	// 1P,2Pに応じてキャラの色を変える
 	if (m_player_num == 0) {
 		MV1SetMaterialDifColor(m_model, 0, GetColorF(0.8f, 0.0f, 0.0f, 1.0f));
@@ -387,12 +395,28 @@ void Player::Exit()
 }
 
 //---------------------------------------------------------------------------
+// SE用の初期処理
+//---------------------------------------------------------------------------
+void Player::SE_Init()
+{
+	// SEの数分の配列の取得
+	player_se.SE_ContainerNew(SE_MAX);
+	player_se.Load_SE("Data/Model/Player/SE/punch1.mp3", SE_PUNCH_1); // パンチ１
+	player_se.Load_SE("Data/Model/Player/SE/punch2.mp3", SE_PUNCH_2); // パンチ２
+	player_se.Load_SE("Data/Model/Player/SE/punch3.mp3", SE_PUNCH_3); // ぱんち３
+	player_se.Load_SE("Data/Model/Player/SE/kick.mp3",  SE_KICK);     // キック
+	player_se.Load_SE("Data/Model/Player/SE/special.mp3", SE_SPECIAL);// 必殺技
+}
+
+
+//---------------------------------------------------------------------------
 // プレイヤーの移動用当たり判定（壁擦り）
 //---------------------------------------------------------------------------
 void Player::Move_Hit_Update()
 {
 	CharacterBase::Move_Hit(&before_mov, &m_move_hit_box_size, &m_hit_other_pos, &m_hit_other_size);
 }
+
 
 //---------------------------------------------------------------------------
 // アクションに関するボタン押し用の関数（見やすくするための関数）
@@ -534,6 +558,7 @@ void Player::Attack_Update()
 
 	case ATTACK_PUNCH_1_ANIM: // パンチ通攻撃１ 
 
+		
 		// 当たり判定の作成
 		now_hit_area = &hit_areas[ATTACK_PUNCH_1_HIT];
 		if (attack_anim_frame[ATTACK_PUNCH_1_ANIM] >= now_hit_area->hit_anim_frame) {
@@ -543,6 +568,12 @@ void Player::Attack_Update()
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
 			m_hit_cd_r = now_hit_area->hit_r;
+
+			// SEの再生
+			if (!player_se.Playing_SE(SE_PUNCH_1)) {
+				player_se.Play_SE(SE_PUNCH_1, DX_PLAYTYPE_BACK, true);
+			}
+			
 			// エフェクトが再生中か沿うてないかを調べる
 			int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[PUNCH2_EFFECT]);
 			// 再生中でなければ
@@ -579,6 +610,11 @@ void Player::Attack_Update()
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y - 10)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y - 10)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 3)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 3)) * now_hit_area->hit_under.z);
 			m_hit_cd_r = now_hit_area->hit_r;
+			// SEの再生
+			if (!player_se.Playing_SE(SE_PUNCH_2)) {
+				player_se.Play_SE(SE_PUNCH_2, DX_PLAYTYPE_BACK, true);
+			}
+
 			// 一回だけ再生してほしのでワンフレームだけを探す
 			if (attack_anim_frame[ATTACK_PUNCH_2_ANIM] >= now_hit_area->hit_anim_frame) {
 				// エフェクトが再生中か沿うてないかを調べる
@@ -625,6 +661,10 @@ void Player::Attack_Update()
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 25)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 25)) * now_hit_area->hit_under.z);
 			m_hit_cd_r = now_hit_area->hit_r;
+			// SEの再生
+			if (!player_se.Playing_SE(SE_PUNCH_3)) {
+				player_se.Play_SE(SE_PUNCH_3, DX_PLAYTYPE_BACK, true);
+			}
 			// エフェクトが再生中か沿うてないかを調べる
 			int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[PUNCH2_EFFECT]);
 			// 再生中でなければ
@@ -657,6 +697,10 @@ void Player::Attack_Update()
 			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 5)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 5)) * now_hit_area->hit_top.z);
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 15)) * now_hit_area->hit_under.z);
 			m_hit_cd_r = now_hit_area->hit_r;
+			// SEの再生
+			if (!player_se.Playing_SE(SE_KICK)) {
+				player_se.Play_SE(SE_KICK, DX_PLAYTYPE_BACK, true);
+			}
 			// エフェクトが再生中か沿うてないかを調べる
 			int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[PUNCH2_EFFECT]);
 			// 再生中でなければ
@@ -711,8 +755,8 @@ void Player::Attack_Update()
 
 			bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
 			// 座標の設定
-			bead_pos.set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 300, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
-			bead_r = 100.0f;        // 半径の設定
+			bead_pos.set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 350, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
+			bead_r = 90.0f;        // 半径の設定
 		}
 		bead_pos.y--;
 		lifespan_count--; // 弾が消えるまでのカウントを進める
@@ -726,10 +770,13 @@ void Player::Attack_Update()
 		m_hit_cd_pos_top.set(bead_pos.x, bead_pos.y /*+ now_hit_area->hit_r*/, bead_pos.z);
 		m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y /*- now_hit_area->hit_r*/, bead_pos.z);
 		m_hit_cd_r = now_hit_area->hit_r;
+
+		
+
 		// エフェクトが再生中かどうてないかを調べる
 		int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[SPECIAL_EFFECT]);
 		int play_effect2 = IsEffekseer3DEffectPlaying(m_effect_handle[SPECIAL2_EFFECT]);
-		SetSpeedPlayingEffekseer3DEffect(m_effect_handle[SPECIAL_EFFECT], 0.8);            // エフェクトの再生速度
+		SetSpeedPlayingEffekseer3DEffect(m_effect_handle[SPECIAL_EFFECT], 1.0f);            // エフェクトの再生速度
 		SetSpeedPlayingEffekseer3DEffect(m_effect_handle[SPECIAL2_EFFECT], 0.6);
 		// 再生中でなければ
 		if (play_effect == -1) {
@@ -751,12 +798,11 @@ void Player::Attack_Update()
 			attack_flag = false;    // 攻撃を終わらせておく
 			cd_hit_flag = false;    //< 当たり判定をしてほしくないのでフラグを下す
 		}
+		// SEの再生
+		if (!player_se.Playing_SE(SE_SPECIAL)) {
+			player_se.Play_SE(SE_SPECIAL, DX_PLAYTYPE_BACK, true);
+		}
 	}
-
-
-
-
-
 }
 
 
@@ -767,15 +813,15 @@ void Player::Damage_Update(int* m_attack_damage)
 {
 	// 与えられたダメージによってアニメーションを変化させる
 	// 今は入っている値は仮です
-	if (*m_attack_damage < 30) {
+	if (*m_attack_damage < 20) {
 		damage_anim_pick = BLOCK_ANIM;
 	}
 	else
-		if (*m_attack_damage >= 30 && *m_attack_damage < 70) {
+		if (*m_attack_damage >= 20 && *m_attack_damage < 40) {
 			damage_anim_pick = DAMAGE_ANIM_1;
 		}
 		else
-			if (*m_attack_damage >= 70) {
+			if (*m_attack_damage >= 40) {
 				damage_anim_pick = DAMAGE_ANIM_END;
 			}
 }

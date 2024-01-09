@@ -89,7 +89,7 @@ void Ninja::Animation_Init()
 }
 
 // 更新処理
-void Ninja::Update(Vector3* camera_rot/*, bool status_flag*/)
+void Ninja::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 {
 	before_mov = m_pos; // 移動される前に入れ替えとく
 
@@ -334,4 +334,8 @@ void Ninja::Exit()
 
 	// アニメーション用変数たちのdelete
 	CharacterBase::Anim_Delete();
+}
+
+void Ninja::SE_Init()
+{
 }

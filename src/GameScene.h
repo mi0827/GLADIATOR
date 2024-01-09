@@ -35,8 +35,8 @@ public:
 	// 描画用の文字列のサイズ調整
 	void Draw_String_Size(float* w, float* h, const char* sting);
 
-	// キャラクターの更新処理（移動時のお互いのあたり判定）
-	void Character_Update();
+	// キャラクターの更新処理
+	void Character_Update(int se_volume);
 	// タイマーの更新処理
 	void Time_Update(int& time_count);
 	// タイマーの描画
