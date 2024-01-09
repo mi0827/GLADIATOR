@@ -57,7 +57,7 @@ void CharacterBase::Update_Status()
 void CharacterBase::Reset_Status()
 {
 	m_skill_count.x = 0; // スキルポイントを戻す
-	skill_flag = true;   // スキルを使用できないようにする
+	skill_flag = false;   // スキルを使用できないようにする
 	m_sp_count.x = 0;    // SPポイントを戻す
 	sp_flag = false;     // 必殺技を使できないようにする
 }

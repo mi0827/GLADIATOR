@@ -273,16 +273,17 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 		}
 		if (block_flag == false) { // ガードフラグが下がったら
 			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);       // ガードアニメーションをディタッチしておく
-			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                               // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
+			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	                                                                       // アニメーションが１ループしたかrATTACK_ACTIONから出る
 			block_anim_pick = BLOCK_ANIM_MAX;                                                                      // ガードのピックをリセット
 		}
 		//=================================
 		// ガード中にダメージを食らったとき
 		//=================================
-		if (damage_flag) {
+		if (damage_flag ) {
 			block_anim_frame[block_anim_pick] = 0.0f;                                                              // アニメーションを最初からにしておく
-			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);       // ガードアニメーションをディタッチしておく
+			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);   // ガードアニメーションをディタッチしておく
+			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                // モデルに元のアニメーションをアタッチしなおす（直近のアニメーシ
 			CharacterBase::Damage_Action(1);                                                                       // 行いたいダメージアニメーションをセット
 			action_mode = DAMAGE_ACTION; 	                                                                       // ダメージを受けているのでDAMAGE_ACTIOに移動
 			block_anim_pick = BLOCK_ANIM_MAX;																	   // ガードのピックをリセット
@@ -301,7 +302,7 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 		if (damage_anim_frame[damage_anim_pick] >= damage_anim_total[damage_anim_pick]) {                         // アニメーションが一周したら
 			// 	damage_anim_frame[damage_anim_pick] = 0.0f;
 			damage_anim_frame[damage_anim_pick] = MV1DetachAnim(m_model, damage_anim_attach[damage_anim_pick]);   // 攻撃アニメーションをディタッチしておく
-			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                              // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
+			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	                                                                      // アニメーションが１ループしたからダメージアニメーションから出る
 			// キャラのｈｐがゼロ以外の時
 			if (m_now_hp != 0) {
@@ -328,9 +329,10 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 //---------------------------------------------------------------------------
 void Player::Draw()
 {
-	/*if (!bead_hit_flag) {
-		DrawSphere3D(bead_pos.VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
-	}*/
+	if (!bead_hit_flag) {
+		//DrawSphere3D(bead_pos.VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
+		DrawCapsule3D(bead_pos.VGet(), bead_pos.VGet(), bead_r, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
+	}
 	// 玉を描画する(今だけ)
 #ifdef DEBUG
 
@@ -460,13 +462,11 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 		// スペースキークリック、または、Yボタンで遠距離攻撃
 		if (PushHitKey(KEY_INPUT_SPACE) || IsPadOn(PAD_ID::PAD_Y, pad_no)) {
 
-			//m_effect_handle[3] = PlayEffekseer3DEffect(m_effect_container[3]); // エフェクトの再生
-			//SetRotationPlayingEffekseer3DEffect(m_effect_handle[3], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 			m_skill_count.x = 0; // スキルの使用なのでカウントをリセット
 			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
-			attack_anim_pick = ATTACK_WARP_ANIM;  // 近距離攻撃アクションを設定
+			attack_anim_pick = ATTACK_WARP_ANIM;   // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(1);        // 行いたい攻撃アニメーションをセット
-			CharacterBase::Move_Front(&m_check_move, camera_rot, &m_rot, &WARP);
+			CharacterBase::Move_Front(&m_check_move, &m_rot, &m_rot, &WARP);
 			action_flag = true;                          // アクションフラグを上げる
 			skill_flag = false;                          // skillを使用済みにしておく
 			// エフェクトの再生
@@ -633,17 +633,7 @@ void Player::Attack_Update()
 		}
 		// エフェクトの座標を設定
 		SetPosPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], m_hit_cd_pos_top.x, m_hit_cd_pos_top.y, m_hit_cd_pos_top.z);
-		//// 一回だけ再生してほしのでワンフレームだけを探す
-		//if (attack_anim_frame[ATTACK_PUNCH_2_ANIM] >= now_hit_area->hit_anim_frame && attack_anim_frame[ATTACK_PUNCH_2_ANIM] <= now_hit_area->hit_anim_frame+ 1) {
-		//	// エフェクトが再生中か沿うてないかを調べる
-		//	int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[PUNCH2_EFFECT]);
-		//	// 再生中でなければ
-		//	if (play_effect == -1) {
-		//		// エフェクトの再生
-		//		m_effect_handle[PUNCH2_EFFECT] = PlayEffekseer3DEffect(m_effect_container[PUNCH2_EFFECT]); // エフェクトの再生
-		//		SetRotationPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
-		//	}
-		//}
+		
 		// アニメーションの中に
 		// マウスの左クリックまたはAボタンでパンチコンボ
 		if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
@@ -720,26 +710,16 @@ void Player::Attack_Update()
 	case ATTACK_WARP_ANIM: // ワープ（当たり判定の作成）
 	{
 		now_hit_area = &hit_areas[ATTACK_WARP_ANIM]; // 構造体を触りやすくするために違う変数に入れておく
-		cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+		//cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
 
-		// 当たり判定を見えるようにする物
-		// 向いている方向に座標を設定（今はパンチに位置）
-		if (attack_anim_frame[ATTACK_WARP_ANIM] == now_hit_area->hit_anim_frame) {
-			m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
-			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
-		}
-		else {
-			cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
-		}
-		//// エフェクトが再生中かどうてないかを調べる
-		//int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[WARP_EFFECT]);
-		//// 再生中でなければ
-		//if (play_effect == -1) {
-		//	// エフェクトの再生
-		//	m_effect_handle[WARP_EFFECT] = PlayEffekseer3DEffect(m_effect_container[WARP_EFFECT]); // エフェクトの再生
-		//	SetRotationPlayingEffekseer3DEffect(m_effect_handle[WARP_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
-		//	// エフェクトの座標を設定
-		//	SetPosPlayingEffekseer3DEffect(m_effect_handle[WARP_EFFECT], m_pos.x, m_pos.y, m_pos.z);
+		//// 当たり判定を見えるようにする物
+		//// 向いている方向に座標を設定（今はパンチに位置）
+		//if (attack_anim_frame[ATTACK_WARP_ANIM] == now_hit_area->hit_anim_frame) {
+		//	m_hit_cd_pos_top.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.x, m_pos.y + now_hit_area->hit_top.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_top.z);
+		//	m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.x, m_pos.y + now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y)) * now_hit_area->hit_under.z);
+		//}
+		//else {
+		//	cd_hit_flag = false; //< 当たり判定をしてほしくないのでフラグを下す
 		//}
 		break;
 	}
@@ -755,21 +735,19 @@ void Player::Attack_Update()
 
 			bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
 			// 座標の設定
-			bead_pos.set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 350, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
-			bead_r = 90.0f;        // 半径の設定
+			bead_pos.set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 300, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
+			bead_r = 100.0f;        // 半径の設定
 		}
 		bead_pos.y--;
 		lifespan_count--; // 弾が消えるまでのカウントを進める
 
-		now_hit_area = &hit_areas[SPECIAL_HIT];
-
 		cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
-
+		//now_hit_area = &hit_areas[SPECIAL_HIT];
 		// 当たり判定を見えるようにする物
 		// 向いている方向に座標を設定（今はパンチに位置）
-		m_hit_cd_pos_top.set(bead_pos.x, bead_pos.y /*+ now_hit_area->hit_r*/, bead_pos.z);
-		m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y /*- now_hit_area->hit_r*/, bead_pos.z);
-		m_hit_cd_r = now_hit_area->hit_r;
+		m_hit_cd_pos_top.set(bead_pos.x, bead_pos.y , bead_pos.z);
+		m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y , bead_pos.z);
+		m_hit_cd_r = 100;//now_hit_area->hit_r;
 
 		
 
@@ -846,7 +824,7 @@ void Player::Block_Update()
 			m_block_r = now_hit_area->hit_r;
 
 
-			// エフェクトが再生中か沿うてないかを調べる
+			// エフェクトが再生中かどうてないかを調べる
 			int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[GUARD_EFFECT]);
 			SetColorPlayingEffekseer3DEffect(m_effect_handle[GUARD_EFFECT], 0, 255, 124, 50); // エフェクトの色と透明度の設定
 			SetSpeedPlayingEffekseer3DEffect(m_effect_handle[GUARD_EFFECT], 5);                      // エフェクトの再生速度

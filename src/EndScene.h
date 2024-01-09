@@ -21,4 +21,8 @@ public:
 
 	int count_flame; // フレームカウント用の変数 
 	int count_time;  // フレームから実際の割り出して入れる用の時間
+
+	// フォントデータ用
+	int GTA_font_data; // GTAのフォントデータ用の変数
+	LPCSTR GTA_font_path;
 };
