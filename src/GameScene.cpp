@@ -784,7 +784,7 @@ void GameScene::Block_Hit(int player1, int player2)
 				// player1の本体用のカプセルとplayer2の攻撃用カプセルが当たったとき
 				players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
 				players[player1]->damage_flag = true; // ダメージを受けているフラグを上げる
-				players[player1]->block_flag = false; // ガードを離すためにガード中のフラグを下げる
+			//	players[player1]->block_flag = false; // ガードを離すためにガード中のフラグを下げる
 			}
 		}
 	}

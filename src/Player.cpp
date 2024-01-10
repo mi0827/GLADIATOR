@@ -155,6 +155,7 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 
 	before_mov = m_pos; // 移動される前に入れ替えとく
 	action_flag = false; // アクションフラグを下す
+	cd_hit_flag = false;
 	// アクションモードの判断してそれに合った操作をするようにする
 	switch (action_mode)
 	{
@@ -280,18 +281,21 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 		//=================================
 		// ガード中にダメージを食らったとき
 		//=================================
-		if (damage_flag ) {
+		if (damage_flag && block_flag == true) {
 			block_anim_frame[block_anim_pick] = 0.0f;                                                              // アニメーションを最初からにしておく
-			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);   // ガードアニメーションをディタッチしておく
-			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                // モデルに元のアニメーションをアタッチしなおす（直近のアニメーシ
-			CharacterBase::Damage_Action(1);                                                                       // 行いたいダメージアニメーションをセット
+			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);       // ガードアニメーションをディタッチしておく
 			action_mode = DAMAGE_ACTION; 	                                                                       // ダメージを受けているのでDAMAGE_ACTIOに移動
+			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                             // モデルに元のアニメーションをアタッチしなおす（直近のアニメーシ
+			CharacterBase::Damage_Action(1);                                                                       // 行いたいダメージアニメーションをセット
+			
 			block_anim_pick = BLOCK_ANIM_MAX;																	   // ガードのピックをリセット
 			block_flag = false;
+			break;
 		}
-
 		MV1SetAttachAnimTime(m_model, block_anim_attach[block_anim_pick], block_anim_frame[block_anim_pick]); // アニメーションの再生
+
 		if (block_flag) {     // ガードフラグが上がったら
+
 			Block_Update();   // ガード用のアップデート
 		}
 		break;
@@ -406,7 +410,7 @@ void Player::SE_Init()
 	player_se.Load_SE("Data/Model/Player/SE/punch1.mp3", SE_PUNCH_1); // パンチ１
 	player_se.Load_SE("Data/Model/Player/SE/punch2.mp3", SE_PUNCH_2); // パンチ２
 	player_se.Load_SE("Data/Model/Player/SE/punch3.mp3", SE_PUNCH_3); // ぱんち３
-	player_se.Load_SE("Data/Model/Player/SE/kick.mp3",  SE_KICK);     // キック
+	player_se.Load_SE("Data/Model/Player/SE/kick.mp3", SE_KICK);     // キック
 	player_se.Load_SE("Data/Model/Player/SE/special.mp3", SE_SPECIAL);// 必殺技
 }
 
@@ -483,7 +487,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
 	if (sp_flag) { // 必殺技が使用可能なら
 		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || IsPadOn(PAD_ID::PAD_L, pad_no) && IsPadOn(PAD_ID::PAD_R, pad_no)) {
-			m_sp_count.x = 0; // SPの使用なのでカウントをリセット
+			m_sp_count.x = 0;                        // SPの使用なのでカウントをリセット
 			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 必殺攻撃アクションを設定
 			CharacterBase::Attack_Action(1);   // 行いたい攻撃アニメーションをセット
@@ -498,15 +502,16 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	// または、Xボタンで遠距離攻撃
 	/*if (PushHitKey(KEY_INPUT_LSHIFT) || IsPadOn(PAD_ID::PAD_X, pad_no)) {*/      // ボタンの一度押し
+	// ダメージを受けていない
+
 	if (/*CheckHitKey(KEY_INPUT_LSHIFT) ||*/ IsPadRepeat(PAD_ID::PAD_X, pad_no)) { // ボタンの長押し
 		action_mode = BLOCK_ACTION;           // モデルのアクションをガードに変更
 		block_anim_pick = BLOCK_ANIM;         // ガードアクションを設定
 		CharacterBase::Block_Action(1); // 行いたい攻撃アニメーションをセット
 		action_flag = true;                   // アクションフラグを上げる
+		
 	}
 }
-
-
 //---------------------------------------------------------------------------
 // 攻撃用アップデート
 //---------------------------------------------------------------------------
@@ -558,7 +563,7 @@ void Player::Attack_Update()
 
 	case ATTACK_PUNCH_1_ANIM: // パンチ通攻撃１ 
 
-		
+
 		// 当たり判定の作成
 		now_hit_area = &hit_areas[ATTACK_PUNCH_1_HIT];
 		if (attack_anim_frame[ATTACK_PUNCH_1_ANIM] >= now_hit_area->hit_anim_frame) {
@@ -573,7 +578,7 @@ void Player::Attack_Update()
 			if (!player_se.Playing_SE(SE_PUNCH_1)) {
 				player_se.Play_SE(SE_PUNCH_1, DX_PLAYTYPE_BACK, true);
 			}
-			
+
 			// エフェクトが再生中か沿うてないかを調べる
 			int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[PUNCH2_EFFECT]);
 			// 再生中でなければ
@@ -633,7 +638,7 @@ void Player::Attack_Update()
 		}
 		// エフェクトの座標を設定
 		SetPosPlayingEffekseer3DEffect(m_effect_handle[PUNCH2_EFFECT], m_hit_cd_pos_top.x, m_hit_cd_pos_top.y, m_hit_cd_pos_top.z);
-		
+
 		// アニメーションの中に
 		// マウスの左クリックまたはAボタンでパンチコンボ
 		if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
@@ -741,15 +746,15 @@ void Player::Attack_Update()
 		bead_pos.y--;
 		lifespan_count--; // 弾が消えるまでのカウントを進める
 
-		cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
 		//now_hit_area = &hit_areas[SPECIAL_HIT];
 		// 当たり判定を見えるようにする物
 		// 向いている方向に座標を設定（今はパンチに位置）
-		m_hit_cd_pos_top.set(bead_pos.x, bead_pos.y , bead_pos.z);
-		m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y , bead_pos.z);
+		m_hit_cd_pos_top.set(bead_pos.x, bead_pos.y, bead_pos.z);
+		m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y, bead_pos.z);
 		m_hit_cd_r = 100;//now_hit_area->hit_r;
 
-		
+		cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
 
 		// エフェクトが再生中かどうてないかを調べる
 		int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[SPECIAL_EFFECT]);
