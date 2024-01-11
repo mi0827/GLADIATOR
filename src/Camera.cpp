@@ -16,12 +16,15 @@ constexpr float BOX_SIZE_HALF = (BOX_SIZE / 2.0f); // 半数のサイズ
 
 
 // コンストラクタ(初期化)
-Camera::Camera()
+Camera::Camera(int num)
 {
 	//! カメラ座標の初期設定
 	m_pos.set(0.0f, 0.0f, -20.0f);
 	//! カメラの向きは全部０度で開始
 	m_rot.set(0.0f, 0.0f, 0.0f);
+	if (num == 1) {
+		m_rot.set(0.0f, 180.0f, 0.0f);
+	}
 	//! カメラが見る座標
 	m_look.set(0.0f, 0.0f, 0.0f); // すべて０．０ｆで初期化
 

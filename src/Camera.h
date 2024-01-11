@@ -12,7 +12,7 @@ public:
 	// 関数の定義
 	//---------------
 	// コンストラクタ
-	Camera();
+	Camera(int num);
 
 	void Init();        //　初期処理
 

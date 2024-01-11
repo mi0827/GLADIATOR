@@ -226,10 +226,10 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 			// 使いたくないアニメーション
 			if (i != anim_num) {
 
-				anim_rate[i] -= 0.1f; // 割合を減らす
+				anim_rate[i] -= 1.0f; // 割合を減らす
 			}
 			else {// 使いたいアニメーション		
-				anim_rate[i] += 0.1f; // 割合を増やす
+				anim_rate[i] += 1.0f; // 割合を増やす
 			}
 
 			anim_rate[i] = max(0.0f, min(anim_rate[i], 1.0f));                                    // 割合を0.0f ～ 1.0fにする（これをしないと踊り狂う） 
@@ -260,7 +260,7 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 			if (attack_anim_frame[attack_anim_pick] >= attack_anim_total[attack_anim_pick]) {                                           // アニメーションが一周したら
 				attack_anim_frame[attack_anim_pick] = 0.0f;
 				attack_anim_attach[attack_anim_pick] = MV1DetachAnim(m_model, attack_anim_attach[attack_anim_pick]);  // 攻撃アニメーションをディタッチしておく
-				anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
+				anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                              // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 				action_mode = NORMAL_ACTION;                                                                                         	// アニメーションが１ループしたかrATTACK_ACTIONから出る
 				attack_flag = false;                                                                                                    // 攻撃が終わったのでこうげきしていないようにする
 				attack_anim_pick = ATTACK_ANIM_MAX;                                                                                     // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
@@ -352,8 +352,6 @@ void Player::Draw()
 	}
 	// 玉を描画する(今だけ)
 #ifdef DEBUG
-
-
 	// プレイヤー自身の当たり判定を見えるようにしている
 	DrawCapsule3D(m_hit_body_pos_top.VGet(), m_hit_body_pos_under.VGet(), m_hit_body_r, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), FALSE);
 

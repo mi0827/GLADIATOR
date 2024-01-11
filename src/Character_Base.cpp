@@ -77,31 +77,34 @@ void CharacterBase::Draw_Status(int i)
 		DrawBox((m_hp_pos.x + m_hp_count.x), m_hp_count.y, (HP_MAX  + m_hp_pos.x), m_hp_pos.y, GetColor(255, 20, 20), TRUE);    // 余白バー
 		DrawLineBox(m_hp_pos.x , m_hp_pos.y, HP_MAX + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));                               // 外枠
 		// スキルクールダウンバーの描画
+		DrawString(m_skill_pos.x, m_skill_pos.y - 16, "スキル", GetColor(255, 255, 255));
 		DrawBox(m_skill_pos.x , m_skill_pos.y, (m_skill_pos.x + + m_skill_count.x), m_skill_count.y, GetColor(0, 191, 255), TRUE);                       // 本体バー
 		DrawBox((m_skill_pos.x + m_skill_count.x), m_skill_count.y, (SKILL_POINT_MAX +  + m_skill_pos.x), m_skill_pos.y, GetColor(105, 105, 105), TRUE); // 余白バー
 		DrawLineBox(m_skill_pos.x  , m_skill_pos.y, SKILL_POINT_MAX   + m_skill_pos.x, m_skill_count.y, GetColor(255, 255, 255));			                        // 外枠
 		// SPバーの描画
+		DrawString(m_sp_pos.x, m_sp_pos.y - 16, "SP", GetColor(255, 255, 255));
 		DrawBox(m_sp_pos.x , m_sp_pos.y, (m_sp_pos.x  + m_sp_count.x), m_sp_count.y, GetColor(255, 215, 0), TRUE);                    // 本体バー
 		DrawBox((m_sp_pos.x  + m_sp_count.x), m_sp_count.y, (SP_POINT_MAX  + m_sp_pos.x), m_sp_pos.y, GetColor(105, 105, 105), TRUE); // 余白バー
 		DrawLineBox(m_sp_pos.x , m_sp_pos.y, (SP_POINT_MAX  + m_sp_pos.x), m_sp_count.y, GetColor(255, 255, 255));		                      // 外枠
 	}
 	else {
-		// SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); // 描画するものを半透明にする
+		
 		
 		DrawBox((m_hp_pos.x + hp_x - HP_MAX), m_hp_count.y, ( hp_x  + 20 - m_hp_pos.x), m_hp_pos.y, GetColor(255, 20, 20), TRUE);             // 余白バー
 		DrawBox(m_hp_pos.x + hp_x, m_hp_pos.y, (m_hp_pos.x + hp_x - m_hp_count.x), m_hp_count.y, GetColor(0, 255, 0), TRUE);                // 本体バー
 		DrawLineBox(m_hp_pos.x + hp_x - HP_MAX, m_hp_pos.y,  hp_x + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));                              // 外枠
 		// スキルクールダウンバーの描画
+		DrawString(m_skill_pos.x + skill_x- 50, m_skill_pos.y - 16, "スキル", GetColor(255, 255, 255));
 		DrawBox(m_skill_pos.x + skill_x, m_skill_pos.y, (m_skill_pos.x + skill_x - m_skill_count.x), m_skill_count.y, GetColor(0, 191, 255), TRUE);                       // 本体バー
 		DrawBox((m_skill_pos.x + skill_x - SKILL_POINT_MAX ), m_skill_count.y, ( skill_x + 10 - m_skill_count.x), m_skill_pos.y, GetColor(105, 105, 105), TRUE); // 余白バー
 		DrawLineBox((m_skill_pos.x + skill_x - SKILL_POINT_MAX), m_skill_pos.y,   skill_x + m_skill_pos.x, m_skill_count.y, GetColor(255, 255, 255));			                        // 外枠
 		// SPバーの描画
+		DrawString(m_sp_pos.x + sp_x -20, m_sp_pos.y - 16, "SP", GetColor(255, 255, 255));
 		DrawBox(m_sp_pos.x + sp_x, m_sp_pos.y, (m_sp_pos.x + sp_x - m_sp_count.x), m_sp_count.y, GetColor(255, 215, 0), TRUE);                    // 本体バー
 		DrawBox((m_sp_pos.x + sp_x - SP_POINT_MAX), m_sp_count.y, ( sp_x + 10 - m_sp_count.x), m_sp_pos.y, GetColor(105, 105, 105), TRUE); // 余白バー
 		DrawLineBox(m_sp_pos.x + sp_x - SP_POINT_MAX, m_sp_pos.y, ( sp_x + m_sp_pos.x), m_sp_count.y, GetColor(255, 255, 255));		                      // 外枠
-
 	}
-	// SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // 元に戻す
+	
 }
 
 //---------------------------------------------------------------------------

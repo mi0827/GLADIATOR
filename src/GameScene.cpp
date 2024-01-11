@@ -49,8 +49,8 @@ void GameScene::Init()
 	players[1] = new Player;
 	// プレイヤー０にカメラ０をつける
 	// プレイヤー１にカメラ１をつける
-	camera[0] = new Camera;
-	camera[1] = new Camera;
+	camera[0] = new Camera(0);
+	camera[1] = new Camera(1);
 	// 各クラスの初期設定
 	field.Init();
 	field.Field_Init();
@@ -574,7 +574,7 @@ void GameScene::Ready_Draw()
 		// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
 		int original_font_size = GetFontSize();
 
-		SetFontSize(50); // フォントサイズの変更
+		SetFontSize(40); // フォントサイズの変更
 		if (ready_flag2) {
 			{
 				const char* name = "ready";
