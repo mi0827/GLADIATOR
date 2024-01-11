@@ -77,6 +77,11 @@ void EndScene::Draw()
 	DrawStringF(SCREEN_W / 2 - w / 2  - 3, SCREEN_H / 2- 3, name, GetColor(255, 255, 255), TRUE);
 	DrawStringF(SCREEN_W / 2 - w / 2, SCREEN_H / 2, name, GetColor(0, 0, 0), TRUE);
 	SetFontSize(original_font_size); // フォントサイズを戻す
+
+	ChangeFont("ＭＳ 明朝", DX_CHARSET_DEFAULT); // フォントを明朝体にする
+	DrawStringF(16, 300, "魔王魂", GetColor(0, 0, 0));
+	DrawStringF(16, 350, "創作堂さくら紅葉", GetColor(0, 0, 0)); 
+    DrawStringF(16, 400, "MusMus", GetColor(0, 0, 0));
 }
 
 //------------------------------------------

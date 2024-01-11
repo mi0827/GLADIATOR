@@ -331,6 +331,17 @@ void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX, int index)
 //---------------------------------------------------------------------------
 void CharacterBase::Attack_Action(int index)
 {
+	//// アニメーションの再生
+ //   // 使いたくないアニメーション
+	//if (anim_num == 0) {
+
+	//	anim_rate[0] = 1.0f; // 割合を減らす
+	//	anim_rate[1] = 0.0f;
+	//}
+	//else {// 使いたいアニメーション		
+	//	anim_rate[0] = 0.0f; // 割合を減らす
+	//	anim_rate[1] = 1.0f;
+	//}
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
 	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, index, attack_anim_model[attack_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
 	attack_flag = true; // 攻撃中にする

@@ -162,6 +162,38 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 	case NORMAL_ACTION:        // 普通アクション 
 		m_check_move = false;  // 常にリセット
 
+		
+		//=================================
+		// アクションに関するボタン押し用の関数（見やすくするための関数）
+		//=================================
+		Attack_PressButton_Update(camera_rot);
+		if (action_flag) { // アクションフラグが上がっていたら
+			//// アニメーションの再生
+			//// 使いたくないアニメーション
+			//if (anim_num == 0) {
+
+			//	anim_rate[0] =1.0f; // 割合を減らす
+			//	anim_rate[1] = 0.0f;
+			//}
+			//else {// 使いたいアニメーション		
+			//	anim_rate[0] = 0.0f; // 割合を減らす
+			//	anim_rate[1] = 1.0f;
+			//}
+			break;         // 後の処理を飛ばす
+		}
+
+
+		//=================================
+		// ダメージのを食らったら
+		//=================================
+		if (damage_flag) {
+			action_mode = DAMAGE_ACTION;            // モデルのアクションをダメージに変更
+			if (m_now_hp == 0) {                    // 体力がなくなった
+				damage_anim_pick = DAMAGE_ANIM_END; // 死ぬアニメーションにする
+			}
+			CharacterBase::Damage_Action(1);  // 行いたいダメージアニメーションをセット
+			break;
+		}
 		// 移動処理
 		CharacterBase::Move_Player(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
 
@@ -184,28 +216,6 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 				m_hit_body_pos_under.y += 3.0f;
 			}
 		}
-
-		//=================================
-		// アクションに関するボタン押し用の関数（見やすくするための関数）
-		//=================================
-		Attack_PressButton_Update(camera_rot);
-		if (action_flag) { // アクションフラグが上がっていたら
-			break;         // 後の処理を飛ばす
-		}
-
-
-		//=================================
-		// ダメージのを食らったら
-		//=================================
-		if (damage_flag) {
-			action_mode = DAMAGE_ACTION;            // モデルのアクションをダメージに変更
-			if (m_now_hp == 0) {                    // 体力がなくなった
-				damage_anim_pick = DAMAGE_ANIM_END; // 死ぬアニメーションにする
-			}
-			CharacterBase::Damage_Action(1);  // 行いたいダメージアニメーションをセット
-			break;
-		}
-
 		// アニメーション用のフレームカウントを進める
 		for (int i = 0; i < ANIM_MAX; ++i) {
 			anim_frame[i] += 1.0f;
@@ -226,6 +236,8 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 			MV1SetAttachAnimTime(m_model, anim_attach[i], anim_frame[i]);  // そのフレームのアニメーションにする
 			MV1SetAttachAnimBlendRate(m_model, anim_attach[i], anim_rate[i]);   // それぞれにアニメーションの割合分再生します
 		}
+
+		
 		break;
 
 	case ATTACK_ACTION: // 攻撃アクション
@@ -430,6 +442,7 @@ void Player::Move_Hit_Update()
 //---------------------------------------------------------------------------
 void Player::Attack_PressButton_Update(Vector3* camera_rot)
 {
+	
 	//=================================
 	// 近距離攻撃
 	//=================================
@@ -850,6 +863,7 @@ void Player::Block_Update()
 		if (IsPadRelease(PAD_ID::PAD_X, pad_no)) {
 			// はなししている時は
 			block_flag = false; // 防御フラグを下す
+			StopEffekseer3DEffect(m_effect_handle[GUARD_EFFECT]); // エフェクトを停止する
 		}
 
 		break;
