@@ -5,7 +5,7 @@
 #include "Scene_Base.h"
 #include "TitleScene.h"
 
-const int Title_Time_MAX = 10;  // タイトル描画時間(今だけ3秒)
+const int Title_Time_MAX = 5;  // タイトル描画時間(今だけ3秒)
 BGM title_bgm; // BGMクラスのオブジェクト
 SE title_se; // SEクラスのオブジェクト
 
@@ -108,16 +108,22 @@ void TiteleScene::Update(int bgm_volume, int se_volume)
 	case MOVIE:
 		
 		title_bgm.Stop_BGM(TITLE_BGM); // BGMを止める
+
+		// プレイ動画の再生
+		movie = PlayMovie("Data/Movie/01.mp4", 1, DX_MOVIEPLAYTYPE_BCANCEL);
+		GetMovieStateToGraph(movie);
 		// ゲームパッドの情報を丸ごと取得
-		if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_A) {
+		if (GetMovieStateToGraph(movie)) {
 			// Aボタンを押されたらタイトル描画に戻る
 			title_scene = TITLE;
+			count_time = Title_Time_MAX;
+			PauseMovieToGraph(movie);
 		}
 		// ゲームパッドの情報を丸ごと取得
-		if (GetJoypadInputState(DX_INPUT_PAD2) & PAD_INPUT_A) {
-			// Aボタンを押されたらタイトル描画に戻る
-			title_scene = TITLE;
-		}
+		//if (GetJoypadInputState(DX_INPUT_PAD2) & PAD_INPUT_A) {
+		//	// Aボタンを押されたらタイトル描画に戻る
+		//	title_scene = TITLE;
+		//}
 
 		break;
 
@@ -154,7 +160,7 @@ void TiteleScene::Draw()
 		int taile_h = -50;
 		DrawString(SCREEN_W / 2 - w / 2 + 7, SCREEN_H / 2 + taile_h + 7, name, GetColor(128, 0, 0)); // 下
 		DrawString(SCREEN_W / 2 - w / 2, SCREEN_H / 2 + taile_h, name, GetColor(255, 0, 0)); // 上
-		
+
 
 	}
 	break;
@@ -162,23 +168,24 @@ void TiteleScene::Draw()
 	case MOVIE:
 
 	{
-		SetFontSize(120); // フォントサイズの変更
-		const char* name = "ほんとは動6画を乗せる予定";
-		// 描画幅の取得
-		float w = GetDrawStringWidth(name, -1);
-		// 文字列の高さ取得
-		float h = GetFontSize();
-		// 描画
-		//DrawStringFToHandle(SCREEN_W / 2 - w -80, SCREEN_H / 2 +5, name, GetColor(128, 0, 0), GTA_font_data, TRUE); 
-		//DrawStringFToHandle(SCREEN_W / 2 - w - 85, SCREEN_H / 2 , name, GetColor(255, 0, 0), GTA_font_data, TRUE); 
-		int taile_h = -50;
-		DrawString(SCREEN_W / 2 - w / 2 + 7, SCREEN_H / 2 + taile_h + 7, name, GetColor(128, 0, 0)); // 下
-		DrawString(SCREEN_W / 2 - w / 2, SCREEN_H / 2 + taile_h, name, GetColor(255, 0, 0)); // 上
-		
+		//SetFontSize(120); // フォントサイズの変更
+		//const char* name = "ほんとは動6画を乗せる予定";
+		//// 描画幅の取得
+		//float w = GetDrawStringWidth(name, -1);
+		//// 文字列の高さ取得
+		//float h = GetFontSize();
+		//// 描画
+		////DrawStringFToHandle(SCREEN_W / 2 - w -80, SCREEN_H / 2 +5, name, GetColor(128, 0, 0), GTA_font_data, TRUE); 
+		////DrawStringFToHandle(SCREEN_W / 2 - w - 85, SCREEN_H / 2 , name, GetColor(255, 0, 0), GTA_font_data, TRUE); 
+		//int taile_h = -50;
+		//DrawString(SCREEN_W / 2 - w / 2 + 7, SCREEN_H / 2 + taile_h + 7, name, GetColor(128, 0, 0)); // 下
+		//DrawString(SCREEN_W / 2 - w / 2, SCREEN_H / 2 + taile_h, name, GetColor(255, 0, 0)); // 上
+
 
 	}
 	break;
 	}
+	
 
 
 	SetFontSize(50); // フォントサイズの変更

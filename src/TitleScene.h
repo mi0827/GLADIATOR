@@ -23,6 +23,7 @@ public:
 	Vector2 image_pos;    // 画像用の描画座標
 	int count_flame; // フレームカウント用の変数 
 	int count_time;  // フレームから実際の割り出して入れる用の時間
+	int movie;       // 動画用のへんすう
 
 	// フォントデータ用
 	int GTA_font_data; // GTAのフォントデータ用の変数

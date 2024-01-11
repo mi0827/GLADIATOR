@@ -285,9 +285,9 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 			block_anim_frame[block_anim_pick] = 0.0f;                                                              // アニメーションを最初からにしておく
 			block_anim_attach[block_anim_pick] = MV1DetachAnim(m_model, block_anim_attach[block_anim_pick]);       // ガードアニメーションをディタッチしておく
 			action_mode = DAMAGE_ACTION; 	                                                                       // ダメージを受けているのでDAMAGE_ACTIOに移動
-			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                             // モデルに元のアニメーションをアタッチしなおす（直近のアニメーシ
+			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                               // モデルに元のアニメーションをアタッチしなおす（直近のアニメーシ
 			CharacterBase::Damage_Action(1);                                                                       // 行いたいダメージアニメーションをセット
-			
+			// damage_anim_attach[damage_anim_pick] = MV1AttachAnim(m_model, 1, damage_anim_model[damage_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
 			block_anim_pick = BLOCK_ANIM_MAX;																	   // ガードのピックをリセット
 			block_flag = false;
 			break;
@@ -312,7 +312,8 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 			if (m_now_hp != 0) {
 				damage_anim_frame[damage_anim_pick] = 0.0f;
 				damage_flag = false; // ダメージアニメーションフラグを下す
-				damage_anim_pick = DAMAGE_ANIM_MAX;
+
+				damage_anim_pick = 0;// DAMAGE_ANIM_MAX;	// !!修正ポイント!!
 			}
 			// 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 		}
@@ -799,14 +800,12 @@ void Player::Damage_Update(int* m_attack_damage)
 	if (*m_attack_damage < 20) {
 		damage_anim_pick = BLOCK_ANIM;
 	}
-	else
-		if (*m_attack_damage >= 20 && *m_attack_damage < 40) {
-			damage_anim_pick = DAMAGE_ANIM_1;
-		}
-		else
-			if (*m_attack_damage >= 40) {
-				damage_anim_pick = DAMAGE_ANIM_END;
-			}
+	else if (*m_attack_damage >= 20 && *m_attack_damage < 40) {
+		damage_anim_pick = DAMAGE_ANIM_1;
+	}
+	else if (*m_attack_damage >= 40) {
+		damage_anim_pick = DAMAGE_ANIM_END;
+	}
 }
 
 //---------------------------------------------------------------------------
