@@ -150,6 +150,7 @@
     <ClCompile Include="src\Field.cpp" />
     <ClCompile Include="src\GameScene.cpp" />
     <ClCompile Include="src\Hit.cpp" />
+    <ClCompile Include="src\HitStop.cpp" />
     <ClCompile Include="src\InputPad.cpp" />
     <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\Option.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="src\Field.h" />
     <ClInclude Include="src\GameScene.h" />
     <ClInclude Include="src\Hit.h" />
+    <ClInclude Include="src\HitStop.h" />
     <ClInclude Include="src\InputPad.h" />
     <ClInclude Include="src\Object.h" />
     <ClInclude Include="src\Option.h" />

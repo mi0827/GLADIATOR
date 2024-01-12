@@ -4,6 +4,7 @@
 #include "Hit.h" // あたり判定
 #include "BGM.h"
 #include "SE.h"
+#include "HitStop.h"
 #include "Base.h"
 // キャラクター.h
 #include "Character_Base.h"
@@ -29,7 +30,7 @@ CharacterBase* players[2];      // キャラクターの二人呼ぶ用の配列
 Camera* camera[2];              // キャラクタと同じ数
 
 Field field;
-
+HitStop hit_stop;
 constexpr int TIME_MAX = 60;    // 制限時間 (今だけ10秒)
 constexpr int END_TIME_MAX = 5; // エンドの時間制限
 
@@ -88,7 +89,10 @@ void GameScene::Update(int bgm_volume, int se_volume)
 	game_bgm.BGM_ChangeVolume(bgm_volume, BGM_MAX); // BGMのボリューム変更処理
 	se_game.SE_ChangeVolume(se_volume, SE_MAX);	 // SEのボリューム変更処理   
 
-	Character_Update(se_volume); // キャラクターたちの更新処理
+	// ヒットストップしてほしいかしてほしくないか
+	if (!hit_stop.Hit_Stop()) {
+		Character_Update(se_volume); // キャラクターたちの更新処理
+	}
 
 	// 各クラスの更新処理
 	field.Update();
@@ -693,10 +697,13 @@ void GameScene::Attack_Hit(int player1, int player2)
 		if (HitCheck_Capsule_Capsule(players[player1]->m_hit_cd_pos_top.VGet(), players[player1]->m_hit_cd_pos_under.VGet(), players[player1]->m_hit_cd_r,
 			players[player2]->m_hit_body_pos_top.VGet(), players[player2]->m_hit_body_pos_under.VGet(), players[player2]->m_hit_body_r))
 		{
+			// 当たり判定があったら
+			// なおダメージフラグが降りてたら
 			if (!players[player2]->damage_flag) {
 				players[player2]->m_hp_count.x -= players[player1]->m_attack_damage[players[player1]->attack_anim_pick]; // ダメージを入れる
 				players[player2]->Damage_Update(&players[player1]->m_attack_damage[players[player1]->attack_anim_pick]);
 				players[player2]->damage_flag = true; // ダメージを食らってるようにする
+				hit_stop.Stop_Count_Reset(); // ヒットストップをさせる
 			}
 		}
 	}
@@ -785,6 +792,7 @@ void GameScene::Block_Hit(int player1, int player2)
 				players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
 				players[player1]->damage_flag = true; // ダメージを受けているフラグを上げる
 			//	players[player1]->block_flag = false; // ガードを離すためにガード中のフラグを下げる
+				hit_stop.Stop_Count_Reset(); // ヒットストップをさせる
 			}
 		}
 	}
