@@ -13,7 +13,8 @@ bool HitStop::Hit_Stop()
 		return  true; // ヒットストップしてほしい
 	}
 	else {
-		return false; // してほしくない
+		stop_frame_count = 0;
+	    return false; // してほしくない
 	}
 
 }

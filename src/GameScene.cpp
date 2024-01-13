@@ -78,7 +78,12 @@ void GameScene::Init()
 
 	SE_Init(); // SEの初期化
 	BGM_Init(); // BGMの初期化
-	
+	Light_Init(); // ライトの初期化
+	//ChangeLightTypeDir;
+	//Vector3 light_pos(250.0f,200.0f,0.0f); // ライトの座標
+	//SetLightPosition(light_pos.VGet());    // ライトの座標を変更
+	//Vector3 light_rot(45.0f,0.0f,0.0f);
+	//SetLightDirection(light_rot.VGet());
 }
 
 //----------------------------------------
@@ -86,11 +91,15 @@ void GameScene::Init()
 //----------------------------------------
 void GameScene::Update(int bgm_volume, int se_volume)
 {
+	int light_num = 0;
+	light_num = GetEnableLightHandleNum();
+
 	game_bgm.BGM_ChangeVolume(bgm_volume, BGM_MAX); // BGMのボリューム変更処理
 	se_game.SE_ChangeVolume(se_volume, SE_MAX);	 // SEのボリューム変更処理   
 
 	// ヒットストップしてほしいかしてほしくないか
-	if (!hit_stop.Hit_Stop()) {
+	stop = hit_stop.Hit_Stop();
+	if (!stop) {
 		Character_Update(se_volume); // キャラクターたちの更新処理
 	}
 
@@ -206,11 +215,40 @@ void GameScene::BGM_Init()
 }
 
 //------------------------------------
+// ライトの初期化
+//------------------------------------
+void GameScene::Light_Init()
+{
+
+	for (int i = 0; i < light_MAX; i++)
+	{
+		// ライトの作成
+		if (i == 0) {
+			light_handle[i] = CreateDirLightHandle(VGet(1.0f, 0.0f, 0.0f));
+		}
+		else {
+			light_handle[i] = CreateDirLightHandle(VGet(-1.0f, 0.0f, 0.0f));
+		}
+		// ライトの座標設定
+		Vector3 light_pos(0.0f, 0.0f, 0.0f);
+		light_pos.set(players[i]->m_pos.x, players[i]->m_pos.y + 500.0f, players[i]->m_pos.z);
+		SetLightPositionHandle(light_handle[i], light_pos.VGet());
+		
+		// ライトの色の変更
+		SetLightDifColorHandle(light_handle[i], GetColorF(0.5f, 0.5f, 0.5f, 0.0f)); 
+
+		SetLightRangeAttenHandle((light_handle[i], GetLightRangeAtten());
+		// ライトの有効、無効を設定する
+		SetLightEnableHandle(light_handle[i], TRUE);
+	}
+}
+
+//------------------------------------
 // チュートリアルの更新処理
 //------------------------------------
 void GameScene::Tutorial_Update()
 {
-	
+
 	// プレイヤー１
 	if (IsPadRepeat(PAD_ID::PAD_X, players[0]->pad_no)) {
 		button_count1++; // ボタンの長押しカウントを増やす
@@ -348,7 +386,7 @@ void GameScene::PlayEnd_Update()
 //---------------------------------------------------------------------------
 // キャラクターの更新処理（移動時のお互いのあたり判定）
 //---------------------------------------------------------------------------
-void GameScene::Character_Update( int se_volume)
+void GameScene::Character_Update(int se_volume)
 {
 	// キャラクターの移動（壁擦り）処理
 	for (int player = 0; player < PLAYER_MAX; player++) {
@@ -791,8 +829,12 @@ void GameScene::Block_Hit(int player1, int player2)
 				// player1の本体用のカプセルとplayer2の攻撃用カプセルが当たったとき
 				players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
 				players[player1]->damage_flag = true; // ダメージを受けているフラグを上げる
-			//	players[player1]->block_flag = false; // ガードを離すためにガード中のフラグを下げる
-				hit_stop.Stop_Count_Reset(); // ヒットストップをさせる
+				players[player1]->block_flag = false; // ガードを離すためにガード中のフラグを下げる
+				//cd_hit_flag = false
+
+				if (!stop) {
+					hit_stop.Stop_Count_Reset(); // ヒットストップをさせる
+				}
 			}
 		}
 	}

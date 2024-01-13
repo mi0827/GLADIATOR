@@ -273,7 +273,7 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 			Attack_Update();  // 攻撃用のアップデート
 		}
 		break;
-
+		
 	case BLOCK_ACTION:
 
 		// アニメーションの再生

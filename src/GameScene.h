@@ -23,6 +23,9 @@ public:
 	void SE_Init();
 	// BGMの初期化
 	void BGM_Init();
+	// ライトの初期化
+	void Light_Init();
+
 	// チュートリアルの更新処理
 	void Tutorial_Update();
 	// メインプレイシーンの更新処理
@@ -101,4 +104,11 @@ private:
 	// ボタンの長押しをカウントする用の変数
     float button_count1 = 0;
 	int button_count2 = 0;
+
+	// ヒットストップ科の判断用変数
+	bool stop;
+
+	// ライト用の変数
+	static const int light_MAX = 2;
+	int light_handle[light_MAX]; // ライトハンドル
 };
