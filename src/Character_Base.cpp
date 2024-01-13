@@ -67,7 +67,7 @@ void CharacterBase::Reset_Status()
 //---------------------------------------------------------------------------
 void CharacterBase::Draw_Status(int i)
 {
-	int hp_x =  30 + HP_MAX;
+	int hp_x =  30 + HP_MAX ;
 	int skill_x =  230 + SKILL_POINT_MAX;
 	int sp_x =  180 + SP_POINT_MAX;
 	// HPÉoÅ[ÇÃï`âÊ

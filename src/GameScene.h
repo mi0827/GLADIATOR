@@ -23,8 +23,11 @@ public:
 	void SE_Init();
 	// BGMの初期化
 	void BGM_Init();
+
 	// ライトの初期化
 	void Light_Init();
+	// ライトの更新処理
+	void Light_Update();
 
 	// チュートリアルの更新処理
 	void Tutorial_Update();
@@ -102,7 +105,7 @@ private:
 	bool ready_flag1 = false;
 	bool ready_flag2 = false;
 	// ボタンの長押しをカウントする用の変数
-    float button_count1 = 0;
+	float button_count1 = 0;
 	int button_count2 = 0;
 
 	// ヒットストップ科の判断用変数
@@ -111,4 +114,8 @@ private:
 	// ライト用の変数
 	static const int light_MAX = 2;
 	int light_handle[light_MAX]; // ライトハンドル
+	COLOR_F original_dif_color;
+	COLOR_F original_spc_color;
+	COLOR_F original_amb_color;
+
 };

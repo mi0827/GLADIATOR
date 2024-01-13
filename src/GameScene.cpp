@@ -79,11 +79,7 @@ void GameScene::Init()
 	SE_Init(); // SEの初期化
 	BGM_Init(); // BGMの初期化
 	Light_Init(); // ライトの初期化
-	//ChangeLightTypeDir;
-	//Vector3 light_pos(250.0f,200.0f,0.0f); // ライトの座標
-	//SetLightPosition(light_pos.VGet());    // ライトの座標を変更
-	//Vector3 light_rot(45.0f,0.0f,0.0f);
-	//SetLightDirection(light_rot.VGet());
+	//SetLightEnable(FALSE);
 }
 
 //----------------------------------------
@@ -91,6 +87,8 @@ void GameScene::Init()
 //----------------------------------------
 void GameScene::Update(int bgm_volume, int se_volume)
 {
+
+	Light_Update();
 	int light_num = 0;
 	light_num = GetEnableLightHandleNum();
 
@@ -219,28 +217,54 @@ void GameScene::BGM_Init()
 //------------------------------------
 void GameScene::Light_Init()
 {
+	// もとからあるライトの値をもらってくる
+	original_dif_color = GetLightDifColor();
+	original_spc_color = GetLightSpcColor();
+	original_amb_color = GetLightAmbColor();
+
 
 	for (int i = 0; i < light_MAX; i++)
 	{
 		// ライトの作成
-		if (i == 0) {
-			light_handle[i] = CreateDirLightHandle(VGet(1.0f, 0.0f, 0.0f));
-		}
-		else {
-			light_handle[i] = CreateDirLightHandle(VGet(-1.0f, 0.0f, 0.0f));
-		}
+
+		//light_handle[i] = CreatePointLightHandle(camera[i]->m_pos.VGet(), 500.0f, 500.0f,500.0f, 500.0f);
+
+
+		light_handle[i] = CreateDirLightHandle(VGet(1.0f, 0.0f, 0.0f));
+
 		// ライトの座標設定
 		Vector3 light_pos(0.0f, 0.0f, 0.0f);
-		light_pos.set(players[i]->m_pos.x, players[i]->m_pos.y + 500.0f, players[i]->m_pos.z);
+		light_pos.set(250.0f, 300.0f,250.0f/*camera[i]->m_pos.x, camera[i]->m_pos.y, camera[i]->m_pos.z*/);
 		SetLightPositionHandle(light_handle[i], light_pos.VGet());
-		
-		// ライトの色の変更
-		SetLightDifColorHandle(light_handle[i], GetColorF(0.5f, 0.5f, 0.5f, 0.0f)); 
 
-		SetLightRangeAttenHandle((light_handle[i], GetLightRangeAtten());
+		// ライトの色の変更
+		SetLightDifColorHandle(light_handle[i], GetColorF(original_dif_color.r, original_dif_color.g, original_dif_color.b, original_dif_color.a));
+		SetLightSpcColorHandle(light_handle[i], GetColorF(original_spc_color.r, original_spc_color.g, original_spc_color.b, original_spc_color.a));
+		SetLightAmbColorHandle(light_handle[i], GetColorF(original_amb_color.r, original_amb_color.g, original_amb_color.b, original_amb_color.a));
+		// SetLightRangeAttenHandle((light_handle[i], GetLightRangeAtten());
 		// ライトの有効、無効を設定する
 		SetLightEnableHandle(light_handle[i], TRUE);
 	}
+}
+
+//------------------------------------
+// ライトの更新処理
+//------------------------------------
+void GameScene::Light_Update()
+{
+	for (int i = 0; i < light_MAX; i++)
+	{
+		// ライトの座標設定
+		Vector3 light_pos(0.0f, 0.0f, 0.0f);
+		light_pos.set(camera[i]->m_pos.x, camera[i]->m_pos.y, camera[i]->m_pos.z);
+		SetLightPositionHandle(light_handle[i], light_pos.VGet());
+
+		// ライトの向き
+		Vector3 light_rot;
+		light_rot.set(camera[i]->m_rot.x, camera[i]->m_rot.y, camera[i]->m_rot.z);
+		SetLightDirectionHandle(light_handle[i], light_rot.VGet());
+	}
+
 }
 
 //------------------------------------

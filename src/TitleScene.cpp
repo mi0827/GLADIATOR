@@ -138,7 +138,7 @@ void TiteleScene::Draw()
 {
 
 	// 背景画像の描画
-	DrawGraph(image_pos.x, image_pos.y, background_image, TRUE);
+	DrawExtendGraph(image_pos.x, image_pos.y,SCREEN_W,SCREEN_H, background_image, TRUE);
 	// ここでとってきた文字をセットしておく
 	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
 	int original_font_size = GetFontSize();
@@ -148,7 +148,7 @@ void TiteleScene::Draw()
 	{
 	case TITLE:
 	{
-		SetFontSize(120); // フォントサイズの変更
+		SetFontSize(200); // フォントサイズの変更
 		const char* name = "GLADIATOR";
 		// 描画幅の取得
 		float w = GetDrawStringWidth(name, -1);
@@ -168,29 +168,13 @@ void TiteleScene::Draw()
 	case MOVIE:
 
 	{
-		//SetFontSize(120); // フォントサイズの変更
-		//const char* name = "ほんとは動6画を乗せる予定";
-		//// 描画幅の取得
-		//float w = GetDrawStringWidth(name, -1);
-		//// 文字列の高さ取得
-		//float h = GetFontSize();
-		//// 描画
-		////DrawStringFToHandle(SCREEN_W / 2 - w -80, SCREEN_H / 2 +5, name, GetColor(128, 0, 0), GTA_font_data, TRUE); 
-		////DrawStringFToHandle(SCREEN_W / 2 - w - 85, SCREEN_H / 2 , name, GetColor(255, 0, 0), GTA_font_data, TRUE); 
-		//int taile_h = -50;
-		//DrawString(SCREEN_W / 2 - w / 2 + 7, SCREEN_H / 2 + taile_h + 7, name, GetColor(128, 0, 0)); // 下
-		//DrawString(SCREEN_W / 2 - w / 2, SCREEN_H / 2 + taile_h, name, GetColor(255, 0, 0)); // 上
-
-
 	}
 	break;
 	}
 	
 
 
-	SetFontSize(50); // フォントサイズの変更
-
-
+	SetFontSize(100); // フォントサイズの変更
 	//DrawFormatString(16 + 7, 16 + 7, GetColor(0, 128, 128), "START:%02d", count_time); // 下
 	//DrawFormatString(16, 16, GetColor(0, 255, 255), "START:%02d", count_time); // 上
 	DrawString(16 + 5, 16 + 5, "START: A ", GetColor(0, 128, 128)); // 下

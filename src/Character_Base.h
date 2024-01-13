@@ -8,10 +8,10 @@ class CharacterBase : public Base
 public:
 
 	// 全キャラ共通の値
-#define HP_MAX 350          // HPの最大値
-#define SKILL_POINT_MAX 150 // スキルポイントの最大値
-#define SP_POINT_MAX 200    // SPポイントの最大値
-#define STATUS_BAR_SIZE 20  // ステータスバーの太さのサイズ
+#define HP_MAX 700          // HPの最大値
+#define SKILL_POINT_MAX 300 // スキルポイントの最大値
+#define SP_POINT_MAX 400    // SPポイントの最大値
+#define STATUS_BAR_SIZE 80  // ステータスバーの太さのサイズ
 	
 //#define PUNCH_MAX 2
 	//---------------

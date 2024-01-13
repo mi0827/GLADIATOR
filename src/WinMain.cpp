@@ -34,7 +34,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// ８：背景の塗りつぶしの色を設定
 	SetBackgroundColor(157,190,221);
 
-
 	SetDoubleStartValidFlag(TRUE); // 何かわからない
 	SetAlwaysRunFlag(TRUE); // 何かわからない
 
@@ -43,7 +42,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 32 : 色数（32ビットカラー）*直接てな色の数じゃない
 	SetGraphMode(SCREEN_W, SCREEN_H, 32);
 
-	
+	// 画面用のＺバッファのビット深度を設定する( 16 or 24 or 32 )
+	SetCreateDrawValidGraphZBufferBitDepth(32);
+	SetZBufferBitDepth(32);
 
 	// 抜き色の設定(画像の中の　R:255, G:0, B:255)
 	SetTransColor(255, 0, 255);
