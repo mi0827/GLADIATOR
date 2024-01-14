@@ -112,10 +112,11 @@ private:
 	bool stop;
 
 	// ライト用の変数
-	static const int light_MAX = 2;
+	static const int light_MAX = 1;
 	int light_handle[light_MAX]; // ライトハンドル
 	COLOR_F original_dif_color;
 	COLOR_F original_spc_color;
 	COLOR_F original_amb_color;
-
+	Vector3 light_rot;
+	Vector3 light_pos;
 };

@@ -17,7 +17,7 @@ void EndScene::Init()
 
 	// カウント類は最初はマックススタート
 	count_flame = FLAME_MAX;
-	count_time = End_Time_MAX;
+	count_time  = End_Time_MAX;
 
 	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
 
@@ -59,14 +59,14 @@ void EndScene::Draw()
 	int original_font_size = GetFontSize();
 	// 背景画像の描画
 
-	DrawGraph(image_pos.x, image_pos.y, background_image, TRUE);
-	SetFontSize(45); // フォントサイズの変更
+	DrawExtendGraph(image_pos.x, image_pos.y, SCREEN_W,SCREEN_H, background_image, TRUE);
+	SetFontSize(100); // フォントサイズの変更
 	DrawFormatString(16, 16, GetColor(0, 0, 0), "RESTART:%2d", count_time);
-	SetFontSize(40); // フォントサイズの変更
+	//SetFontSize(40); // フォントサイズの変更
 	//DrawFormatString(16, 16, GetColor(255, 255, 255), "RESTART:%2d", count_time);
 	
 
-	SetFontSize(80); // フォントサイズの変更
+	SetFontSize(200); // フォントサイズの変更
 	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
 	const char* name = "GLADIATOR";
 	// 描画幅の取得
@@ -76,12 +76,14 @@ void EndScene::Draw()
 	// 描画
 	DrawStringF(SCREEN_W / 2 - w / 2  - 3, SCREEN_H / 2- 3, name, GetColor(255, 255, 255), TRUE);
 	DrawStringF(SCREEN_W / 2 - w / 2, SCREEN_H / 2, name, GetColor(0, 0, 0), TRUE);
-	SetFontSize(original_font_size); // フォントサイズを戻す
-
+	
+	SetFontSize(80); // フォントサイズの変更
 	ChangeFont("ＭＳ 明朝", DX_CHARSET_DEFAULT); // フォントを明朝体にする
-	DrawStringF(16, 300, "魔王魂", GetColor(0, 0, 0));
-	DrawStringF(16, 350, "創作堂さくら紅葉", GetColor(0, 0, 0)); 
-    DrawStringF(16, 400, "MusMus", GetColor(0, 0, 0));
+	DrawStringF(16, 800, "魔王魂", GetColor(0, 0, 0));
+	DrawStringF(16, 900, "創作堂さくら紅葉", GetColor(0, 0, 0));
+    DrawStringF(16, 1000, "MusMus", GetColor(0, 0, 0));
+
+	SetFontSize(original_font_size); // フォントサイズを戻す
 }
 
 //------------------------------------------

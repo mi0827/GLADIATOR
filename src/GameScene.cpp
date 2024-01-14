@@ -88,7 +88,7 @@ void GameScene::Init()
 void GameScene::Update(int bgm_volume, int se_volume)
 {
 
-	Light_Update();
+	
 	int light_num = 0;
 	light_num = GetEnableLightHandleNum();
 
@@ -123,6 +123,7 @@ void GameScene::Update(int bgm_volume, int se_volume)
 		PlayEnd_Update();
 		break;
 	};
+	Light_Update();
 }
 
 //-------------------------------------
@@ -151,6 +152,7 @@ void GameScene::Draw()
 
 
 	for (int i = 0; i < PLAYER_MAX; i++) {
+
 		camera[i]->Draw(i); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
 	}
 	switch (play_scene)
@@ -227,23 +229,20 @@ void GameScene::Light_Init()
 	{
 		// ライトの作成
 
-		//light_handle[i] = CreatePointLightHandle(camera[i]->m_pos.VGet(), 500.0f, 500.0f,500.0f, 500.0f);
+		light_handle[i] = CreateDirLightHandle(VGet(0.0f, 1.0f, 0.0f));
 
 
-		light_handle[i] = CreateDirLightHandle(VGet(1.0f, 0.0f, 0.0f));
+		//light_handle[i] = CreateDirLightHandle(VGet(1.0f, 0.0f, 0.0f));
 
 		// ライトの座標設定
-		Vector3 light_pos(0.0f, 0.0f, 0.0f);
-		light_pos.set(250.0f, 300.0f,250.0f/*camera[i]->m_pos.x, camera[i]->m_pos.y, camera[i]->m_pos.z*/);
+		light_pos.set(500, 200, 500);
 		SetLightPositionHandle(light_handle[i], light_pos.VGet());
-
+		//	スポットライトの向きの設定（とりあえず真下を向かせています）
+		light_rot.set(-4.0f, -1.0f, -2.0f);
+		SetLightDirectionHandle(light_handle[i], light_rot.VGet());
 		// ライトの色の変更
-		SetLightDifColorHandle(light_handle[i], GetColorF(original_dif_color.r, original_dif_color.g, original_dif_color.b, original_dif_color.a));
-		SetLightSpcColorHandle(light_handle[i], GetColorF(original_spc_color.r, original_spc_color.g, original_spc_color.b, original_spc_color.a));
-		SetLightAmbColorHandle(light_handle[i], GetColorF(original_amb_color.r, original_amb_color.g, original_amb_color.b, original_amb_color.a));
-		// SetLightRangeAttenHandle((light_handle[i], GetLightRangeAtten());
-		// ライトの有効、無効を設定する
-		SetLightEnableHandle(light_handle[i], TRUE);
+		SetLightDifColorHandle(light_handle[i], GetColorF(1.0f, 1.0f, 1.0f, 0.0f));
+	
 	}
 }
 
@@ -254,15 +253,28 @@ void GameScene::Light_Update()
 {
 	for (int i = 0; i < light_MAX; i++)
 	{
-		// ライトの座標設定
-		Vector3 light_pos(0.0f, 0.0f, 0.0f);
-		light_pos.set(camera[i]->m_pos.x, camera[i]->m_pos.y, camera[i]->m_pos.z);
-		SetLightPositionHandle(light_handle[i], light_pos.VGet());
-
-		// ライトの向き
-		Vector3 light_rot;
-		light_rot.set(camera[i]->m_rot.x, camera[i]->m_rot.y, camera[i]->m_rot.z);
+		/*SetLightPositionHandle(light_handle[i], light_pos.VGet());*/
+	
+		// 新たに追加したスポットライトの向きを変更しましす
 		SetLightDirectionHandle(light_handle[i], light_rot.VGet());
+		// 色を変更する場合
+		SetLightDifColorHandle(light_handle[i], GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
+		//	スポットライトの色の設定
+		SetLightDifColorHandle(light_handle[i],GetColorF(original_dif_color.r, original_dif_color.g, original_dif_color.b, 1.0f));
+		// 十字キーでライトの向きを変更
+		/*if (CheckHitKey(KEY_INPUT_RIGHT)) {
+			light_rot.x += 0.1f;
+		}
+		if (CheckHitKey(KEY_INPUT_LEFT)) {
+			light_rot.x -= 0.1f;
+		}
+		if (CheckHitKey(KEY_INPUT_UP)) {
+			light_rot.z += 0.1f;
+		}
+		if (CheckHitKey(KEY_INPUT_DOWN)) {
+			light_rot.z -= 0.1f;
+		}*/
+		
 	}
 
 }
@@ -473,15 +485,15 @@ void GameScene::Time_Update(int& time_count)
 //---------------------------------------------------------------------------
 void GameScene::Time_Draw()
 {
+	SetFontSize(100); // フォントサイズの変更
 	// 文字列の設定
 	const char* name = "[%02d]";
 	// 描画座標の定義
 	float w, h;
 	Draw_String_Size(&w, &h, name);
-
-	SetFontSize(28); // フォントサイズの変更
+	
 	// 描画
-	DrawFormatStringF(SCREEN_W / 2 - w / 2, h - 16, GetColor(255, 255, 0), name, time_count);
+	DrawFormatStringF(SCREEN_W / 2 - w / 2  + 50, h / 2, GetColor(255, 255, 0), name, time_count);
 	SetFontSize(18); // フォントサイズを戻す
 }
 
@@ -491,7 +503,7 @@ void GameScene::Time_Draw()
 void GameScene::Tutorial_Draw()
 {
 	int original_font_size = GetFontSize();
-	SetFontSize(28); // フォントサイズの変更
+	SetFontSize(55); // フォントサイズの変更
 	// 文字列の設定
 	const char* name = "チュートリアル";
 	// 描画座標の定義
@@ -516,9 +528,9 @@ void GameScene::Ready_Draw()
 	//=====================
 	{
 		//	準備オッケー用円の定数
-		const float CENTER_X = SCREEN_W / 2 - 100;		//	円の中心Ｘ座標
-		const float CENTER_Y = SCREEN_H - 100.0f;		//	Ｙ座標
-		const float RADIUS = 50.0f;			//	半径
+		const float CENTER_X = SCREEN_W / 2 - 150;		//	円の中心Ｘ座標
+		const float CENTER_Y = SCREEN_H - 150.0f;		//	Ｙ座標
+		const float RADIUS = 100.0f;			//	半径
 		//	線を上向きから開始したいので開始角度
 		const float OFFSET = -90.0f;
 		//	今のスピードが PLAYER_MOV_SPEED を最大としたときにどのくらいの割合か（ 0.0f ～ 1.0f ）
@@ -564,7 +576,7 @@ void GameScene::Ready_Draw()
 		// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
 		int original_font_size = GetFontSize();
 
-		SetFontSize(40); // フォントサイズの変更
+		SetFontSize(50); // フォントサイズの変更
 		if (ready_flag1) {
 			const char* name = "ready";
 			// 描画幅の取得
@@ -591,9 +603,9 @@ void GameScene::Ready_Draw()
 	//=====================
 	{
 		//	準備オッケー用円の定数
-		const float CENTER_X = SCREEN_W / 2 + 100;		//	円の中心Ｘ座標
-		const float CENTER_Y = SCREEN_H - 100.0f;		//	Ｙ座標
-		const float RADIUS = 50.0f;			//	半径
+		const float CENTER_X = SCREEN_W / 2 + 150;		//	円の中心Ｘ座標
+		const float CENTER_Y = SCREEN_H - 150.0f;		//	Ｙ座標
+		const float RADIUS = 100.0f;			//	半径
 		//	線を上向きから開始したいので開始角度
 		const float OFFSET = -90.0f;
 		//	今のスピードが PLAYER_MOV_SPEED を最大としたときにどのくらいの割合か（ 0.0f ～ 1.0f ）
@@ -640,7 +652,7 @@ void GameScene::Ready_Draw()
 		// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
 		int original_font_size = GetFontSize();
 
-		SetFontSize(40); // フォントサイズの変更
+		SetFontSize(50); // フォントサイズの変更
 		if (ready_flag2) {
 			{
 				const char* name = "ready";

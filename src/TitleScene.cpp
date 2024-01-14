@@ -140,7 +140,7 @@ void TiteleScene::Draw()
 	// 背景画像の描画
 	DrawExtendGraph(image_pos.x, image_pos.y,SCREEN_W,SCREEN_H, background_image, TRUE);
 	// ここでとってきた文字をセットしておく
-	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
+	// 文字の最初の大きさをとっておく
 	int original_font_size = GetFontSize();
 
 

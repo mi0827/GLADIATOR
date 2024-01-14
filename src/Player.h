@@ -146,7 +146,7 @@ public:
 	const int attack_damage[ATTACK_ANIM_MAX]
 	{
 		20,  // 遠距離攻撃
-		20,  // パンチ１
+		100,  // パンチ１
 		20,  // パンチ２
 		30,  // パンチ３
 		40,  // パンチ４

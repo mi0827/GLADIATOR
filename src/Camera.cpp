@@ -174,23 +174,39 @@ void Camera::Draw(int camera_No)
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	// PLAYER‚P‚©‚Q‚É‚æ‚Á‚ÄƒJƒƒ‰‚Ì•`‰æˆÊ’u‚ª•Ï‚í‚é
+	// •¶š‚ÌÅ‰‚Ì‘å‚«‚³‚ğ‚Æ‚Á‚Ä‚¨‚­
+	int original_font_size = GetFontSize();
+
+	SetFontSize(SCREEN_H / 23.0);
+
+	const char* player1 = "PLAYER 1 ";
+	// •`‰æ•‚Ìæ“¾
+	float player1_w = GetDrawStringWidth(player1, -1);
+	
+	const char* player2 = "PALYER 2 ";
+	// •`‰æ•‚Ìæ“¾
+	float player2_w = GetDrawStringWidth(player2, -1);
+
+	// •¶š—ñ‚Ì‚‚³æ“¾
+	float players_h = GetFontSize();
 
 	// ƒvƒŒƒCƒ„[‚P‚Ìê‡
 	if (camera_No == 0) {
 		// ‚RD‚ª•`‰æ‚³‚ê‚½‰æ‘œ‚ğ•`‰æ
 		DrawGraphF(m_field_pos.x, m_field_pos.y, m_screen_field, TRUE);
 		// ‚Ç‚Á‚¿‚Ì‰æ–Ê‚ªˆÚ‚Á‚Ä‚¢‚é‚Ì‚©‚ª‚í‚©‚é‚æ‚¤‚É
-		DrawString(16, 16, "PLAYER 1", GetColor(255, 255, 255));
+		DrawString(SCREEN_W / 50.0, SCREEN_H / 20.0 - players_h, player1, GetColor(255, 255, 255));
 		// ‰æ‘œ‚ª‚í‚©‚è‚â‚·‚¢‚æ‚¤‚É
 		DrawLineBox(m_field_pos.x, m_field_pos.y, m_field_pos.x + m_field_size.x, m_field_pos.y + m_field_size.y, GetColor(255, 255, 255));
 
 	}
 	// ƒvƒŒƒCƒ„[‚Q‚Ìê‡
 	else {
+		int player2_x = /*SCREEN_W / 50.0 +*/ SCREEN_W / 1.3 + player2_w;
 		// ‚RD‚ª•`‰æ‚³‚ê‚½‰æ‘œ‚ğ•`‰æ
 		DrawGraphF(m_field_pos.x + m_field_size.x, m_field_pos.y, m_screen_field, TRUE);
 		// ‚Ç‚Á‚¿‚Ì‰æ–Ê‚ªˆÚ‚Á‚Ä‚¢‚é‚Ì‚©‚ª‚í‚©‚é‚æ‚¤‚É
-		DrawString(SCREEN_W / 2 + 300, 16, "PLAYER 2", GetColor(255, 255, 255));
+		DrawString(player2_x, SCREEN_H / 20.0 - players_h, player2, GetColor(255, 255, 255));
 		// ‰æ‘œ‚ª‚í‚©‚è‚â‚·‚¢‚æ‚¤‚É
 		DrawLineBox(m_field_pos.x + m_field_size.x, m_field_pos.y, m_field_pos.x + m_field_size.x * 2, m_field_pos.y + m_field_size.y, GetColor(0, 255, 255));
 	}

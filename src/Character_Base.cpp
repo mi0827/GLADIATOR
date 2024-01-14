@@ -9,6 +9,16 @@
 const int MAX_ = 3;
 CharacterBase::CharacterBase()
 {
+	// HP
+	m_hp_pos.set(SCREEN_W / 50.0, SCREEN_H / 20.0);           // HPバーの描画位置初期化
+	m_hp_count.set(HP_MAX, m_hp_pos.y + STATUS_BAR_SIZE);   // HPの計算用の初期化
+	m_now_hp = HP_MAX;                    // 最初は体力マックス      
+	// SP
+	m_sp_pos.set(SCREEN_W /50.0, SCREEN_H / 1.3);		   	 // SPのクールダウンバーの描画位置初期化
+	m_sp_count.set(0, m_sp_pos.y + STATUS_BAR_SIZE); // SPのクールダウンバーの計算用の初期化
+	// スキル
+	m_skill_pos.set(SCREEN_W / 50.0, SCREEN_H / 1.1);			    // スキルのクールダウンバーの描画位置初期化
+	m_skill_count.set(0, m_skill_pos.y + STATUS_BAR_SIZE);// スキルのクールダウンバーの計算用の初期化
 
 }
 
@@ -31,7 +41,7 @@ void CharacterBase::Update_Status()
 	}
 	// スキルポイントがたまったら
 	if (m_skill_count.x >= SKILL_POINT_MAX) {
-		m_skill_count.x = SKILL_POINT_MAX;
+		m_skill_count.x  = SKILL_POINT_MAX;
 		skill_flag = true; // スキルを使用できるようにする
 	}
 	m_now_skill = m_skill_count.x; // わかりやすくするために入れる
@@ -67,44 +77,52 @@ void CharacterBase::Reset_Status()
 //---------------------------------------------------------------------------
 void CharacterBase::Draw_Status(int i)
 {
-	int hp_x =  30 + HP_MAX ;
-	int skill_x =  230 + SKILL_POINT_MAX;
-	int sp_x =  180 + SP_POINT_MAX;
+	// 文字の最初の大きさをとっておく
+	int original_font_size = GetFontSize();
+	SetFontSize(SCREEN_H / 27);
+	int hp_x    = SCREEN_W / 10.5 + HP_MAX;
+	int skill_x = SCREEN_W / 3.3  + SKILL_POINT_MAX;
+	int sp_x    = SCREEN_W / 4.0  + SP_POINT_MAX;
+	const char* skill = "スキル";
+	// 描画幅の取得
+	float skill_w = GetDrawStringWidth(skill, -1);
+	const char* sp = "SP";
+	// 描画幅の取得
+	float sp_w = GetDrawStringWidth(sp, -1);
+
 	// HPバーの描画
 	if (i == 0) {
 		// SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); // 描画するものを半透明にする
-		DrawBox(m_hp_pos.x , m_hp_pos.y, (m_hp_pos.x  + m_hp_count.x), m_hp_count.y, GetColor(0, 255, 0), TRUE);                // 本体バー
-		DrawBox((m_hp_pos.x + m_hp_count.x), m_hp_count.y, (HP_MAX  + m_hp_pos.x), m_hp_pos.y, GetColor(255, 20, 20), TRUE);    // 余白バー
-		DrawLineBox(m_hp_pos.x , m_hp_pos.y, HP_MAX + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));                               // 外枠
+		DrawBox(    m_hp_pos.x ,                m_hp_pos.y,   (m_hp_pos.x + m_hp_count.x), m_hp_count.y, GetColor(  0, 255,   0), TRUE); // 本体バー
+		DrawBox(   (m_hp_pos.x + m_hp_count.x), m_hp_count.y, (HP_MAX + m_hp_pos.x),       m_hp_pos.y,   GetColor(255,  20,  20), TRUE); // 余白バー
+		DrawLineBox(m_hp_pos.x ,                m_hp_pos.y,    HP_MAX + m_hp_pos.x,        m_hp_count.y, GetColor(255, 255, 255));               // 外枠
 		// スキルクールダウンバーの描画
-		DrawString(m_skill_pos.x, m_skill_pos.y - 16, "スキル", GetColor(255, 255, 255));
-		DrawBox(m_skill_pos.x , m_skill_pos.y, (m_skill_pos.x + + m_skill_count.x), m_skill_count.y, GetColor(0, 191, 255), TRUE);                       // 本体バー
-		DrawBox((m_skill_pos.x + m_skill_count.x), m_skill_count.y, (SKILL_POINT_MAX +  + m_skill_pos.x), m_skill_pos.y, GetColor(105, 105, 105), TRUE); // 余白バー
-		DrawLineBox(m_skill_pos.x  , m_skill_pos.y, SKILL_POINT_MAX   + m_skill_pos.x, m_skill_count.y, GetColor(255, 255, 255));			                        // 外枠
+		DrawString(m_skill_pos.x, m_skill_pos.y - SCREEN_H / 27, skill, GetColor(255, 255, 255));
+		DrawBox(    m_skill_pos.x ,                   m_skill_pos.y,   (m_skill_pos.x + m_skill_count.x),    m_skill_count.y, GetColor(  0, 191, 255), TRUE); // 本体バー
+		DrawBox(   (m_skill_pos.x + m_skill_count.x), m_skill_count.y, (SKILL_POINT_MAX +  + m_skill_pos.x), m_skill_pos.y,   GetColor(105, 105, 105), TRUE); // 余白バー
+		DrawLineBox(m_skill_pos.x ,                   m_skill_pos.y,    SKILL_POINT_MAX   + m_skill_pos.x,   m_skill_count.y, GetColor(255, 255, 255));			    // 外枠
 		// SPバーの描画
-		DrawString(m_sp_pos.x, m_sp_pos.y - 16, "SP", GetColor(255, 255, 255));
-		DrawBox(m_sp_pos.x , m_sp_pos.y, (m_sp_pos.x  + m_sp_count.x), m_sp_count.y, GetColor(255, 215, 0), TRUE);                    // 本体バー
-		DrawBox((m_sp_pos.x  + m_sp_count.x), m_sp_count.y, (SP_POINT_MAX  + m_sp_pos.x), m_sp_pos.y, GetColor(105, 105, 105), TRUE); // 余白バー
-		DrawLineBox(m_sp_pos.x , m_sp_pos.y, (SP_POINT_MAX  + m_sp_pos.x), m_sp_count.y, GetColor(255, 255, 255));		                      // 外枠
+		DrawString(     m_sp_pos.x , m_sp_pos.y - SCREEN_H / 27, sp, GetColor(255, 255, 255));
+		DrawBox(    m_sp_pos.x ,                 m_sp_pos.y,   (m_sp_pos.x  + m_sp_count.x), m_sp_count.y, GetColor(255, 215,   0), TRUE); // 本体バー
+		DrawBox((   m_sp_pos.x  + m_sp_count.x), m_sp_count.y, (SP_POINT_MAX + m_sp_pos.x),  m_sp_pos.y,   GetColor(105, 105, 105), TRUE); // 余白バー
+		DrawLineBox(m_sp_pos.x ,                 m_sp_pos.y,   (SP_POINT_MAX + m_sp_pos.x),  m_sp_count.y, GetColor(255, 255, 255));		         // 外枠
 	}
 	else {
-		
-		
-		DrawBox((m_hp_pos.x + hp_x - HP_MAX), m_hp_count.y, ( hp_x  + 20 - m_hp_pos.x), m_hp_pos.y, GetColor(255, 20, 20), TRUE);             // 余白バー
-		DrawBox(m_hp_pos.x + hp_x, m_hp_pos.y, (m_hp_pos.x + hp_x - m_hp_count.x), m_hp_count.y, GetColor(0, 255, 0), TRUE);                // 本体バー
-		DrawLineBox(m_hp_pos.x + hp_x - HP_MAX, m_hp_pos.y,  hp_x + m_hp_pos.x, m_hp_count.y, GetColor(255, 255, 255));                              // 外枠
+		DrawBox(   (m_hp_pos.x + hp_x - HP_MAX), m_hp_count.y,   (hp_x + m_hp_pos.x),               m_hp_pos.y,   GetColor(255, 20,   20), TRUE); // 余白バー
+		DrawBox(    m_hp_pos.x + hp_x,           m_hp_pos.y,     (m_hp_pos.x + hp_x - m_hp_count.x),m_hp_count.y, GetColor(  0, 255,   0), TRUE); // 本体バー
+		DrawLineBox(m_hp_pos.x + hp_x - HP_MAX,  m_hp_pos.y,      hp_x + m_hp_pos.x,                m_hp_count.y, GetColor(255, 255, 255));               // 外枠
 		// スキルクールダウンバーの描画
-		DrawString(m_skill_pos.x + skill_x- 50, m_skill_pos.y - 16, "スキル", GetColor(255, 255, 255));
-		DrawBox(m_skill_pos.x + skill_x, m_skill_pos.y, (m_skill_pos.x + skill_x - m_skill_count.x), m_skill_count.y, GetColor(0, 191, 255), TRUE);                       // 本体バー
-		DrawBox((m_skill_pos.x + skill_x - SKILL_POINT_MAX ), m_skill_count.y, ( skill_x + 10 - m_skill_count.x), m_skill_pos.y, GetColor(105, 105, 105), TRUE); // 余白バー
-		DrawLineBox((m_skill_pos.x + skill_x - SKILL_POINT_MAX), m_skill_pos.y,   skill_x + m_skill_pos.x, m_skill_count.y, GetColor(255, 255, 255));			                        // 外枠
+		DrawString(      m_skill_pos.x + skill_x - skill_w, m_skill_pos.y - SCREEN_H / 27, skill, GetColor(255, 255, 255));
+		DrawBox(     m_skill_pos.x + skill_x,                     m_skill_pos.y,   (m_skill_pos.x + skill_x - m_skill_count.x), m_skill_count.y, GetColor(  0, 191, 255), TRUE); // 本体バー
+		DrawBox((    m_skill_pos.x + skill_x - SKILL_POINT_MAX ), m_skill_count.y, (m_skill_pos.x + skill_x - m_skill_count.x), m_skill_pos.y,   GetColor(105, 105, 105), TRUE); // 余白バー
+		DrawLineBox((m_skill_pos.x + skill_x - SKILL_POINT_MAX),  m_skill_pos.y,    skill_x + m_skill_pos.x,                    m_skill_count.y, GetColor(255, 255, 255));			       // 外枠
 		// SPバーの描画
-		DrawString(m_sp_pos.x + sp_x -20, m_sp_pos.y - 16, "SP", GetColor(255, 255, 255));
-		DrawBox(m_sp_pos.x + sp_x, m_sp_pos.y, (m_sp_pos.x + sp_x - m_sp_count.x), m_sp_count.y, GetColor(255, 215, 0), TRUE);                    // 本体バー
-		DrawBox((m_sp_pos.x + sp_x - SP_POINT_MAX), m_sp_count.y, ( sp_x + 10 - m_sp_count.x), m_sp_pos.y, GetColor(105, 105, 105), TRUE); // 余白バー
-		DrawLineBox(m_sp_pos.x + sp_x - SP_POINT_MAX, m_sp_pos.y, ( sp_x + m_sp_pos.x), m_sp_count.y, GetColor(255, 255, 255));		                      // 外枠
+		DrawString(     m_sp_pos.x + sp_x - sp_w , m_sp_pos.y - SCREEN_H / 27, sp, GetColor(255, 255, 255));
+		DrawBox(   (m_sp_pos.x + sp_x - SP_POINT_MAX), m_sp_count.y, (m_sp_pos.x + sp_x - m_sp_count.x), m_sp_pos.y,   GetColor(105, 105, 105), TRUE);  // 余白バー
+		DrawBox(    m_sp_pos.x + sp_x,                 m_sp_pos.y,   (m_sp_pos.x + sp_x - m_sp_count.x), m_sp_count.y, GetColor(255, 215,   0), TRUE);  // 本体バー
+		DrawLineBox(m_sp_pos.x + sp_x - SP_POINT_MAX,  m_sp_pos.y,   (sp_x + m_sp_pos.x),                m_sp_count.y, GetColor(255, 255, 255));		          // 外枠
 	}
-	
+	SetFontSize(original_font_size);
 }
 
 //---------------------------------------------------------------------------
@@ -138,8 +156,6 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 		GetJoypadXInputState(DX_INPUT_PAD4, &input);
 		break;
 	}
-
-
 
 	// 左スティックの値を設定
 	mov.x = input.ThumbLX;
@@ -335,18 +351,18 @@ void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX, int index)
 void CharacterBase::Attack_Action(int index)
 {
 	//// アニメーションの再生
- //   // 使いたくないアニメーション
+    // 使いたくないアニメーション
 	//if (anim_num == 0) {
 
 	//	anim_rate[0] = 1.0f; // 割合を減らす
 	//	anim_rate[1] = 0.0f;
 	//}
-	//else {// 使いたいアニメーション		
+	//  else {// 使いたいアニメーション		
 	//	anim_rate[0] = 0.0f; // 割合を減らす
 	//	anim_rate[1] = 1.0f;
 	//}
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
-	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, index, attack_anim_model[attack_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
+	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, index, attack_anim_model[attack_anim_pick]); // 使いたいアニメーションをモデルにつけなおす
 	attack_flag = true; // 攻撃中にする
 }
 
@@ -356,11 +372,11 @@ void CharacterBase::Attack_Action(int index)
 //---------------------------------------------------------------------------
 void CharacterBase::Damage_Anim_New(int DAMAGE_ANIM_MAX)
 {
-	damage_anim_model = new int[DAMAGE_ANIM_MAX];   // アニメーションモデル
-	damage_anim_attach = new int[DAMAGE_ANIM_MAX];  // アタッチ用変数
-	damage_anim_total = new float[DAMAGE_ANIM_MAX]; // アニメーションが何フレームあるか
-	damage_anim_rate = new float[DAMAGE_ANIM_MAX];  // アニメーションのブレンド率
-	damage_anim_frame = new float[DAMAGE_ANIM_MAX]; // アニメーションの進めるフレーム
+	damage_anim_model  = new int[DAMAGE_ANIM_MAX];   // アニメーションモデル
+	damage_anim_attach = new int[DAMAGE_ANIM_MAX];   // アタッチ用変数
+	damage_anim_total  = new float[DAMAGE_ANIM_MAX]; // アニメーションが何フレームあるか
+	damage_anim_rate   = new float[DAMAGE_ANIM_MAX]; // アニメーションのブレンド率
+	damage_anim_frame  = new float[DAMAGE_ANIM_MAX]; // アニメーションの進めるフレーム
 	// アニメーションが何フレーム進んでいるか用の変数
 	// 最初は０から開始
 	for (int i = 0; i < DAMAGE_ANIM_MAX; i++)
@@ -397,11 +413,11 @@ void CharacterBase::Damage_Action(int index)
 //---------------------------------------------------------------------------
 void CharacterBase::Block_Anim_New(int BLOCK_ANIM_MAX)
 {
-	block_anim_model = new int[BLOCK_ANIM_MAX];   // アニメーションモデル
-	block_anim_attach = new int[BLOCK_ANIM_MAX];  // アタッチ用変数
-	block_anim_total = new float[BLOCK_ANIM_MAX]; // アニメーションが何フレームあるか
-	block_anim_rate = new float[BLOCK_ANIM_MAX];  // アニメーションのブレンド率
-	block_anim_frame = new float[BLOCK_ANIM_MAX]; // アニメーションの進めるフレーム
+	block_anim_model  = new int[BLOCK_ANIM_MAX];   // アニメーションモデル
+	block_anim_attach = new int[BLOCK_ANIM_MAX];   // アタッチ用変数
+	block_anim_total  = new float[BLOCK_ANIM_MAX]; // アニメーションが何フレームあるか
+	block_anim_rate   = new float[BLOCK_ANIM_MAX]; // アニメーションのブレンド率
+	block_anim_frame  = new float[BLOCK_ANIM_MAX]; // アニメーションの進めるフレーム
 	// アニメーションが何フレーム進んでいるか用の変数
 	// 最初は０から開始
 	for (int i = 0; i < BLOCK_ANIM_MAX; i++)
@@ -416,9 +432,11 @@ void CharacterBase::Block_Anim_Init(int BLOCK_ANIM_MAX, int index)
 {
 	for (int i = 0; i < BLOCK_ANIM_MAX; i++)
 	{
-		block_anim_attach[i] = MV1AttachAnim(m_model, index, block_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
-		block_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, block_anim_attach[i]);         // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+
+		block_anim_attach[i] = MV1AttachAnim(m_model, index, block_anim_model[i]);   // モデルにアニメーションをアタッチ（つける）する
+		block_anim_total[i] =  MV1GetAttachAnimTotalTime(m_model, block_anim_attach[i]);        // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
 		block_anim_attach[i] = MV1DetachAnim(m_model, block_anim_attach[i]);                    // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+	
 	}
 }
 //---------------------------------------------------------------------------
@@ -427,7 +445,7 @@ void CharacterBase::Block_Anim_Init(int BLOCK_ANIM_MAX, int index)
 void CharacterBase::Block_Action(int index)
 {
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
-	block_anim_attach[block_anim_pick] = MV1AttachAnim(m_model, index, block_anim_model[block_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
+	block_anim_attach[block_anim_pick] = MV1AttachAnim(m_model, index, block_anim_model[block_anim_pick]); // 使いたいアニメーションをモデルにつけなおす
 	block_flag = true; // 防御フラグを上げる
 }
 
@@ -476,8 +494,10 @@ void CharacterBase::Get_other(float* hit_other_x, float* hit_other_z, float* hit
 //---------------------------------------------------------------------------
 void CharacterBase::Get_other(Vector3* hit_other_pos, Vector3* hit_other_size)
 {
+
 	m_hit_other_pos = *hit_other_pos;   // 座標
 	m_hit_other_size = *hit_other_size; // サイズ
+
 }
 
 //---------------------------------------------------------------------------
