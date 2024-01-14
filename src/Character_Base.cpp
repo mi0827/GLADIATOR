@@ -37,7 +37,7 @@ void CharacterBase::Update_Status()
 	skill_flame_count++; // フレームカウントを増やす
 	// スキルクールダウンのカウントを増やす
 	if (skill_flame_count % 60 == 0) {
-		m_skill_count.x += 10;
+		m_skill_count.x += 30;
 	}
 	// スキルポイントがたまったら
 	if (m_skill_count.x >= SKILL_POINT_MAX) {
@@ -50,7 +50,7 @@ void CharacterBase::Update_Status()
 	// SPクールダウンのカウントを増やす
 	if (sp_flame_count % 60 == 0) {
 		// SPバーのカウントを増やす
-		m_sp_count.x += 10;
+		m_sp_count.x += 400;
 	}
 
 	// SPポイントがたまったら

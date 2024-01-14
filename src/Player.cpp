@@ -49,7 +49,7 @@ Player::Player()
 	m_move_judge = false;                              // 最初は動いてはいけない
 	attack_flag = false;                               // 攻撃していない
 	bead_hit_flag = false;                             // なににもあたってない
-
+	lifespan_count = NULL;
 	
 
 	combo_flag = false; // 攻撃を何もしていないのでフラグをげる
@@ -256,6 +256,7 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 				attack_flag = false;                                                                                                    // 攻撃が終わったのでこうげきしていないようにする
 				attack_anim_pick = ATTACK_ANIM_MAX;                                                                                     // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 				combo_flag = false;                                                                                                     // コンボフラグを下げる
+				bead_pos = m_pos;                                        
 			}
 		}
 		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
@@ -452,14 +453,13 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// マウスの右クリック、または、Bボタンで遠距離攻撃
 	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_B, pad_no)) {
 		//if (IsPadRepeat(PAD_ID::PAD_Y, PAD_NO::PAD_NO1)) {
-		m_effect_handle[THROW_EFFECT] = PlayEffekseer3DEffect(m_effect_container[THROW_EFFECT]); // エフェクトの再生
-		SetRotationPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
-		SetSpeedPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], 1.9);            // エフェクトの再生速度
+	
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
 		bead_hit_flag = false;
 		CharacterBase::Attack_Action(1);       // 行いたい攻撃アニメーションをセット	
 		action_flag = true;                          // アクションフラグを上げる
+		lifespan_count = NULL;
 	}
 
 	//=================================
@@ -494,9 +494,10 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 必殺攻撃アクションを設定
 			CharacterBase::Attack_Action(1);   // 行いたい攻撃アニメーションをセット
-			bead_hit_flag = false;
+			// bead_hit_flag = false;
 			action_flag = true;                      // アクションフラグを上げる
 			sp_flag = false;                         // SPを使用済みにしておく
+			lifespan_count = NULL;
 		}
 	}
 
@@ -524,44 +525,43 @@ void Player::Attack_Update()
 	{
 	case ATTACK_LONG_NORMAL_ANIM: // 遠距離攻撃（弾を出す）
 
-		// カウントがからだったら
-		if (lifespan_count == NULL) {
-			lifespan_count = 120.0f; // カウントのセット
+		if (attack_anim_frame[attack_anim_pick] >= 30) {
+			if (attack_anim_frame[attack_anim_pick] <= 30+ ATTACK_ANIM_SPEED) {
+				m_effect_handle[THROW_EFFECT] = PlayEffekseer3DEffect(m_effect_container[THROW_EFFECT]); // エフェクトの再生
+				SetRotationPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
+				SetSpeedPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], 1.9);            // エフェクトの再生速度
+				bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
+				bead_pos.y += 10.0f; // y座標をずらして空中に浮かべる
+				bead_r = 2.0f;// 半径の設定
+				bead_hit_flag = false;
+			}
+			
+
+			// 一旦前に飛ばす
+			bead_pos.x += 3 * sinf(TO_RADIAN(m_rot.y));
+			bead_pos.z += 3 * cosf(TO_RADIAN(m_rot.y));
+			lifespan_count -= ATTACK_ANIM_SPEED; // 弾が消えるまでのカウントを進める
+
+			now_hit_area = &hit_areas[THROW_ATTACK_HIT];
+
+			cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
+
+			// 当たり判定を見えるようにする物
+			// 向いている方向に座標を設定（今はパンチに位置）
+			m_hit_cd_pos_top.set(bead_pos.x, bead_pos.y, bead_pos.z);
+			m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y, bead_pos.z);
+			m_hit_cd_r = now_hit_area->hit_r;
+
+			// カウントが一定にまで減るか、当たり判定があったら
+			if (attack_anim_frame[attack_anim_pick] >= attack_anim_total[attack_anim_pick] - 30 /*lifespan_count <= 0*/ || bead_hit_flag) {
+				bead_hit_flag = true;   // 弾が何かに当たったか消えたので判定をリセット
+				attack_flag = false;    // 攻撃を終わらせておく
+				cd_hit_flag = false;    //< 当たり判定をしてほしくないのでフラグを下す
+			}
+
+			// エフェクトの座標を設定
+			SetPosPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], bead_pos.x, bead_pos.y, bead_pos.z);
 		}
-
-		// 弾用の変数
-		if (lifespan_count >= 120.0f) {
-
-			bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
-			bead_pos.y += 10.0f; // y座標をずらして空中に浮かべる
-			bead_r = 2.0f;        // 半径の設定
-		}
-
-		// 一旦前に飛ばす
-		bead_pos.x += 3 * sinf(TO_RADIAN(m_rot.y));
-		bead_pos.z += 3 * cosf(TO_RADIAN(m_rot.y));
-		lifespan_count -= ATTACK_ANIM_SPEED; // 弾が消えるまでのカウントを進める
-
-		now_hit_area = &hit_areas[THROW_ATTACK_HIT];
-
-		cd_hit_flag = true; //< 当たり判定を行っていい用にフラグを立てる
-
-		// 当たり判定を見えるようにする物
-		// 向いている方向に座標を設定（今はパンチに位置）
-		m_hit_cd_pos_top.set(bead_pos.x, bead_pos.y, bead_pos.z);
-		m_hit_cd_pos_under.set(bead_pos.x, bead_pos.y, bead_pos.z);
-		m_hit_cd_r = now_hit_area->hit_r;
-
-		// カウントが一定にまで減るか、当たり判定があったら
-		if (lifespan_count <= 0 || bead_hit_flag) {
-			lifespan_count = NULL;  // 次のために空にしておく
-			bead_hit_flag = true;   // 弾が何かに当たったか消えたので判定をリセット
-			attack_flag = false;    // 攻撃を終わらせておく
-			cd_hit_flag = false;    //< 当たり判定をしてほしくないのでフラグを下す
-		}
-
-		// エフェクトの座標を設定
-		SetPosPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], bead_pos.x, bead_pos.y, bead_pos.z);
 		break;
 
 	case ATTACK_PUNCH_1_ANIM: // パンチ通攻撃１ 
@@ -737,14 +737,16 @@ void Player::Attack_Update()
 		// カウントがからだったら
 		if (lifespan_count == NULL) {
 			lifespan_count = 240.0f; // カウントのセット
+			
 		}
 		// 弾用の変数
 		if (lifespan_count >= 240.0f) {
 
-			bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
+		//	bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
 			// 座標の設定
 			bead_pos.set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 300, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
 			bead_r = 100.0f;        // 半径の設定
+			bead_hit_flag = false;
 		}
 		bead_pos.y--;
 		lifespan_count--; // 弾が消えるまでのカウントを進める
