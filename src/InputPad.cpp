@@ -106,6 +106,12 @@ void InputPadUpdate()
 
 }
 
+// パッドの振動用関数（自作＊pad_noはDXライブラリー側のパッドナンバーを入れる）
+void PadVidation(int inputType, int power, int time, int motor)
+{
+	StartJoypadVibration(inputType, power, time, motor);
+}
+
 void InputPadRender()
 {
 	//for (int i = 0; i < MAX_PAD_NUM; ++i)

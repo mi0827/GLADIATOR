@@ -58,8 +58,9 @@ void GameScene::Init()
 	players[0]->Init(0);
 	players[1]->Init(1);
 	// ゲームパッドの設定
-	players[0]->SetPadNo(PAD_NO::PAD_NO1);//DX_INPUT_PAD1);
-	players[1]->SetPadNo(PAD_NO::PAD_NO2);//DX_INPUT_PAD2);
+	players[0]->SetPadNo(PAD_NO::PAD_NO1, DX_INPUT_PAD1);//DX_INPUT_PAD1);
+
+	players[1]->SetPadNo(PAD_NO::PAD_NO2, DX_INPUT_PAD2);//DX_INPUT_PAD2);
 
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		camera[i]->PlayField_Init();
@@ -88,7 +89,7 @@ void GameScene::Init()
 void GameScene::Update(int bgm_volume, int se_volume)
 {
 
-	
+
 	int light_num = 0;
 	light_num = GetEnableLightHandleNum();
 
@@ -242,7 +243,7 @@ void GameScene::Light_Init()
 		SetLightDirectionHandle(light_handle[i], light_rot.VGet());
 		// ライトの色の変更
 		SetLightDifColorHandle(light_handle[i], GetColorF(1.0f, 1.0f, 1.0f, 0.0f));
-	
+
 	}
 }
 
@@ -254,13 +255,13 @@ void GameScene::Light_Update()
 	for (int i = 0; i < light_MAX; i++)
 	{
 		/*SetLightPositionHandle(light_handle[i], light_pos.VGet());*/
-	
+
 		// 新たに追加したスポットライトの向きを変更しましす
 		SetLightDirectionHandle(light_handle[i], light_rot.VGet());
 		// 色を変更する場合
 		SetLightDifColorHandle(light_handle[i], GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
 		//	スポットライトの色の設定
-		SetLightDifColorHandle(light_handle[i],GetColorF(original_dif_color.r, original_dif_color.g, original_dif_color.b, 1.0f));
+		SetLightDifColorHandle(light_handle[i], GetColorF(original_dif_color.r, original_dif_color.g, original_dif_color.b, 1.0f));
 		// 十字キーでライトの向きを変更
 		/*if (CheckHitKey(KEY_INPUT_RIGHT)) {
 			light_rot.x += 0.1f;
@@ -274,7 +275,7 @@ void GameScene::Light_Update()
 		if (CheckHitKey(KEY_INPUT_DOWN)) {
 			light_rot.z -= 0.1f;
 		}*/
-		
+
 	}
 
 }
@@ -491,9 +492,9 @@ void GameScene::Time_Draw()
 	// 描画座標の定義
 	float w, h;
 	Draw_String_Size(&w, &h, name);
-	
+
 	// 描画
-	DrawFormatStringF(SCREEN_W / 2 - w / 2  + 50, h / 2, GetColor(255, 255, 0), name, time_count);
+	DrawFormatStringF(SCREEN_W / 2 - w / 2 + 50, h / 2, GetColor(255, 255, 0), name, time_count);
 	SetFontSize(18); // フォントサイズを戻す
 }
 
@@ -778,6 +779,7 @@ void GameScene::Attack_Hit(int player1, int player2)
 				players[player2]->Damage_Update(&players[player1]->m_attack_damage[players[player1]->attack_anim_pick]);
 				players[player2]->damage_flag = true; // ダメージを食らってるようにする
 				hit_stop.Stop_Count_Reset(); // ヒットストップをさせる
+				PadVidation(players[player2]->pad_input, 1000, 600, -1);
 			}
 		}
 	}

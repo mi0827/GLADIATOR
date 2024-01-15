@@ -2,7 +2,7 @@
 #include "Vector3.h"
 #include "Vector2.h"
 #include "Base.h"
-
+#include "InputPad.h"
 #include "Character_Base.h"
 
 

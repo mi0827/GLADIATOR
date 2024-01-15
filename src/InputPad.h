@@ -136,9 +136,16 @@ float GetPadInputAnalogRX(int pad_no = 1);
 float GetPadInputAnalogRY(int pad_no = 1);
 
 
-
+// パッドの振動用関数
+// 引数
+// １：どのパッドを振動させるか
+// ２：振動の強さ
+// ３：振動させる時間
+// ４：振動させるモーターの番号（-1で自動処理）
+void PadVidation(int inputType, int power, int time, int motor);
 
 // Debug
 void InputPadRender();
 
 //@}
+

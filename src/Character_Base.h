@@ -119,13 +119,15 @@ public:
 	//---------------
 public:
 	// ゲームパッド用の変数
-	int pad_input;
+	int pad_input = 0;
 
 	PAD_NO pad_no = PAD_NO::PAD_NO1;				// 何番のパッドを使っているのか
 	// ゲームパッドの番号をセットする
-	void SetPadNo(PAD_NO no)
+	// DXライブラリー側でのパッドの番号も取得
+	void SetPadNo(PAD_NO no,int dx_no)
 	{
 		pad_no = no;
+		pad_input = dx_no;
 	}
 	// ゲームパッドの番号をとってくる
 	PAD_NO GetPadNo() const
@@ -133,7 +135,7 @@ public:
 		return pad_no;
 	}
 
-
+	
 protected:
 
 	//---------------------------------------------------------------------------

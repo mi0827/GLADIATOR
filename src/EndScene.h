@@ -15,6 +15,9 @@ public:
 	// 終了処理
 	void Exit()override;
 
+	// BGMの初期処理
+	void BGM_Init();
+
 public:
 	int background_image; // 背景画像用の
 	Vector2 image_pos;    // 画像用の描画座標
@@ -25,4 +28,13 @@ public:
 	// フォントデータ用
 	int GTA_font_data; // GTAのフォントデータ用の変数
 	LPCSTR GTA_font_path;
+
+
+	enum BGM
+	{
+
+		BGM_1, // 一つ目のbgm
+
+		BGM_MAX // bgmの最大数
+	};
 };

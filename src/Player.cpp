@@ -4,6 +4,7 @@
 #include "Vector2.h"
 #include "SE.h"
 #include "Base.h"
+#include "InputPad.h"
 #include "Character_Base.h"
 #include "Effect.h"
 #include "Player.h"
@@ -456,7 +457,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
-		bead_hit_flag = false;
+		//bead_hit_flag = false;
 		CharacterBase::Attack_Action(1);       // 行いたい攻撃アニメーションをセット	
 		action_flag = true;                          // アクションフラグを上げる
 		lifespan_count = NULL;

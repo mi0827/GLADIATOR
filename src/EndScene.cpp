@@ -5,6 +5,7 @@
 #include "Scene_Base.h"
 #include "EndScene.h"
 
+BGM end_bgm;
 
 const int End_Time_MAX = 3;  // エンド描画時間(今だけ3秒)
 //------------------------------------------
@@ -21,6 +22,7 @@ void EndScene::Init()
 
 	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
 
+
 	// フォントデータの読み込み
 	//GTA_font_data = LoadFontDataToHandle("Data/Font/Gta/GTA.dft", 1.0f);
 	GTA_font_path = "Data/Font/Gta/pricedown bl.ttf"; // 読み込むフォントファイルのパス
@@ -31,6 +33,10 @@ void EndScene::Init()
 		MessageBox(NULL, "フォント読込失敗", "", MB_OK);
 	}
 	ChangeFont("Pricedown Bl", DX_CHARSET_DEFAULT);
+
+	// BGMの設定
+	BGM_Init();
+
 }
 
 //------------------------------------------
@@ -38,6 +44,9 @@ void EndScene::Init()
 //------------------------------------------
 void EndScene::Update(int bgm_volume, int se_volume)
 {
+	// BGMの音量の調整
+	end_bgm.BGM_ChangeVolume(bgm_volume, BGM_MAX);
+
 	count_flame--; // フレームのカウントを減らす
 	if (count_flame <= 0) { // フレームが設定された値以上になったら
 		count_flame = FLAME_MAX; // フレームカウントをリセット
@@ -47,6 +56,8 @@ void EndScene::Update(int bgm_volume, int se_volume)
 	if (count_time <= 0) // タイトル画面で10秒経ったら
 	{
 		scene_change_judge = true; // シーンの切り替えを許可する
+		// BGMの再生を止める
+		end_bgm.Stop_BGM(BGM_1);
 	}
 }
 
@@ -99,4 +110,18 @@ void EndScene::Exit()
 		MessageBox(NULL, "remove failure", "", MB_OK);
 	}
 	ChangeFont("ＭＳ 明朝", DX_CHARSET_DEFAULT);
+}
+
+//------------------------------------------
+// BGMの初期処理
+//------------------------------------------
+void EndScene::BGM_Init()
+{
+	// BGM用の配列の用意
+	end_bgm.BGM_ContainerNew(BGM_MAX);
+	// BGMの読み込み
+	end_bgm.Load_BGM("Data/BGM/End/end.mp3", BGM_1);
+
+	// 流したいBGMを再生する
+	end_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, BGM_1);
 }

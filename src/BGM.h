@@ -25,6 +25,7 @@ public:
 	// DX_PLAYTYPE_BACK　　 : バックグラウンド再生
 	// DX_PLAYTYPE_LOOP　　 : ループ再生
 	// ２：再生後再生位置をデータの先頭に移動するかどうか
+	// ３：何番目のBGMを再生するか
 	void Play_BGM( int type, bool loop, int No);
 
 	// BGMのボリューム調整用の関数
