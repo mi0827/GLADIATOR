@@ -69,6 +69,7 @@ void TiteleScene::Update(int bgm_volume, int se_volume)
 		if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_A) {
 			// Aボタンを押されたら次のシーンに移動
 			start_flag = true;
+
 		}
 		else if (GetJoypadInputState(DX_INPUT_PAD2) & PAD_INPUT_A) {
 			// Aボタンを押されたら次のシーンに移動

@@ -297,6 +297,7 @@ void GameScene::Tutorial_Update()
 				// SEの再生
 				se_game.Play_SE(READY, DX_PLAYTYPE_BACK, true);
 			}
+			PadVidation(players[0]->pad_input, 1000, 300, -1);
 		}
 	}
 	else {
@@ -318,6 +319,7 @@ void GameScene::Tutorial_Update()
 				// SEの再生
 				se_game.Play_SE(READY, DX_PLAYTYPE_BACK, true);
 			}
+			PadVidation(players[1]->pad_input, 1000, 300, -1);
 		}
 	}
 	else {
@@ -779,7 +781,8 @@ void GameScene::Attack_Hit(int player1, int player2)
 				players[player2]->Damage_Update(&players[player1]->m_attack_damage[players[player1]->attack_anim_pick]);
 				players[player2]->damage_flag = true; // ダメージを食らってるようにする
 				hit_stop.Stop_Count_Reset(); // ヒットストップをさせる
-				PadVidation(players[player2]->pad_input, 1000, 600, -1);
+				int  time = players[player1]->m_attack_damage[players[player1]->attack_anim_pick];
+				PadVidation(players[player2]->pad_input, 1000, 10 * time, -1);
 			}
 		}
 	}
@@ -869,7 +872,8 @@ void GameScene::Block_Hit(int player1, int player2)
 				players[player1]->damage_flag = true; // ダメージを受けているフラグを上げる
 				players[player1]->block_flag = false; // ガードを離すためにガード中のフラグを下げる
 				//cd_hit_flag = false
-
+				int  time = players[player1]->m_attack_damage[players[player1]->attack_anim_pick];
+				PadVidation(players[player2]->pad_input, 1000, 500, -1);
 				if (!stop) {
 					hit_stop.Stop_Count_Reset(); // ヒットストップをさせる
 				}
