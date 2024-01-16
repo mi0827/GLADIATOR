@@ -19,9 +19,9 @@ class Player : public CharacterBase
 	//---------------
 private:
 
-	const float MOVE_SPEED = 2.0f; // 走る用のスピード
+	const float MOVE_SPEED = 1.5f; // 走る用のスピード
 	const float WARP = 50.0f;      // キャラクターのワープする量
-
+	const float HIT_BODY_R = 3.0f; // このキャラの体の当たり判定の半径
 public:
 
 	//---------------
@@ -145,13 +145,13 @@ public:
 	// それぞれの攻撃ダメージの設定
 	const int attack_damage[ATTACK_ANIM_MAX]
 	{
-		20,  // 遠距離攻撃
-		100,  // パンチ１
-		20,  // パンチ２
-		30,  // パンチ３
-		40,  // パンチ４
-		10,  // スライディング
-		150, // 必殺技
+		40,  // 遠距離攻撃
+		40,  // パンチ１
+		40,  // パンチ２
+		50,  // パンチ３
+		70,  // パンチ４
+		20,  // スライディング
+		400, // 必殺技
 	};
 	// 引数で使用するために移す
 	const int* m_damage = attack_damage;

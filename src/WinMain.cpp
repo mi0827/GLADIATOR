@@ -20,6 +20,7 @@ int NowMouseY;
 int BeforeMouseX;
 int BeforeMouseY;
 
+
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -57,6 +58,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 10 :画面描画設定(描画領域を二つにして後ろに書き込んで完了したものを前にして画面に出す）
 	SetDrawScreen(DX_SCREEN_BACK);
 
+	
 
 	//-----------------------------------------------------------
 	// DirectX11を使用するようにする。(DirectX9も可、一部機能不可)

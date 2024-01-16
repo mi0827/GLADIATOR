@@ -36,7 +36,7 @@ Player::Player()
 	// カプセル
 	m_hit_body_pos_top.clear();                       // 上側
 	m_hit_body_pos_under.clear();                     // 下側
-	m_hit_body_r = 2.5f;                              // 半径
+	m_hit_body_r = HIT_BODY_R;                        // 半径
 
 	// あたり判定用
 	m_hit_cd_pos_top.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 13, m_pos.z + 8 * cosf(TO_RADIAN(m_rot.y)));
@@ -51,7 +51,7 @@ Player::Player()
 	attack_flag = false;                               // 攻撃していない
 	bead_hit_flag = false;                             // なににもあたってない
 	lifespan_count = NULL;
-	
+
 
 	combo_flag = false; // 攻撃を何もしていないのでフラグをげる
 }
@@ -154,7 +154,7 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 	case NORMAL_ACTION:        // 普通アクション 
 		m_check_move = false;  // 常にリセット
 
-		
+
 		//=================================
 		// アクションに関するボタン押し用の関数（見やすくするための関数）
 		//=================================
@@ -188,29 +188,28 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 		}
 		// 移動処理
 		CharacterBase::Move_Player(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-
+		// 体の当たり判定の場所の設定
+		m_hit_body_pos_top = m_pos;
+		m_hit_body_pos_top.y += 17.0f; // 高さを出す
+		m_hit_body_pos_under = m_pos;
+		m_hit_body_pos_under.y += 3.0f;
 		// 移動中ならアニメーションの変更と当たり判定の移動
 		if (m_check_move) {
 			anim_num = ANIM_RUN;  // 移動中なので走るアニメーションに
-			{                     // プレイヤー座標に当たり判定用のカプセルの位置を合わせる
-				m_hit_body_pos_top = m_pos;
-				m_hit_body_pos_top.y += 17.0f; // 高さを出す
-				m_hit_body_pos_under = m_pos;
-				m_hit_body_pos_under.y += 3.0f;
-			}
+
 		}
 		else {                           // どの移動キーも押されてなかったら
 			anim_num = ANIM_IDLE;        // アイドル状態にする
-			{                            // プレイヤー座標に当たり判定用のカプセルの位置を合わせる
-				m_hit_body_pos_top = m_pos;
-				m_hit_body_pos_top.y += 17.0f; // 高さを出す
-				m_hit_body_pos_under = m_pos;
-				m_hit_body_pos_under.y += 3.0f;
-			}
+
 		}
 		// アニメーション用のフレームカウントを進める
 		for (int i = 0; i < ANIM_MAX; ++i) {
-			anim_frame[i] += 1.0f;
+			if (anim_num == ANIM_RUN) {
+				anim_frame[i] += 0.9f;
+			}
+			else {
+				anim_frame[i] += 1.0f;
+			}
 			if (anim_frame[i] >= anim_total[i]) {
 				anim_frame[i] = 0.0f;
 			}
@@ -229,7 +228,7 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 			MV1SetAttachAnimBlendRate(m_model, anim_attach[i], anim_rate[i]);   // それぞれにアニメーションの割合分再生します
 		}
 
-		
+
 		break;
 
 	case ATTACK_ACTION: // 攻撃アクション
@@ -257,7 +256,7 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 				attack_flag = false;                                                                                                    // 攻撃が終わったのでこうげきしていないようにする
 				attack_anim_pick = ATTACK_ANIM_MAX;                                                                                     // 攻撃アニメーションが終わったのでアニメーションが設定されていない値にしておく
 				combo_flag = false;                                                                                                     // コンボフラグを下げる
-				bead_pos = m_pos;                                        
+				bead_pos = m_pos;
 			}
 		}
 		MV1SetAttachAnimTime(m_model, attack_anim_attach[attack_anim_pick], attack_anim_frame[attack_anim_pick]); // アニメーションの再生
@@ -266,7 +265,7 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 			Attack_Update();  // 攻撃用のアップデート
 		}
 		break;
-		
+
 	case BLOCK_ACTION:
 
 		// アニメーションの再生
@@ -433,7 +432,7 @@ void Player::Move_Hit_Update()
 //---------------------------------------------------------------------------
 void Player::Attack_PressButton_Update(Vector3* camera_rot)
 {
-	
+
 	//=================================
 	// 近距離攻撃
 	//=================================
@@ -454,7 +453,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// マウスの右クリック、または、Bボタンで遠距離攻撃
 	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_B, pad_no)) {
 		//if (IsPadRepeat(PAD_ID::PAD_Y, PAD_NO::PAD_NO1)) {
-	
+
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
 		//bead_hit_flag = false;
@@ -514,7 +513,7 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 		block_anim_pick = BLOCK_ANIM;         // ガードアクションを設定
 		CharacterBase::Block_Action(1); // 行いたい攻撃アニメーションをセット
 		action_flag = true;                   // アクションフラグを上げる
-		
+
 	}
 }
 //---------------------------------------------------------------------------
@@ -527,7 +526,7 @@ void Player::Attack_Update()
 	case ATTACK_LONG_NORMAL_ANIM: // 遠距離攻撃（弾を出す）
 
 		if (attack_anim_frame[attack_anim_pick] >= 30) {
-			if (attack_anim_frame[attack_anim_pick] <= 30+ ATTACK_ANIM_SPEED) {
+			if (attack_anim_frame[attack_anim_pick] <= 30 + ATTACK_ANIM_SPEED) {
 				m_effect_handle[THROW_EFFECT] = PlayEffekseer3DEffect(m_effect_container[THROW_EFFECT]); // エフェクトの再生
 				SetRotationPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
 				SetSpeedPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], 1.9);            // エフェクトの再生速度
@@ -536,7 +535,7 @@ void Player::Attack_Update()
 				bead_r = 2.0f;// 半径の設定
 				bead_hit_flag = false;
 			}
-			
+
 
 			// 一旦前に飛ばす
 			bead_pos.x += 3 * sinf(TO_RADIAN(m_rot.y));
@@ -738,13 +737,13 @@ void Player::Attack_Update()
 		// カウントがからだったら
 		if (lifespan_count == NULL) {
 			lifespan_count = 240.0f; // カウントのセット
-			
+
 		}
 		// 弾用の変数
 		if (lifespan_count >= 240.0f) {
 
-		//	bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
-			// 座標の設定
+			//	bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
+				// 座標の設定
 			bead_pos.set(m_pos.x + 300 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 300, m_pos.z + 300 * cosf(TO_RADIAN(m_rot.y)));
 			bead_r = 100.0f;        // 半径の設定
 			bead_hit_flag = false;
@@ -802,13 +801,13 @@ void Player::Damage_Update(int* m_attack_damage)
 {
 	// 与えられたダメージによってアニメーションを変化させる
 	// 今は入っている値は仮です
-	if (*m_attack_damage < 20) {
+	if (*m_attack_damage < 60) {
 		damage_anim_pick = BLOCK_ANIM;
 	}
-	else if (*m_attack_damage >= 20 && *m_attack_damage < 40) {
+	else if (*m_attack_damage >= 50 && *m_attack_damage < 70) {
 		damage_anim_pick = DAMAGE_ANIM_1;
 	}
-	else if (*m_attack_damage >= 40) {
+	else if (*m_attack_damage >= 70) {
 		damage_anim_pick = DAMAGE_ANIM_END;
 	}
 }

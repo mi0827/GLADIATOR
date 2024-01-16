@@ -114,9 +114,17 @@ private:
 	// ライト用の変数
 	static const int light_MAX = 1;
 	int light_handle[light_MAX]; // ライトハンドル
-	COLOR_F original_dif_color;
+	COLOR_F original_dif_color; 
 	COLOR_F original_spc_color;
 	COLOR_F original_amb_color;
-	Vector3 light_rot;
-	Vector3 light_pos;
+	Vector3 original_light_rot; // 初期ライトの向き
+	Vector3 light_rot; // ライトの回転
+	Vector3 light_pos; // ライトのポジション
+
+	static const int FIGHT_START_COUNT_MAX = 300; // 戦いが始まるまでの準備時間
+	bool fight_start_flag = false; // 戦いが始まる用のフラグ
+	int fight_start_count = 0; // レディーされから戦いが始まるまでのカウント
+
+	int draw_fight_pos_x = 0; // Lady,Fightの描画座標用変数
+	//int shadowmap_handle; // シャドーマっプ
 };

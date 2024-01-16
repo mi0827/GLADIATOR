@@ -34,6 +34,7 @@ HitStop hit_stop;
 constexpr int TIME_MAX = 60;    // 制限時間 (今だけ10秒)
 constexpr int END_TIME_MAX = 5; // エンドの時間制限
 
+
 //------------------------------------------
 // ゲーム開始の最初の設定
 //------------------------------------------
@@ -81,6 +82,7 @@ void GameScene::Init()
 	BGM_Init(); // BGMの初期化
 	Light_Init(); // ライトの初期化
 	//SetLightEnable(FALSE);
+
 }
 
 //----------------------------------------
@@ -89,25 +91,27 @@ void GameScene::Init()
 void GameScene::Update(int bgm_volume, int se_volume)
 {
 
-
 	int light_num = 0;
 	light_num = GetEnableLightHandleNum();
 
 	game_bgm.BGM_ChangeVolume(bgm_volume, BGM_MAX); // BGMのボリューム変更処理
 	se_game.SE_ChangeVolume(se_volume, SE_MAX);	 // SEのボリューム変更処理   
-
-	// ヒットストップしてほしいかしてほしくないか
-	stop = hit_stop.Hit_Stop();
-	if (!stop) {
-		Character_Update(se_volume); // キャラクターたちの更新処理
+	if (!fight_start_flag) {
+		// ヒットストップしてほしいかしてほしくないか
+		stop = hit_stop.Hit_Stop();
+		if (!stop) {
+			Character_Update(se_volume); // キャラクターたちの更新処理
+		}
 	}
 
 	// 各クラスの更新処理
 	field.Update();
+
 	for (int i = 0; i < PLAYER_MAX; ++i)
 	{
 		camera[i]->Update(&players[i]->m_pos);
 	}
+
 
 	switch (play_scene)
 	{
@@ -132,11 +136,15 @@ void GameScene::Update(int bgm_volume, int se_volume)
 //-------------------------------------
 void GameScene::Draw()
 {
+	// オリジナルのライトの向きを取ってくる
+	original_light_rot = GetLightDirection();
+
 	// 各クラスの描画処理
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		camera[i]->Draw_Set();       // カメラの描画前設定（ ※ 描画処理の一番最初にすること）
 		// DXライブラリのカメラとEffekseerのカメラを同期する。
 		Effekseer_Sync3DSetting();
+
 		field.Draw();
 
 		// プレイヤ―を描画させるための配列
@@ -159,6 +167,7 @@ void GameScene::Draw()
 	switch (play_scene)
 	{
 	case Play_Tutorial:
+
 		Tutorial_Draw();
 		break;
 	case Play_Main:
@@ -285,19 +294,21 @@ void GameScene::Light_Update()
 //------------------------------------
 void GameScene::Tutorial_Update()
 {
-
 	// プレイヤー１
+
 	if (IsPadRepeat(PAD_ID::PAD_X, players[0]->pad_no)) {
-		button_count1++; // ボタンの長押しカウントを増やす
-		if (button_count1 >= BUTTON_COUNT_MAX) {
-			// カウントが一定以上になると準備完了
-			ready_flag1 = true;
-			// 指定のSEが再生中じゃなかったら
-			if (!se_game.Playing_SE(READY)) {
-				// SEの再生
-				se_game.Play_SE(READY, DX_PLAYTYPE_BACK, true);
+		if (!ready_flag1) {
+			button_count1++; // ボタンの長押しカウントを増やす
+			if (button_count1 >= BUTTON_COUNT_MAX) {
+				// カウントが一定以上になると準備完了
+				ready_flag1 = true;
+				// 指定のSEが再生中じゃなかったら
+				if (!se_game.Playing_SE(READY)) {
+					// SEの再生
+					se_game.Play_SE(READY, DX_PLAYTYPE_BACK, true);
+				}
+				PadVidation(players[0]->pad_input, 1000, 300, -1);
 			}
-			PadVidation(players[0]->pad_input, 1000, 300, -1);
 		}
 	}
 	else {
@@ -310,16 +321,18 @@ void GameScene::Tutorial_Update()
 	}
 	// プレイヤー２
 	if (IsPadRepeat(PAD_ID::PAD_X, players[1]->pad_no)) {
-		button_count2++; // ボタンの長押しカウントを増やす
-		if (button_count2 >= BUTTON_COUNT_MAX) {
-			// カウントが一定以上になると準備完了
-			ready_flag2 = true;
-			// 指定のSEが再生中じゃなかったら
-			if (!se_game.Playing_SE(READY)) {
-				// SEの再生
-				se_game.Play_SE(READY, DX_PLAYTYPE_BACK, true);
+		if (!ready_flag2) {
+			button_count2++; // ボタンの長押しカウントを増やす
+			if (button_count2 >= BUTTON_COUNT_MAX) {
+				// カウントが一定以上になると準備完了
+				ready_flag2 = true;
+				// 指定のSEが再生中じゃなかったら
+				if (!se_game.Playing_SE(READY)) {
+					// SEの再生
+					se_game.Play_SE(READY, DX_PLAYTYPE_BACK, true);
+				}
+				PadVidation(players[1]->pad_input, 1000, 300, -1);
 			}
-			PadVidation(players[1]->pad_input, 1000, 300, -1);
 		}
 	}
 	else {
@@ -342,9 +355,24 @@ void GameScene::Tutorial_Update()
 		players[0]->m_rot.set(0.0f, 0.0f, 0.0f);               // 向きの設定
 		players[1]->m_pos.set(350.0f, 0.0f, 450.0f);           // 初期座標の設定
 		players[1]->m_rot.set(0.0f, 180.0f, 0.0f);             // 向きの設定
-		play_scene = Play_Main; // プレイメインに移動
-		game_bgm.Stop_BGM(TUTORIAL_BGM); // チュートリアルBGMを止める
-		game_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, BATTLE_2_BGM); // バトル用のBGMに変える
+
+		
+		// 試合開始までのフラグを立てる
+		fight_start_flag = true;
+
+	}
+	// ファイトフラグが立ったら
+	if (fight_start_flag) {
+		fight_start_count++; // ファイトカウントを増やす
+		if (fight_start_count >= FIGHT_START_COUNT_MAX) {
+			// 一定時間たったら
+			play_scene = Play_Main; // プレイメインに移動
+			fight_start_flag = false;
+			game_bgm.Stop_BGM(TUTORIAL_BGM); // チュートリアルBGMを止める
+			game_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, BATTLE_2_BGM); // バトル用のBGMに変える
+		}
+
+
 	}
 }
 
@@ -505,18 +533,48 @@ void GameScene::Time_Draw()
 //---------------------------------------------------------------------------
 void GameScene::Tutorial_Draw()
 {
-	int original_font_size = GetFontSize();
-	SetFontSize(55); // フォントサイズの変更
-	// 文字列の設定
-	const char* name = "チュートリアル";
-	// 描画座標の定義
-	float w, h;
-	Draw_String_Size(&w, &h, name);
-	// 描画
-	DrawFormatStringF(SCREEN_W / 2 - w / 2, h - 25, GetColor(255, 255, 0), name, time_count);
-	SetFontSize(original_font_size); // フォントサイズを戻す
+	if (!fight_start_flag) {
+		int original_font_size = GetFontSize();
+		SetFontSize(55); // フォントサイズの変更
+		// 文字列の設定
+		const char* name = "チュートリアル";
+		// 描画座標の定義
+		float w, h;
+		Draw_String_Size(&w, &h, name);
+		// 描画
+		DrawFormatStringF(SCREEN_W / 2 - w / 2, h - 25, GetColor(255, 255, 0), name, time_count);
+		SetFontSize(original_font_size); // フォントサイズを戻す
 
-	Ready_Draw();
+		Ready_Draw();
+	}
+	else {
+		int original_font_size = GetFontSize();
+		SetFontSize(200); // フォントサイズの変更
+		// 文字列の設定
+		const char* name;
+		if (fight_start_count <= FIGHT_START_COUNT_MAX / 2) {
+			name = "LADY";
+		}
+		else {
+			name = "FIFHT";
+		}
+		// 描画座標の定義
+		float w, h;
+		Draw_String_Size(&w, &h, name);
+		if (fight_start_count <= FIGHT_START_COUNT_MAX / 2) {
+			draw_fight_pos_x += 15; // 文字の移動をする
+		}
+		else {
+			draw_fight_pos_x += 18; // 文字の移動をする
+		}
+		// 画面右端までいったら
+		if (draw_fight_pos_x - w >= SCREEN_W) {
+			draw_fight_pos_x = 0 - w; // 画面左端に移動
+		}
+		// 描画
+		DrawFormatStringF(draw_fight_pos_x - w / 2, SCREEN_H / 2 - h / 2, GetColor(255, 255, 0), name, time_count);
+		SetFontSize(original_font_size); // フォントサイズを戻す
+	}
 
 
 }
@@ -688,7 +746,7 @@ void GameScene::Ready_Draw()
 void GameScene::End_Draw()
 {
 	int original_font_size = GetFontSize();
-	SetFontSize(28); // フォントサイズの変更
+	SetFontSize(60); // フォントサイズの変更
 	// 文字列の設定
 	const char* name = "end";
 	// 描画座標の定義

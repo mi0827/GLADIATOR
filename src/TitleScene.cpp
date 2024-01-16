@@ -111,7 +111,7 @@ void TiteleScene::Update(int bgm_volume, int se_volume)
 		title_bgm.Stop_BGM(TITLE_BGM); // BGMを止める
 
 		// プレイ動画の再生
-		movie = PlayMovie("Data/Movie/01.mp4", 1, DX_MOVIEPLAYTYPE_BCANCEL);
+		movie = PlayMovie("Data/Movie/02.mp4", 1, DX_MOVIEPLAYTYPE_BCANCEL);
 		GetMovieStateToGraph(movie);
 		// ゲームパッドの情報を丸ごと取得
 		if (GetMovieStateToGraph(movie)) {
