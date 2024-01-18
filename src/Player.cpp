@@ -171,6 +171,7 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 			//	anim_rate[0] = 0.0f; // 割合を減らす
 			//	anim_rate[1] = 1.0f;
 			//}
+			
 			break;         // 後の処理を飛ばす
 		}
 
@@ -410,10 +411,11 @@ void Player::SE_Init()
 {
 	// SEの数分の配列の取得
 	player_se.SE_ContainerNew(SE_MAX);
+	player_se.Load_SE("Data/Model/Player/SE/long.mp3", SE_LONG);      // パンチ１
 	player_se.Load_SE("Data/Model/Player/SE/punch1.mp3", SE_PUNCH_1); // パンチ１
 	player_se.Load_SE("Data/Model/Player/SE/punch2.mp3", SE_PUNCH_2); // パンチ２
 	player_se.Load_SE("Data/Model/Player/SE/punch3.mp3", SE_PUNCH_3); // ぱんち３
-	player_se.Load_SE("Data/Model/Player/SE/kick.mp3", SE_KICK);     // キック
+	player_se.Load_SE("Data/Model/Player/SE/kick.mp3", SE_KICK);      // キック
 	player_se.Load_SE("Data/Model/Player/SE/special.mp3", SE_SPECIAL);// 必殺技
 }
 
@@ -437,7 +439,8 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// 近距離攻撃
 	//=================================
 	// マウスの左クリックまたはAボタンでパンチ攻撃
-	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
+	// なおかつバグが出ないようにaction_flagが下りてたら
+	if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no) && action_flag == false) {
 
 		action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
 		attack_anim_pick = ATTACK_PUNCH_1_ANIM;         // 近距離攻撃アクションを設定
@@ -451,7 +454,8 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// 遠距離攻撃
 	//=================================
 	// マウスの右クリック、または、Bボタンで遠距離攻撃
-	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_B, pad_no)) {
+	// なおかつバグが出ないようにaction_flagが下りてたら
+	if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_B, pad_no) && action_flag == false) {
 		//if (IsPadRepeat(PAD_ID::PAD_Y, PAD_NO::PAD_NO1)) {
 
 		action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
@@ -467,7 +471,8 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	//=================================
 	if (skill_flag) { // スキルが使用できるなら
 		// スペースキークリック、または、Yボタンで遠距離攻撃
-		if (PushHitKey(KEY_INPUT_SPACE) || IsPadOn(PAD_ID::PAD_Y, pad_no)) {
+		// なおかつバグが出ないようにaction_flagが下りてたら
+		if (PushHitKey(KEY_INPUT_SPACE) || IsPadOn(PAD_ID::PAD_Y, pad_no) && action_flag == false) {
 
 			m_skill_count.x = 0; // スキルの使用なのでカウントをリセット
 			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
@@ -488,8 +493,9 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// 必殺技
 	//=================================
 	// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
+	// なおかつバグが出ないようにaction_flagが下りてたら
 	if (sp_flag) { // 必殺技が使用可能なら
-		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || IsPadOn(PAD_ID::PAD_L, pad_no) && IsPadOn(PAD_ID::PAD_R, pad_no)) {
+		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || IsPadOn(PAD_ID::PAD_L, pad_no) && IsPadOn(PAD_ID::PAD_R, pad_no) && action_flag == false) {
 			m_sp_count.x = 0;                        // SPの使用なのでカウントをリセット
 			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 必殺攻撃アクションを設定
@@ -507,8 +513,8 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	// または、Xボタンで遠距離攻撃
 	/*if (PushHitKey(KEY_INPUT_LSHIFT) || IsPadOn(PAD_ID::PAD_X, pad_no)) {*/      // ボタンの一度押し
 	// ダメージを受けていない
-
-	if (/*CheckHitKey(KEY_INPUT_LSHIFT) ||*/ IsPadRepeat(PAD_ID::PAD_X, pad_no)) { // ボタンの長押し
+	// なおかつバグが出ないようにaction_flagが下りてたら
+	if (/*CheckHitKey(KEY_INPUT_LSHIFT) ||*/ IsPadRepeat(PAD_ID::PAD_X, pad_no) && action_flag == false) { // Xボタンの長押し
 		action_mode = BLOCK_ACTION;           // モデルのアクションをガードに変更
 		block_anim_pick = BLOCK_ANIM;         // ガードアクションを設定
 		CharacterBase::Block_Action(1); // 行いたい攻撃アニメーションをセット
@@ -535,7 +541,10 @@ void Player::Attack_Update()
 				bead_r = 2.0f;// 半径の設定
 				bead_hit_flag = false;
 			}
-
+			// SEの再生
+			if (!player_se.Playing_SE(SE_LONG) ){
+				player_se.Play_SE(SE_LONG, DX_PLAYTYPE_BACK, true);
+			}
 
 			// 一旦前に飛ばす
 			bead_pos.x += 3 * sinf(TO_RADIAN(m_rot.y));

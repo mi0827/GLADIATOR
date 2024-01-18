@@ -28,7 +28,7 @@ Option::Option()
 	BGM_box_pos.set(SCREEN_W / 2 - BAR_SPACE_X, SCREEN_H / 2 + BAR_Y);
 	SE_box_pos.set(SCREEN_W / 2 + BAR_SPACE_X - BAR_SIZE, SCREEN_H / 2 + BAR_Y);
 	option_flag = false; // 最初はオプションメニューは閉じている
-	BGM_Volume = 100;
+	BGM_Volume = 200;
 	SE_Volume = 255;
 	select = 0; // BGMからスタート
 }

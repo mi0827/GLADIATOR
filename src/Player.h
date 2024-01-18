@@ -76,6 +76,7 @@ private:
 	// SE—p‚Ì—ñ‹“‘Ì
 	enum SE
 	{
+		SE_LONG,    // “Š‚°‹Z
 		SE_PUNCH_1, // ƒpƒ“ƒ`‚P
 		SE_PUNCH_2, //	ƒpƒ“ƒ`‚Q
 		SE_PUNCH_3, //	ƒpƒ“ƒ`‚R

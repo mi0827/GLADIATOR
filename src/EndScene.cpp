@@ -90,9 +90,9 @@ void EndScene::Draw()
 	
 	SetFontSize(80); // フォントサイズの変更
 	ChangeFont("ＭＳ 明朝", DX_CHARSET_DEFAULT); // フォントを明朝体にする
-	DrawStringF(16, 800, "魔王魂", GetColor(0, 0, 0));
-	DrawStringF(16, 900, "創作堂さくら紅葉", GetColor(0, 0, 0));
-    DrawStringF(16, 1000, "MusMus", GetColor(0, 0, 0));
+	DrawStringF(16, 800, "  SE：魔王魂", GetColor(0, 0, 0));
+	DrawStringF(16, 900, " BGM：創作堂さくら紅葉", GetColor(0, 0, 0));
+    DrawStringF(16, 1000, "BGM：MusMus", GetColor(0, 0, 0));
 
 	SetFontSize(original_font_size); // フォントサイズを戻す
 }

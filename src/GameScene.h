@@ -85,7 +85,7 @@ public:
 		TUTORIAL_BGM,  // チュートリアルのBGM
 		BATTLE_1_BGM,  // プレイメインのBGM１
 		BATTLE_2_BGM,  // プレイメインのBGM２
-
+		BATTLE_3_BGM,  // プレイメインのBGM２
 		BGM_MAX        // BGMの最大数
 	};
 

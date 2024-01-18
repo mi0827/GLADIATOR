@@ -219,9 +219,9 @@ void GameScene::BGM_Init()
 	game_bgm.Load_BGM("Data/BGM/Game/tutorial.mp3", TUTORIAL_BGM); // チュートリアルのBGM
 	game_bgm.Load_BGM("Data/BGM/Game/battle1.mp3", BATTLE_1_BGM);  // プレイメインのBGM１
 	game_bgm.Load_BGM("Data/BGM/Game/battle2.mp3", BATTLE_2_BGM);  // プレイメインのBGM２
-
+	game_bgm.Load_BGM("Data/BGM/Game/battle3.mp3", BATTLE_2_BGM);  // プレイメインのBGM3
 	// 最初はチュートリアルbgmを流す
-	game_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, TUTORIAL_BGM);
+	game_bgm.Play_BGM(DX_PLAYTYPE_LOOP, true, TUTORIAL_BGM);
 }
 
 //------------------------------------
@@ -369,7 +369,7 @@ void GameScene::Tutorial_Update()
 			play_scene = Play_Main; // プレイメインに移動
 			fight_start_flag = false;
 			game_bgm.Stop_BGM(TUTORIAL_BGM); // チュートリアルBGMを止める
-			game_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, BATTLE_2_BGM); // バトル用のBGMに変える
+			game_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, BATTLE_3_BGM); // バトル用のBGMに変える
 		}
 
 
@@ -446,7 +446,7 @@ void GameScene::PlayEnd_Update()
 		end_count = 0;
 		// タイマーが終わったら
 		scene_change_judge = true; // シーンの切り替えを許可する
-		game_bgm.Stop_BGM(BATTLE_2_BGM); // BGMを止める
+		game_bgm.Stop_BGM(BATTLE_3_BGM); // BGMを止める
 	}
 }
 
@@ -553,7 +553,7 @@ void GameScene::Tutorial_Draw()
 		// 文字列の設定
 		const char* name;
 		if (fight_start_count <= FIGHT_START_COUNT_MAX / 2) {
-			name = "LADY";
+			name = "READY";
 		}
 		else {
 			name = "FIFHT";
@@ -748,7 +748,7 @@ void GameScene::End_Draw()
 	int original_font_size = GetFontSize();
 	SetFontSize(60); // フォントサイズの変更
 	// 文字列の設定
-	const char* name = "end";
+	const char* name = "END";
 	// 描画座標の定義
 	float w, h;
 	Draw_String_Size(&w, &h, name);
@@ -766,6 +766,8 @@ void GameScene::End_Draw()
 //---------------------------------------------------------------------------
 void GameScene::Play_Victory_Draw(CharacterBase* character1, CharacterBase* character2)
 {
+	// 元のフォントサイズ
+	int original_font_size = GetFontSize();
 	// hpをわかりやすいようにする
 	float hp1 = character1->m_now_hp;
 	float hp2 = character2->m_now_hp;
@@ -775,7 +777,7 @@ void GameScene::Play_Victory_Draw(CharacterBase* character1, CharacterBase* char
 	Vector2 draw_pos2; // プレイヤー２に対しての描画座標
 	draw_pos2.set(SCREEN_W / 2 + ((SCREEN_W / 2) / 2), SCREEN_H / 2);
 
-	SetFontSize(35); // フォントサイズの変更
+	SetFontSize(100); // フォントサイズの変更
 	// 文字列の設定
 	const char* draw_string = "DRAW";
 	const char* winner_string = "WINNER";
@@ -796,16 +798,16 @@ void GameScene::Play_Victory_Draw(CharacterBase* character1, CharacterBase* char
 	if (hp1 > hp2)
 	{
 		// hp1のほうが残りhpが多いい場合
-		DrawStringF(draw_pos1.x - winner.x / 2, draw_pos1.y, winner_string, GetColor(255, 255, 0));
-		DrawStringF(draw_pos2.x - loser.x / 2, draw_pos2.y, loser_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos1.x - winner.x / 2, draw_pos1.y, winner_string, GetColor(255, 0, 0));
+		DrawStringF(draw_pos2.x - loser.x / 2, draw_pos2.y, loser_string, GetColor(0, 0, 255));
 	}
 	if (hp2 > hp1)
 	{
 		// hp2のほうが残りhpが多いい場合
-		DrawStringF(draw_pos1.x - loser.x / 2, draw_pos1.y, loser_string, GetColor(255, 255, 0));
-		DrawStringF(draw_pos2.x - winner.x / 2, draw_pos2.y, winner_string, GetColor(255, 255, 0));
+		DrawStringF(draw_pos1.x - loser.x / 2, draw_pos1.y, loser_string, GetColor(0, 0, 255));
+		DrawStringF(draw_pos2.x - winner.x / 2, draw_pos2.y, winner_string, GetColor(255, 0, 0));
 	}
-	SetFontSize(18); // フォントサイズを戻す
+	SetFontSize(original_font_size); // フォントサイズを戻す
 }
 
 //---------------------------------------------------------------------------

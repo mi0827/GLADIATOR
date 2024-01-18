@@ -62,7 +62,7 @@ void TiteleScene::Update(int bgm_volume, int se_volume)
 		// BGMが終わったら
 		if (!title_bgm.Playing_BGM(TITLE_BGM)) {
 			// BGMの再生
-			title_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, TITLE_BGM);
+			title_bgm.Play_BGM(DX_PLAYTYPE_LOOP, true, TITLE_BGM);
 		}
 
 		// ゲームパッドの情報を丸ごと取得
@@ -84,7 +84,7 @@ void TiteleScene::Update(int bgm_volume, int se_volume)
 		
 		// スタートフラグがたっていたらSEの再生
 		if (start_flag) {
-			title_se.Play_SE(DECISION, DX_PLAYTYPE_BACKBIT, TRUE);
+			title_se.Play_SE(DECISION, DX_PLAYTYPE_BACK, TRUE);
 		}
 		// スタートフラグがたっていたら次のシーンに進む
 		if (start_flag && title_se.Playing_SE(DECISION)) {
