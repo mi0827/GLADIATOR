@@ -50,7 +50,7 @@ void CharacterBase::Update_Status()
 	// SPクールダウンのカウントを増やす
 	if (sp_flame_count % 60 == 0) {
 		// SPバーのカウントを増やす
-		m_sp_count.x += 400;
+		m_sp_count.x += 40;
 	}
 
 	// SPポイントがたまったら

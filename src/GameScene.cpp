@@ -197,6 +197,11 @@ void GameScene::Exit()
 		delete camera[i];
 		camera[i] = nullptr;
 	}
+
+	// ライトの初期化
+	for (int i = 0; i < light_MAX; i++) {
+		DeleteLightHandle(light_handle[i]);
+	}
 }
 
 //------------------------------------
@@ -369,7 +374,7 @@ void GameScene::Tutorial_Update()
 			play_scene = Play_Main; // プレイメインに移動
 			fight_start_flag = false;
 			game_bgm.Stop_BGM(TUTORIAL_BGM); // チュートリアルBGMを止める
-			game_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, BATTLE_3_BGM); // バトル用のBGMに変える
+			game_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, BATTLE_2_BGM); // バトル用のBGMに変える
 		}
 
 
@@ -446,7 +451,7 @@ void GameScene::PlayEnd_Update()
 		end_count = 0;
 		// タイマーが終わったら
 		scene_change_judge = true; // シーンの切り替えを許可する
-		game_bgm.Stop_BGM(BATTLE_3_BGM); // BGMを止める
+		game_bgm.Stop_BGM(BATTLE_2_BGM); // BGMを止める
 	}
 }
 
@@ -556,7 +561,7 @@ void GameScene::Tutorial_Draw()
 			name = "READY";
 		}
 		else {
-			name = "FIFHT";
+			name = "FIGHT";
 		}
 		// 描画座標の定義
 		float w, h;

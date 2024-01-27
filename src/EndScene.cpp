@@ -77,9 +77,9 @@ void EndScene::Draw()
 	//DrawFormatString(16, 16, GetColor(255, 255, 255), "RESTART:%2d", count_time);
 	
 
-	SetFontSize(200); // フォントサイズの変更
+	SetFontSize(160); // フォントサイズの変更
 	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
-	const char* name = "GLADIATOR";
+	const char* name = "Thank you for playing";
 	// 描画幅の取得
 	float w = GetDrawStringWidth(name, -1);
 	// 文字列の高さ取得
