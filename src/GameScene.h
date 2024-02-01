@@ -91,16 +91,16 @@ public:
 
 private:
 
-	int time_count;     // フレーム数を現実の時間で計算する用の変数
-	int flame_count;    // フレーム数をカウントをする変数
-	int play_scene;     // チュートリアルの途中かを判別
-	int end_count;      // エンドシーンの時間
-	bool status_flag;   // ステータス更新処理していいかのフラグ
+	int time_count = 0;     // フレーム数を現実の時間で計算する用の変数
+	int flame_count = 0;    // フレーム数をカウントをする変数
+	int play_scene = 0;     // チュートリアルの途中かを判別
+	int end_count = 0;      // エンドシーンの時間
+	bool status_flag = false;   // ステータス更新処理していいかのフラグ
 
 	//-------------------------------------------
 	// チュートリアルで使う変数
 	//-------------------------------------------
-	const float BUTTON_COUNT_MAX = 180; // ３秒
+	const int BUTTON_COUNT_MAX = 180; // ３秒
 	// 準備完了フラグ
 	bool ready_flag1 = false;
 	bool ready_flag2 = false;
@@ -109,17 +109,17 @@ private:
 	int button_count2 = 0;
 
 	// ヒットストップ科の判断用変数
-	bool stop;
+	bool stop = false;
 
 	// ライト用の変数
 	static const int light_MAX = 1;
-	int light_handle[light_MAX]; // ライトハンドル
-	COLOR_F original_dif_color; 
-	COLOR_F original_spc_color;
-	COLOR_F original_amb_color;
-	Vector3 original_light_rot; // 初期ライトの向き
-	Vector3 light_rot; // ライトの回転
-	Vector3 light_pos; // ライトのポジション
+	int light_handle[light_MAX] = {0}; // ライトハンドル
+	COLOR_F original_dif_color = { 0,0,0 };
+	COLOR_F original_spc_color = { 0,0,0 };
+	COLOR_F original_amb_color = { 0,0,0 };
+	Vector3 original_light_rot = { 0,0,0 }; // 初期ライトの向き
+	Vector3 light_rot = { 0.0f,0.0f,0.0f }; // ライトの回転
+	Vector3 light_pos = { 0.0f,0.0f,0.0f }; // ライトのポジション
 
 	static const int FIGHT_START_COUNT_MAX = 300; // 戦いが始まるまでの準備時間
 	bool fight_start_flag = false; // 戦いが始まる用のフラグ

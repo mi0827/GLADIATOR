@@ -40,11 +40,11 @@ Player::Player()
 
 	// あたり判定用
 	m_hit_cd_pos_top.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 13, m_pos.z + 8 * cosf(TO_RADIAN(m_rot.y)));
-	m_hit_cd_pos_under.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + 12.7, m_pos.z + 6 * cosf(TO_RADIAN(m_rot.y)));
+	m_hit_cd_pos_under.set(m_pos.x + 8 * sinf(TO_RADIAN(m_rot.y)), m_pos.y + (float)12.7, m_pos.z + 6 * cosf(TO_RADIAN(m_rot.y)));
 	m_hit_cd_r = 1.0f;
 	//======================
 	// 移動用のボックス                                                   
-	m_move_hit_box_size.set(PANEL_HALF - 0.1, PANEL_HALF - 0.1, PANEL_HALF - 0.1);    // パネルの大きさ
+	m_move_hit_box_size.set(PANEL_HALF - (float)0.1, PANEL_HALF - (float)0.1, PANEL_HALF - (float)0.1);    // パネルの大きさ
 
 	// 判断用、フラグ変数
 	m_move_judge = false;                              // 最初は動いてはいけない
@@ -54,6 +54,11 @@ Player::Player()
 
 
 	combo_flag = false; // 攻撃を何もしていないのでフラグをげる
+	now_hit_area = 0;
+	m_player_num = 0;
+	for (int i = 0; i < 2; i++) {
+		m_color[i] = { 0,0,0,0 }; // このキャラの色
+	}
 }
 
 //---------------------------------------------------------------------------
@@ -310,7 +315,7 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 		damage_anim_frame[damage_anim_pick]++;
 		if (damage_anim_frame[damage_anim_pick] >= damage_anim_total[damage_anim_pick]) {                         // アニメーションが一周したら
 			// 	damage_anim_frame[damage_anim_pick] = 0.0f;
-			damage_anim_frame[damage_anim_pick] = MV1DetachAnim(m_model, damage_anim_attach[damage_anim_pick]);   // 攻撃アニメーションをディタッチしておく
+			damage_anim_frame[damage_anim_pick] = (float)MV1DetachAnim((int)m_model, (int)damage_anim_attach[damage_anim_pick]);   // 攻撃アニメーションをディタッチしておく
 			anim_attach[anim_num] = MV1AttachAnim(m_model, 1, anim_model[anim_num]);                   // モデルに元のアニメーションをアタッチしなおす（直近のアニメーション）
 			action_mode = NORMAL_ACTION; 	                                                                      // アニメーションが１ループしたからダメージアニメーションから出る
 			// キャラのｈｐがゼロ以外の時
@@ -535,7 +540,7 @@ void Player::Attack_Update()
 			if (attack_anim_frame[attack_anim_pick] <= 30 + ATTACK_ANIM_SPEED) {
 				m_effect_handle[THROW_EFFECT] = PlayEffekseer3DEffect(m_effect_container[THROW_EFFECT]); // エフェクトの再生
 				SetRotationPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], 0, TO_RADIAN(m_rot.y + 180), 0); // キャラの向いている方向にエフェクトを合わせる
-				SetSpeedPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], 1.9);            // エフェクトの再生速度
+				SetSpeedPlayingEffekseer3DEffect(m_effect_handle[THROW_EFFECT], (float)1.9);           // エフェクトの再生速度
 				bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
 				bead_pos.y += 10.0f; // y座標をずらして空中に浮かべる
 				bead_r = 2.0f;// 半径の設定
@@ -774,7 +779,7 @@ void Player::Attack_Update()
 		int play_effect = IsEffekseer3DEffectPlaying(m_effect_handle[SPECIAL_EFFECT]);
 		int play_effect2 = IsEffekseer3DEffectPlaying(m_effect_handle[SPECIAL2_EFFECT]);
 		SetSpeedPlayingEffekseer3DEffect(m_effect_handle[SPECIAL_EFFECT], 1.0f);            // エフェクトの再生速度
-		SetSpeedPlayingEffekseer3DEffect(m_effect_handle[SPECIAL2_EFFECT], 0.6);
+		SetSpeedPlayingEffekseer3DEffect(m_effect_handle[SPECIAL2_EFFECT], (float)0.6);
 		// 再生中でなければ
 		if (play_effect == -1) {
 			// エフェクトの再生

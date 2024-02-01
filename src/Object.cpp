@@ -8,7 +8,18 @@
 
 Object::Object()
 {
-
+	m_cone_top_pos = { 0.0f,0.0f,0.0f };    // 円錐の頂点座標
+	m_cone_bottom_pos = { 0.0f,0.0f,0.0f }; // 円錐の底辺の中心座標
+	m_cone_r = 0.0f;          // 円錐の中心座標
+	m_cone_color = 0;      // 色
+	// 立方体関連
+	Vector3 m_cube_top_pos = { 0.0f,0.0f,0.0f };     // 立方体の上の座標
+	Vector3 m_cube_bottom_pos = { 0.0f,0.0f,0.0f };  // 立方体の下の座標
+	Vector3 m_cube_hit_pos = { 0.0f,0.0f,0.0f };     // 当たり判定用の座標（cubeの中心から当たり判定をとるため）
+	Vector3 m_cube_size = { 0.0f,0.0f,0.0f };        // サイズ
+	Vector3 m_cube_size_half = { 0.0f,0.0f,0.0f };   // サイズの半分のサイズ（cubeの中心から当たり判定をとるため）
+	int   m_cube_color = 0;         // 立方体の色
+	int   m_line_color = 0;       // ラインの色
 }
 
 //---------------------------------------------------------------------------

@@ -70,29 +70,29 @@ void EndScene::Draw()
 	int original_font_size = GetFontSize();
 	// 背景画像の描画
 
-	DrawExtendGraph(image_pos.x, image_pos.y, SCREEN_W,SCREEN_H, background_image, TRUE);
+	DrawExtendGraph((int)image_pos.x, (int)image_pos.y, SCREEN_W, SCREEN_H, (int)background_image, TRUE);
 	SetFontSize(100); // フォントサイズの変更
 	DrawFormatString(16, 16, GetColor(0, 0, 0), "RESTART:%2d", count_time);
 	//SetFontSize(40); // フォントサイズの変更
 	//DrawFormatString(16, 16, GetColor(255, 255, 255), "RESTART:%2d", count_time);
-	
+
 
 	SetFontSize(160); // フォントサイズの変更
 	// 文字列の描画と描画幅の取得で2回使うのでここで定義しときます
 	const char* name = "Thank you for playing";
 	// 描画幅の取得
-	float w = GetDrawStringWidth(name, -1);
+	int w = (int)GetDrawStringWidth(name, -1);
 	// 文字列の高さ取得
-	float h = GetFontSize();
+	int h = (int)GetFontSize();
 	// 描画
-	DrawStringF(SCREEN_W / 2 - w / 2  - 3, SCREEN_H / 2- 3, name, GetColor(255, 255, 255), TRUE);
-	DrawStringF(SCREEN_W / 2 - w / 2, SCREEN_H / 2, name, GetColor(0, 0, 0), TRUE);
-	
+	DrawStringF(SCREEN_W / 2 - (int)(w / 2 - 3), SCREEN_H / 2 - 3, name, GetColor(255, 255, 255), TRUE);
+	DrawStringF(SCREEN_W / 2 - (int)(w / 2), SCREEN_H / 2, name, GetColor(0, 0, 0), TRUE);
+
 	SetFontSize(80); // フォントサイズの変更
 	ChangeFont("ＭＳ 明朝", DX_CHARSET_DEFAULT); // フォントを明朝体にする
 	DrawStringF(16, 800, "  SE：魔王魂", GetColor(0, 0, 0));
 	DrawStringF(16, 900, " BGM：創作堂さくら紅葉", GetColor(0, 0, 0));
-    DrawStringF(16, 1000, "BGM：MusMus", GetColor(0, 0, 0));
+	DrawStringF(16, 1000, "BGM：MusMus", GetColor(0, 0, 0));
 
 	SetFontSize(original_font_size); // フォントサイズを戻す
 }

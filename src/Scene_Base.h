@@ -26,6 +26,6 @@ public:
 public:
 	const int FLAME_MAX = 60; // 一秒何フレームか
 
-	bool scene_change_judge ; // シーンの切り替えを行っていいか (trueになったらシーンの切り替え可能)
+	bool scene_change_judge = false;  // シーンの切り替えを行っていいか (trueになったらシーンの切り替え可能)
 
 };

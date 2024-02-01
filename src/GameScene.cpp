@@ -573,11 +573,11 @@ void GameScene::Tutorial_Draw()
 			draw_fight_pos_x += 18; // 文字の移動をする
 		}
 		// 画面右端までいったら
-		if (draw_fight_pos_x - w >= SCREEN_W) {
-			draw_fight_pos_x = 0 - w; // 画面左端に移動
+		if (draw_fight_pos_x - (int)w >= SCREEN_W) {
+			draw_fight_pos_x = 0 - (int)w; // 画面左端に移動
 		}
 		// 描画
-		DrawFormatStringF(draw_fight_pos_x - w / 2, SCREEN_H / 2 - h / 2, GetColor(255, 255, 0), name, time_count);
+		DrawFormatStringF(draw_fight_pos_x - (int)(w / 2), (int)(SCREEN_H / 2 - h / 2), GetColor(255, 255, 0), name, time_count);
 		SetFontSize(original_font_size); // フォントサイズを戻す
 	}
 
@@ -594,18 +594,18 @@ void GameScene::Ready_Draw()
 	//=====================
 	{
 		//	準備オッケー用円の定数
-		const float CENTER_X = SCREEN_W / 2 - 150;		//	円の中心Ｘ座標
-		const float CENTER_Y = SCREEN_H - 150.0f;		//	Ｙ座標
-		const float RADIUS = 100.0f;			//	半径
+		const int CENTER_X = SCREEN_W / 2 - 150;		//	円の中心Ｘ座標
+		const int CENTER_Y = SCREEN_H - 150;		//	Ｙ座標
+		const int RADIUS = 100;			//	半径
 		//	線を上向きから開始したいので開始角度
 		const float OFFSET = -90.0f;
 		//	今のスピードが PLAYER_MOV_SPEED を最大としたときにどのくらいの割合か（ 0.0f ～ 1.0f ）
 		float rate = button_count1 / BUTTON_COUNT_MAX;
 		// 三角形のをいくつかくか
-		int count = 360.0f * rate;
+		int count = 360 * (int)rate;
 		if (ready_flag1) {
 			// 準備が完了したら常に円を描画する
-			count = 360.0f * 1;
+			count = 360 * 1;
 		}
 		// この数分だけ三角形描画を繰り返す
 		for (int i = 0; i < count; i++) {
@@ -646,17 +646,17 @@ void GameScene::Ready_Draw()
 		if (ready_flag1) {
 			const char* name = "ready";
 			// 描画幅の取得
-			float w = GetDrawStringWidth(name, -1);
+			int w = GetDrawStringWidth(name, -1);
 			// 文字列の高さ取得
-			float h = GetFontSize();
+			int h = GetFontSize();
 			// 描画文字の
 			DrawString(CENTER_X - w / 2, CENTER_Y - h / 2, name, GetColor(128, 0, 0)); // 下
 		}
 		else {
 			const char* name = "OK:X";
-			float w = GetDrawStringWidth(name, -1);
+			int w = GetDrawStringWidth(name, -1);
 			// 文字列の高さ取得
-			float h = GetFontSize();
+			int h = GetFontSize();
 			// 描画文字の
 			DrawString(CENTER_X - w / 2, CENTER_Y - h / 2, name, GetColor(128, 0, 0)); // 下
 		}
@@ -669,18 +669,18 @@ void GameScene::Ready_Draw()
 	//=====================
 	{
 		//	準備オッケー用円の定数
-		const float CENTER_X = SCREEN_W / 2 + 150;		//	円の中心Ｘ座標
-		const float CENTER_Y = SCREEN_H - 150.0f;		//	Ｙ座標
-		const float RADIUS = 100.0f;			//	半径
+		const int CENTER_X = SCREEN_W / 2 + 150;		//	円の中心Ｘ座標
+		const int CENTER_Y = SCREEN_H - 150;		//	Ｙ座標
+		const int RADIUS = 100;			//	半径
 		//	線を上向きから開始したいので開始角度
 		const float OFFSET = -90.0f;
 		//	今のスピードが PLAYER_MOV_SPEED を最大としたときにどのくらいの割合か（ 0.0f ～ 1.0f ）
-		float rate = button_count2 / BUTTON_COUNT_MAX;
+		int rate = button_count2 / BUTTON_COUNT_MAX;
 		// 三角形のをいくつかくか
-		int count = 360.0f * rate;
+		int count = 360 * rate;
 		if (ready_flag2) {
 			// 準備が完了したら常に円を描画する
-			count = 360.0f * 1;
+			count = 360 * 1;
 		}
 		// この数分だけ三角形描画を繰り返す
 		for (int i = 0; i < count; i++) {
@@ -723,9 +723,9 @@ void GameScene::Ready_Draw()
 			{
 				const char* name = "ready";
 				// 描画幅の取得
-				float w = GetDrawStringWidth(name, -1);
+				int w = GetDrawStringWidth(name, -1);
 				// 文字列の高さ取得
-				float h = GetFontSize();
+				int h = GetFontSize();
 				// 描画文字の
 				DrawString(CENTER_X - w / 2, CENTER_Y - h / 2, name, GetColor(128, 0, 0)); // 下
 
@@ -734,9 +734,9 @@ void GameScene::Ready_Draw()
 		else {
 			{
 				const char* name = "OK:X";
-				float w = GetDrawStringWidth(name, -1);
+				int w = GetDrawStringWidth(name, -1);
 				// 文字列の高さ取得
-				float h = GetFontSize();
+				int h = GetFontSize();
 				// 描画文字の
 				DrawString(CENTER_X - w / 2, CENTER_Y - h / 2, name, GetColor(128, 0, 0)); // 下
 			}
@@ -759,7 +759,7 @@ void GameScene::End_Draw()
 	Draw_String_Size(&w, &h, name);
 
 	// 描画(今がなんのシーンなのかがわかるように)
-	DrawFormatStringF(SCREEN_W / 2 - w / 2, h, GetColor(255, 255, 0), name, time_count);
+	DrawFormatStringF(SCREEN_W / 2 - (int)w / 2, (int)h, GetColor(255, 255, 0), name, time_count);
 	SetFontSize(original_font_size); // フォントサイズを戻す
 
 	// 勝敗の描画
@@ -792,7 +792,7 @@ void GameScene::Play_Victory_Draw(CharacterBase* character1, CharacterBase* char
 	Vector2 winner;
 	Vector2 loser;
 	// 描画座標設定
-	Draw_String_Size(&draw.x, &draw.y, draw_string);
+	Draw_String_Size(& draw.x, & draw.y, draw_string);
 	Draw_String_Size(&winner.x, &winner.y, winner_string);
 	Draw_String_Size(&loser.x, &loser.y, loser_string);
 	if (hp1 == hp2) {
@@ -952,7 +952,7 @@ void GameScene::Block_Hit(int player1, int player2)
 //---------------------------------------------------------------------------
 void GameScene::Draw_Status()
 {
-	DrawBox(players[0]->m_hp_pos.x, players[0]->m_hp_pos.y, players[0]->m_hp_count.x, players[0]->m_hp_count.y, GetColor(0, 255, 0), TRUE);
+	DrawBox((int)(players[0]->m_hp_pos.x), (int)(players[0]->m_hp_pos.y), (int)(players[0]->m_hp_count.x), (int)(players[0]->m_hp_count.y), GetColor(0, 255, 0), TRUE);
 	DrawLineBox(players[0]->m_hp_pos.x, players[0]->m_hp_pos.y, HP_MAX, players[0]->m_hp_count.y, GetColor(255, 255, 255));
 
 	DrawBox(SCREEN_W / 2 + players[1]->m_hp_pos.x, players[1]->m_hp_pos.y, SCREEN_W / 2 + players[1]->m_hp_count.x, players[1]->m_hp_count.y, GetColor(0, 255, 0), TRUE);

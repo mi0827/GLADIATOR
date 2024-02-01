@@ -135,7 +135,7 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 		//	ゲームパッドの左スティックの値を使って座標（ m_pos ）の値を変更
 		// 左ステックでプレイヤーの向きや座標の更新
 		// ゲームパッドの情報を取得（XINPUT の情報）
-	XINPUT_STATE input;
+	XINPUT_STATE input = { {'\0'}, '\0','\0',0,0,0,0 };
 	// ゲームパッドの情報を丸ごと取得
 	//GetJoypadXInputState(DX_INPUT_PAD1, &input);
 	// GetJoypadXInputState((int) pad_no, &input);
@@ -156,7 +156,7 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 		GetJoypadXInputState(DX_INPUT_PAD4, &input);
 		break;
 	}
-
+	
 	// 左スティックの値を設定
 	mov.x = input.ThumbLX;
 	mov.z = input.ThumbLY;

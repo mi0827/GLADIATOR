@@ -19,15 +19,15 @@ public:
 	void Exit()override;
 
 public:
-	int background_image; // 背景画像用の
-	Vector2 image_pos;    // 画像用の描画座標
-	int count_flame; // フレームカウント用の変数 
-	int count_time;  // フレームから実際の割り出して入れる用の時間
-	int movie;       // 動画用のへんすう
+	int background_image = 0; // 背景画像用の変数
+	Vector2 image_pos = {0.0f,0.0f};    // 画像用の描画座標
+	int count_flame = 0; // フレームカウント用の変数 
+	int count_time = 0;  // フレームから実際の割り出して入れる用の時間
+	int movie = 0;       // 動画用の変数
 
 	// フォントデータ用
-	int GTA_font_data; // GTAのフォントデータ用の変数
-	LPCSTR GTA_font_path;
+	int GTA_font_data = 0; // GTAのフォントデータ用の変数
+	LPCSTR GTA_font_path = 0;
 
 	enum Title_se
 	{

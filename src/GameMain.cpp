@@ -115,7 +115,6 @@ void GameDraw()
 // 終了処理
 void GameExit()
 {
-
 	scene->Exit();
 }
 
@@ -128,5 +127,3 @@ void Scene_Change_Judge(int& now_scene, const int& next_scene)
 	// 今のシーン番号に次行いたいシーン番号を入れる
 	now_scene = next_scene;
 }
-
-

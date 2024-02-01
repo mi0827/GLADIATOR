@@ -153,13 +153,13 @@ void Option::Draw()
 		DrawFormatStringF(BGM_box_pos.x + BAR_SIZE / 2 - bgm_pos.x / 2, BGM_box_pos.y, GetColor(0, 0, 0), bgm);// 文字列の描画
 
 		// SEバーの描画
-		DrawBox(SE_box_pos.x, SE_box_pos.y, SE_box_pos.x + BAR_SIZE, SE_box_pos.y - SE_Volume, GetColor(0, 0, 0), true);
-		DrawLineBox(SE_box_pos.x, SE_box_pos.y, SE_box_pos.x + BAR_SIZE, SE_box_pos.y - SE_Volume, GetColor(255, 255, 255));
+		DrawBox((int)SE_box_pos.x, (int)SE_box_pos.y, (int)(SE_box_pos.x + BAR_SIZE), (int)(SE_box_pos.y - SE_Volume), GetColor(0, 0, 0), true);
+		DrawLineBox((int)SE_box_pos.x, (int)SE_box_pos.y, (int)(SE_box_pos.x + BAR_SIZE), (int)(SE_box_pos.y - SE_Volume), GetColor(255, 255, 255));
 		const char* se = "SE";
 		Vector2 se_pos; // 文字列の座標
 		se_pos.x = GetDrawStringWidth(se, -1);
 		se_pos.y = GetFontSize();
-		DrawFormatStringF(SE_box_pos.x + BAR_SIZE / 2 - se_pos.x / 2, SE_box_pos.y, GetColor(0, 0, 0), se); // 文字列の描画
+		DrawFormatStringF((int)(SE_box_pos.x + BAR_SIZE / 2 - se_pos.x / 2), (int)SE_box_pos.y, GetColor(0, 0, 0), se); // 文字列の描画
 	
 	
 		// どちらのバーを選んでいるかわかりやすくするためのもの

@@ -152,9 +152,9 @@ void TiteleScene::Draw()
 		SetFontSize(200); // フォントサイズの変更
 		const char* name = "GLADIATOR";
 		// 描画幅の取得
-		float w = GetDrawStringWidth(name, -1);
+		int w = GetDrawStringWidth(name, -1.0f);
 		// 文字列の高さ取得
-		float h = GetFontSize();
+		int h = GetFontSize();
 		// 描画
 		//DrawStringFToHandle(SCREEN_W / 2 - w -80, SCREEN_H / 2 +5, name, GetColor(128, 0, 0), GTA_font_data, TRUE); 
 		//DrawStringFToHandle(SCREEN_W / 2 - w - 85, SCREEN_H / 2 , name, GetColor(255, 0, 0), GTA_font_data, TRUE); 

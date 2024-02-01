@@ -161,10 +161,10 @@ public:
 	// 近接攻撃にの当たり判定用の構造体
 	struct Hit_capsule_data
 	{
-		Vector3 hit_top;   // トップの座標
-		Vector3 hit_under; // アンダーの座標
-		float hit_r;       // 半径
-		float hit_anim_frame;  // アニメーションのフレーム(ここで出す)
+		Vector3 hit_top = { 0.0f,0.0f,0.0f };   // トップの座標
+		Vector3 hit_under = { 0.0f,0.0f,0.0f }; // アンダーの座標
+		float hit_r = 0.0f;       // 半径
+		float hit_anim_frame =0.0f;  // アニメーションのフレーム(ここで出す)
 	};
 
 
@@ -181,7 +181,7 @@ public:
 		// パンチ攻撃１
 		{
 		  Vector3(8,   13, 8), // トップ
-		  Vector3(6, 12.7, 6), // アンダー
+		  Vector3(6, (float)12.7, 6), // アンダー
 		  1.5f,   // 半径
 		  15.000, // フレーム}	
 		},
@@ -193,7 +193,7 @@ public:
 		},
 		{ // パンチ攻撃３
 		  Vector3(9,   13, 9), // トップ
-		  Vector3(5.5, 12.7, 5.5), // アンダー
+		  Vector3(5.5, (float)12.7, 5.5), // アンダー
 		  1.5f,   // 半径
 		  55.000, // フレーム}	
 		},
@@ -219,8 +219,8 @@ public:
 		},
 	};
 
-	Hit_capsule_data* now_hit_area;
+	Hit_capsule_data* now_hit_area = 0;
 
-	int m_player_num; // 1pか2pかを判断する用の変数
-	COLOR_F m_color[2]; // このキャラの色
+	int m_player_num = 0; // 1pか2pかを判断する用の変数
+	COLOR_F m_color[2] = {0}; // このキャラの色
 };
