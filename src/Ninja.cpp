@@ -31,7 +31,7 @@ Ninja::Ninja()
 	m_hit_body_r = 2.0f;                              // 半径
 	//======================
 	// 移動用のボックス                                                   
-	m_move_hit_box_size.set(PANEL_HALF - 0.1, PANEL_HALF - 0.1, PANEL_HALF - 0.1);    // パネルの大きさ
+	m_move_hit_box_size.set(PANEL_HALF - 0.1f, PANEL_HALF - 0.1f, PANEL_HALF - 0.1f);    // パネルの大きさ
 
 	// 判断用、フラグ変数
 	m_move_judge = false;     // 最初は動いてはいけない

@@ -40,13 +40,13 @@ void Object::Field_Object_Init(const int m_field_size, int pos_z, int pos_x)
 	//=================================
 	// 立方体の描画が用座標の設定１(下の位置)
 	//=================================
-	Vector3 bottom_pos = Set_Cube_Bottom_Pos(m_field_size, pos_z, pos_x, &m_field_pos);
+	Vector3 bottom_pos = Set_Cube_Bottom_Pos((float)m_field_size, pos_z, pos_x, &m_field_pos);
 	m_cube_bottom_pos.set(bottom_pos);
 
 	//=================================
 	// サイズの設定
 	//=================================
-	Vector3 size = Rand_Size_Cube(m_field_size, m_field_pos.z, m_field_pos.x); // ランダムに作られたサイズを入れる変数
+	Vector3 size = Rand_Size_Cube((float)m_field_size, m_field_pos.z, m_field_pos.x); // ランダムに作られたサイズを入れる変数
 	m_cube_size.set(size);
 
 	//=================================
@@ -81,13 +81,13 @@ void Object::Field_Wall_Object_Init(const int field_Wall_size, int pos_x, int po
 	//=================================
 	// 立方体の描画が用座標の設定１(下の位置)
 	//=================================
-	Vector3 bottom_pos = Set_Cube_Bottom_Pos(field_Wall_size, pos_z, pos_x, &m_field_pos);
+	Vector3 bottom_pos = Set_Cube_Bottom_Pos((float)field_Wall_size, pos_z, pos_x, &m_field_pos);
 	m_cube_bottom_pos.set(bottom_pos);
 
 	//=================================
 	// サイズの設定
 	//=================================
-	Vector3 size = Set_Size_Cube(field_Wall_size,pos_z, pos_x); // ランダムに作られたサイズを入れる変数
+	Vector3 size = Set_Size_Cube((float)field_Wall_size, (float)pos_z, (float)pos_x); // ランダムに作られたサイズを入れる変数
 	m_cube_size.set(size);
 
 	//=================================
@@ -147,9 +147,9 @@ Vector3 Object::Rand_Size_Cube(float m_field_size, float filed_pos_z, float file
 {
 	Vector3 size; // サイズを一時保存する
 	// ランダムで取ってくるサイズの最低の値と最高の値を計算しながらランダムの幅を決める
-	size.x = GetRand(m_field_size + (filed_pos_x - 20)) + 20; // Xの幅
-	size.y = GetRand(80) + 20;                // Yの高さ
-	size.z = GetRand(m_field_size + (filed_pos_z - 20)) + 20; // Zの幅
+	size.x = (float)GetRand((int)(m_field_size + (filed_pos_x - 20) + 20)); // Xの幅
+	size.y = (float)GetRand(80) + 20;                // Yの高さ
+	size.z = (float)GetRand((int)(m_field_size + (filed_pos_z - 20) + 20)); // Zの幅
 	return size; // サイズを返す
 }
 
@@ -161,7 +161,7 @@ Vector3 Object::Set_Size_Cube(float m_field_size, float filed_pos_z, float filed
 	Vector3 size; // サイズを一時保存する
 	// ランダムで取ってくるサイズの最低の値と最高の値を計算しながらランダムの幅を決める
 	size.x = m_field_size; // Xの幅
-	size.y = 80.0f;         // Yの高さ
+	size.y = 80.0f;        // Yの高さ
 	size.z = m_field_size; // Zの幅
 	return size; // サイズを返す
 	

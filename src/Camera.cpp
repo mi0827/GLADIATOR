@@ -32,7 +32,7 @@ Camera::Camera(int num)
 	m_mouse_move_x = 0.0f;
 	m_mouse_move_y = 0.0f;
 	//! パネルの大きさ(カメラを中心として扱うため半分の大きさを使う)
-	hit_box_size.set(BOX_SIZE_HALF - 0.1, BOX_SIZE_HALF - 0.1, BOX_SIZE_HALF - 0.1);   
+	hit_box_size.set(BOX_SIZE_HALF - (float)0.1, BOX_SIZE_HALF - (float)0.1, BOX_SIZE_HALF - (float)0.1);
 	before_pos.set(m_pos); //< 移動前の座標の設定
 }
 
@@ -50,7 +50,7 @@ void Camera::Init()
 void Camera::PlayField_Init()
 {
 	m_field_size.set(SCREEN_W / 2, SCREEN_H);                                                                      // 描画する画面のサイズの設定
-	m_screen_field = MakeScreen(m_field_size.x, m_field_size.y);                                             // 描画画面を書き込むための初期設定
+	m_screen_field = MakeScreen((int)m_field_size.x, (int)m_field_size.y);                                             // 描画画面を書き込むための初期設定
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 2.0f, -5.0f), VGet(0.0f, 0.0f, 1.0f));  // カメラの設定
 }
 
@@ -63,8 +63,8 @@ void Camera::Update(Vector3* player_pos)
 	// プレイヤーの後ろに付いて動く
 	m_look.set(player_pos->x, player_pos->y + 10.0f, player_pos->z);
 	// マウスの移動量
-	m_mouse_move_x = GetMouseMoveX();
-	m_mouse_move_y = GetMouseMoveY();
+	m_mouse_move_x = (float)GetMouseMoveX();
+	m_mouse_move_y = (float)GetMouseMoveY();
 
 	// カメラの向きを変える
 	// （２Dのマウスの移動量をそのまま角度に渡すと大きいので少し小さくしています）
@@ -177,40 +177,40 @@ void Camera::Draw(int camera_No)
 	// 文字の最初の大きさをとっておく
 	int original_font_size = GetFontSize();
 
-	SetFontSize(SCREEN_H / 23.0);
+	SetFontSize(SCREEN_H / (int)23.0);
 
 	const char* player1 = "PLAYER 1 ";
 	// 描画幅の取得
-	float player1_w = GetDrawStringWidth(player1, -1);
+	float player1_w = (float)GetDrawStringWidth(player1, -1);
 	
 	const char* player2 = "PALYER 2 ";
 	// 描画幅の取得
-	float player2_w = GetDrawStringWidth(player2, -1);
+	float player2_w = (float)GetDrawStringWidth(player2, -1);
 
 	// 文字列の高さ取得
-	float players_h = GetFontSize();
+	float players_h = (float)GetFontSize();
 
 	// プレイヤー１の場合
 	if (camera_No == 0) {
 		// ３Dが描画された画像を描画
 		DrawGraphF(m_field_pos.x, m_field_pos.y, m_screen_field, TRUE);
 		// どっちの画面が移っているのかがわかるように
-		DrawString(SCREEN_W / 50.0, SCREEN_H / 20.0 - players_h, player1, GetColor(255, 255, 255));
+		DrawString(SCREEN_W / (int)50, SCREEN_H / (int)20 - (int)players_h, player1, GetColor(255, 255, 255));
 		// 画像がわかりやすいように
-		DrawLineBox(m_field_pos.x, m_field_pos.y, m_field_pos.x + m_field_size.x, m_field_pos.y + m_field_size.y, GetColor(255, 255, 255));
+		DrawLineBox((int)m_field_pos.x, (int)m_field_pos.y, (int)m_field_pos.x + (int)m_field_size.x, (int)m_field_pos.y + (int)m_field_size.y, GetColor(255, 255, 255));
 
 	}
 	// プレイヤー２の場合
 	else {
-		int player2_x = /*SCREEN_W / 50.0 +*/ SCREEN_W / 1.3 + player2_w;
+		int player2_x = /*SCREEN_W / 50.0 +*/ SCREEN_W / (int)1.3 + (int)player2_w;
 		// ３Dが描画された画像を描画
 		DrawGraphF(m_field_pos.x + m_field_size.x, m_field_pos.y, m_screen_field, TRUE);
 		// どっちの画面が移っているのかがわかるように
-		DrawString(player2_x, SCREEN_H / 20.0 - players_h, player2, GetColor(255, 255, 255));
+		DrawString(player2_x, SCREEN_H / (int)20.0 - (int)players_h, player2, GetColor(255, 255, 255));
 		// 画像がわかりやすいように
-		DrawLineBox(m_field_pos.x + m_field_size.x, m_field_pos.y, m_field_pos.x + m_field_size.x * 2, m_field_pos.y + m_field_size.y, GetColor(0, 255, 255));
+		DrawLineBox((int)m_field_pos.x + (int)m_field_size.x, (int)m_field_pos.y, (int)m_field_pos.x + (int)m_field_size.x * (int)2, (int)m_field_pos.y + (int)m_field_size.y, GetColor(0, 255, 255));
 	}
-
+	
 }
 //---------------------------------------------------------------------------------
 //	終了処理

@@ -577,7 +577,7 @@ void GameScene::Tutorial_Draw()
 			draw_fight_pos_x = 0 - (int)w; // 画面左端に移動
 		}
 		// 描画
-		DrawFormatStringF(draw_fight_pos_x - (int)(w / 2), (int)(SCREEN_H / 2 - h / 2), GetColor(255, 255, 0), name, time_count);
+		DrawFormatStringF((float)(draw_fight_pos_x -(w / 2)), (float)(SCREEN_H / 2 - h / 2), GetColor(255, 255, 0), name, time_count);
 		SetFontSize(original_font_size); // フォントサイズを戻す
 	}
 
@@ -759,7 +759,7 @@ void GameScene::End_Draw()
 	Draw_String_Size(&w, &h, name);
 
 	// 描画(今がなんのシーンなのかがわかるように)
-	DrawFormatStringF(SCREEN_W / 2 - (int)w / 2, (int)h, GetColor(255, 255, 0), name, time_count);
+	DrawFormatStringF((float)(SCREEN_W / 2 - (int)w / 2), h, GetColor(255, 255, 0), name, time_count);
 	SetFontSize(original_font_size); // フォントサイズを戻す
 
 	// 勝敗の描画
@@ -821,9 +821,9 @@ void GameScene::Play_Victory_Draw(CharacterBase* character1, CharacterBase* char
 void GameScene::Draw_String_Size(float* w, float* h, const char* sting)
 {
 	// 描画幅の取得,
-	*w = GetDrawStringWidth(sting, -1);
+	*w = (float)GetDrawStringWidth(sting, -1);
 	// 文字列の高さ取得
-	*h = GetFontSize();
+	*h = (float)GetFontSize();
 }
 
 //---------------------------------------------------------------------------
@@ -952,9 +952,9 @@ void GameScene::Block_Hit(int player1, int player2)
 //---------------------------------------------------------------------------
 void GameScene::Draw_Status()
 {
-	DrawBox((int)(players[0]->m_hp_pos.x), (int)(players[0]->m_hp_pos.y), (int)(players[0]->m_hp_count.x), (int)(players[0]->m_hp_count.y), GetColor(0, 255, 0), TRUE);
-	DrawLineBox(players[0]->m_hp_pos.x, players[0]->m_hp_pos.y, HP_MAX, players[0]->m_hp_count.y, GetColor(255, 255, 255));
+	DrawBox(    (int)players[0]->m_hp_pos.x, (int)(players[0]->m_hp_pos.y),         (int)(players[0]->m_hp_count.x), (int)(players[0]->m_hp_count.y), GetColor(0, 255, 0), TRUE);
+	DrawLineBox((int)players[0]->m_hp_pos.x, (int)players[0]->m_hp_pos.y,   HP_MAX, (int)players[0]->m_hp_count.y,   GetColor(255, 255, 255));
 
-	DrawBox(SCREEN_W / 2 + players[1]->m_hp_pos.x, players[1]->m_hp_pos.y, SCREEN_W / 2 + players[1]->m_hp_count.x, players[1]->m_hp_count.y, GetColor(0, 255, 0), TRUE);
-	DrawLineBox(SCREEN_W / 2 + players[1]->m_hp_pos.x, players[1]->m_hp_pos.y, SCREEN_W / 2 + HP_MAX, players[1]->m_hp_count.y, GetColor(255, 255, 255));
+	DrawBox(    (int)(SCREEN_W / 2 + players[1]->m_hp_pos.x), (int)players[1]->m_hp_pos.y,   (int)(SCREEN_W / 2 + players[1]->m_hp_count.x), (int)players[1]->m_hp_count.y,   GetColor(0, 255, 0), TRUE);
+	DrawLineBox((int)(SCREEN_W / 2 + players[1]->m_hp_pos.x), (int)(players[1]->m_hp_pos.y), (int)(SCREEN_W / 2 + HP_MAX),                   (int)(players[1]->m_hp_count.y), GetColor(255, 255, 255));
 }

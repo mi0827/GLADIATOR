@@ -17,16 +17,16 @@ public:
 	void Draw();
 
 public:
-	int BGM_Volume; // BGMの音量
-	int SE_Volume;  // SEの音量
-	bool option_flag;    // オプションメニューを開くためのもの
+	int BGM_Volume = 0; // BGMの音量
+	int SE_Volume = 0;  // SEの音量
+	bool option_flag = false;    // オプションメニューを開くためのもの
 
 private:
-	Vector2 option_box_pos; // オプションメニュー画面の四角座標
-	Vector2 BGM_box_pos;    // BGMバーの座標
-	Vector2 SE_box_pos;     // SEバーの座標
+	Vector2 option_box_pos = { 0.0f,0.0f }; // オプションメニュー画面の四角座標
+	Vector2 BGM_box_pos = { 0.0f,0.0f };    // BGMバーの座標
+	Vector2 SE_box_pos = { 0.0f,0.0f };     // SEバーの座標
 
-	int image_box; // 背景画像用の入れ物
-	int menu_count; // メニューボタンが押されてから閉じるまでにかかる最低時間をカウントするための物
-	int select; // SEかBGMを洗濯するためのもの
+	int image_box = 0; // 背景画像用の入れ物
+	int menu_count = 0; // メニューボタンが押されてから閉じるまでにかかる最低時間をカウントするための物
+	int select = 0; // SEかBGMを洗濯するためのもの
 };

@@ -140,37 +140,37 @@ void Option::Draw()
 	// オプションメニューが開いている時だけ
 	// 描画する
 	if (option_flag) {
-		DrawExtendGraph(option_box_pos.x, option_box_pos.y, option_box_pos.x + BOX_SIZE_X, option_box_pos.y + BOX_SIZE_Y, image_box, TRUE);  // オプションメニューの背景
-		// BGMバーの描画
-		DrawBox(BGM_box_pos.x, BGM_box_pos.y, BGM_box_pos.x + BAR_SIZE, BGM_box_pos.y - BGM_Volume, GetColor(0, 0, 0), true);
-		DrawLineBox(BGM_box_pos.x, BGM_box_pos.y, BGM_box_pos.x + BAR_SIZE, BGM_box_pos.y - BGM_Volume, GetColor(255, 255, 255));
+		DrawExtendGraphF(option_box_pos.x, option_box_pos.y, option_box_pos.x + BOX_SIZE_X, option_box_pos.y + BOX_SIZE_Y, image_box, TRUE);  // オプションメニューの背景
+		// BGMバーの描画 
+		DrawBox(    (int)BGM_box_pos.x, (int)BGM_box_pos.y, (int)(BGM_box_pos.x + BAR_SIZE), (int)(BGM_box_pos.y - BGM_Volume), GetColor(0, 0, 0), true);
+		DrawLineBox((int)BGM_box_pos.x, (int)BGM_box_pos.y, (int)(BGM_box_pos.x + BAR_SIZE), (int)(BGM_box_pos.y - BGM_Volume), GetColor(255, 255, 255));
 		int original_font_size = GetFontSize();
 		SetFontSize(28); // フォントサイズの変更
 		const char* bgm = "BGM";
 		Vector2 bgm_pos; // 文字列の座標
-		bgm_pos.x = GetDrawStringWidth(bgm, -1);
-		bgm_pos.y = GetFontSize();
-		DrawFormatStringF(BGM_box_pos.x + BAR_SIZE / 2 - bgm_pos.x / 2, BGM_box_pos.y, GetColor(0, 0, 0), bgm);// 文字列の描画
+		bgm_pos.x = (float)GetDrawStringWidth(bgm, -1);
+		bgm_pos.y = (float)GetFontSize();
+		DrawFormatStringF((BGM_box_pos.x + BAR_SIZE / 2 - bgm_pos.x / 2), BGM_box_pos.y, GetColor(0, 0, 0), bgm);// 文字列の描画
 
 		// SEバーの描画
-		DrawBox((int)SE_box_pos.x, (int)SE_box_pos.y, (int)(SE_box_pos.x + BAR_SIZE), (int)(SE_box_pos.y - SE_Volume), GetColor(0, 0, 0), true);
+		DrawBox(    (int)SE_box_pos.x, (int)SE_box_pos.y, (int)(SE_box_pos.x + BAR_SIZE), (int)(SE_box_pos.y - SE_Volume), GetColor(0, 0, 0), true);
 		DrawLineBox((int)SE_box_pos.x, (int)SE_box_pos.y, (int)(SE_box_pos.x + BAR_SIZE), (int)(SE_box_pos.y - SE_Volume), GetColor(255, 255, 255));
 		const char* se = "SE";
 		Vector2 se_pos; // 文字列の座標
-		se_pos.x = GetDrawStringWidth(se, -1);
-		se_pos.y = GetFontSize();
-		DrawFormatStringF((int)(SE_box_pos.x + BAR_SIZE / 2 - se_pos.x / 2), (int)SE_box_pos.y, GetColor(0, 0, 0), se); // 文字列の描画
+		se_pos.x = (float)GetDrawStringWidth(se, -1);
+		se_pos.y = (float)GetFontSize();
+		DrawFormatStringF((SE_box_pos.x + BAR_SIZE / 2 - se_pos.x / 2), SE_box_pos.y, GetColor(0, 0, 0), se); // 文字列の描画
 	
 	
 		// どちらのバーを選んでいるかわかりやすくするためのもの
 		if (select == 0) {
 			// BGM側
-			DrawLineBox(BGM_box_pos.x, BGM_box_pos.y, BGM_box_pos.x + BAR_SIZE, BGM_box_pos.y - BGM_Volume, GetColor(255, 255, 0));
+			DrawLineBox((int)BGM_box_pos.x, (int)BGM_box_pos.y, (int)(BGM_box_pos.x + BAR_SIZE), (int)(BGM_box_pos.y - BGM_Volume), GetColor(255, 255, 0));
 			DrawFormatStringF(BGM_box_pos.x + BAR_SIZE / 2 - bgm_pos.x / 2 - 2, BGM_box_pos.y - 2, GetColor(255, 255, 0), bgm);
 		}
 		else {
 			// SE側
-			DrawLineBox(SE_box_pos.x, SE_box_pos.y, SE_box_pos.x + BAR_SIZE, SE_box_pos.y - SE_Volume, GetColor(225, 255, 0));
+			DrawLineBox((int)SE_box_pos.x, (int)SE_box_pos.y, (int)(SE_box_pos.x + BAR_SIZE), (int)(SE_box_pos.y - SE_Volume), GetColor(225, 255, 0));
 			DrawFormatStringF(SE_box_pos.x + BAR_SIZE / 2 - se_pos.x / 2 -2, SE_box_pos.y-2, GetColor(255, 255, 0), se);
 		}
 		SetFontSize(original_font_size); // フォントサイズを戻す

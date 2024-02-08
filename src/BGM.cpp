@@ -70,9 +70,11 @@ bool BGM::Playing_BGM(int No)
 	if (playing == 1) {
 		return true;
 	}
-	if (playing == 0) {
-		return false;
-	}
+	return false;
+	/*if (playing == 0) {
+		
+	}*/
+
 }
 
 //---------------------------------------------------------------------------

@@ -85,8 +85,8 @@ void EndScene::Draw()
 	// 文字列の高さ取得
 	int h = (int)GetFontSize();
 	// 描画
-	DrawStringF(SCREEN_W / 2 - (int)(w / 2 - 3), SCREEN_H / 2 - 3, name, GetColor(255, 255, 255), TRUE);
-	DrawStringF(SCREEN_W / 2 - (int)(w / 2), SCREEN_H / 2, name, GetColor(0, 0, 0), TRUE);
+	DrawStringF(SCREEN_W / 2 - (float)(w / 2 - 3), SCREEN_H / 2 - 3, name, GetColor(255, 255, 255), TRUE);
+	DrawStringF(SCREEN_W / 2 - (float)(w / 2), SCREEN_H / 2, name, GetColor(0, 0, 0), TRUE);
 
 	SetFontSize(80); // フォントサイズの変更
 	ChangeFont("ＭＳ 明朝", DX_CHARSET_DEFAULT); // フォントを明朝体にする

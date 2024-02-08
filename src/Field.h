@@ -44,8 +44,8 @@ public:
 
 	// 周りの壁
 	std::vector<Object*> wall_objects;  // オブジェクトクラス型のポインタはいてる
-	int wall_obj_max;                   // オブジェクトの数
+	int wall_obj_max = 0;                   // オブジェクトの数
 private:
-	int m_model; // モデル用の変数
+	int m_model = 0; // モデル用の変数
 
 };

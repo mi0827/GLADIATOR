@@ -32,6 +32,9 @@ Field::Field()
 	//m_model = MV1LoadModel("Data/Model/Field/z.mv1");
 	m_pos.set(0 + MODEL_SIZE* 15,0.0f, 0 + MODEL_SIZE * 15); // ï`âÊç¿ïWÇÃê›íË
 	m_rot.clear(); // âÒì]ó ÇÃ 
+
+	wall_obj_max = 0;
+	m_model = 0;
 }
 
 //---------------------------------------------------------------------------
