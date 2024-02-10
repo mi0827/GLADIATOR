@@ -62,7 +62,8 @@ float Vector3::GetLength()
 void Vector3::normalize()
 {
 	float length = GetLength();
-	if (length > 0.0f) {
+	if (length > 0.0f) 
+	{
 		x = x / length;
 		y = y / length;
 		z = z / length;

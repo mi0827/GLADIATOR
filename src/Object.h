@@ -21,8 +21,8 @@ public:
 	void Exit();		//	終了処理
 
 
-	Vector3 Rand_Size_Cube(float m_field_size, float filed_pos_z, float filed_pos_x); // 立方体のサイズをランダムできめて返す関数
-	Vector3 Set_Size_Cube(float field_Wall_size, float filed_pos_z, float filed_pos_x);  // 立方体のサイズを設定する
+	Vector3 Rand_Size_Cube(float m_field_size, float filed_pos_z, float filed_pos_x);              // 立方体のサイズをランダムできめて返す関数
+	Vector3 Set_Size_Cube(float field_Wall_size, float filed_pos_z, float filed_pos_x);            // 立方体のサイズを設定する
 	Vector3 Set_Cube_Bottom_Pos( float field_Wall_size, int pos_z, int pos_x, Vector3* field_pos); // 立方体の下の座標（元の座標）を返す関数
 	//---------------
 	// 変数の定義
@@ -33,8 +33,9 @@ public:
 
 
 private:
-	//-------------------------------------------------
+	//--------------------------
 	// 円錐関連
+	//--------------------------
 	Vector3 m_cone_top_pos = { 0.0f,0.0f,0.0f };    // 円錐の頂点座標
 	Vector3 m_cone_bottom_pos = { 0.0f,0.0f,0.0f }; // 円錐の底辺の中心座標
 	float   m_cone_r = 0.0f;          // 円錐の中心座標
@@ -43,6 +44,7 @@ private:
 public:
 	//--------------------------
 	// 立方体関連
+	//--------------------------
 	Vector3 m_cube_top_pos = { 0.0f,0.0f,0.0f };     // 立方体の上の座標
 	Vector3 m_cube_bottom_pos = { 0.0f,0.0f,0.0f };  // 立方体の下の座標
 	Vector3 m_cube_hit_pos = { 0.0f,0.0f,0.0f };     // 当たり判定用の座標（cubeの中心から当たり判定をとるため）

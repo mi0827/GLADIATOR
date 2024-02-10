@@ -33,11 +33,20 @@ public:
 	void Animation_Init()override;              // アニメーション用の初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
+	// 更新処理
+	// 引数
+	// １：カメラの向き
+	// ２：SEのボリューム
 	void Update(Vector3* camera_rot, int SE_Volume/*, bool status_*/) override;  // 更新処理
-	void Move_Hit_Update()override;           // プレイヤーの移動用当たり判定更新処理（壁擦り）
-	void Attack_PressButton_Update(Vector3* camera_rot)override; // アクションに関するボタン押し用の関数（見やすくするための関数）
+	// プレイヤーの移動用当たり判定更新処理（壁擦り）
+	void Move_Hit_Update()override;         
+	// アクションに関するボタン押し用の関数（見やすくするための関数）
+	void Attack_PressButton_Update(Vector3* camera_rot)override; 
 	void Attack_Update()override;   // 攻撃が行われた時に行う
-	void Damage_Update(int* m_attack_damage)override;	// ダメージを食らった時に行う
+	// ダメージを食らった時に行う関数
+	// 引数
+	// くらったダメージ
+	void Damage_Update(int* m_attack_damage)override;	
 	void Block_Update()override;	// ガードが行われた時に行う
 	void Draw() override;		// 描画処理
 	void Exit() override;		// 終了処理

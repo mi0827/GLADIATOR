@@ -64,46 +64,55 @@ void Option::Update()
 		option_flag = true;
 	}
 	// オプションメニューが開いているとき
-	if (option_flag) {
+	if (option_flag) 
+	{
 		menu_count++; // カウントを増やす
 		// 左右のボタンで変更したい方を選択
 		// ０：BGM
 		// １：SE
 		// 左ボタン
-		if (IsPadOn(PAD_ID::PAD_D_DOWN, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_DOWN, PAD_NO::PAD_NO2)) {
+		if (IsPadOn(PAD_ID::PAD_D_DOWN, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_DOWN, PAD_NO::PAD_NO2))
+		{
 			select -= 1;
-			if (select < 0) {
+			if (select < 0) 
+			{
 				select = 1;
 			}
 		}
 		// 右ボタン
-		if (IsPadOn(PAD_ID::PAD_D_RIGHT, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_RIGHT, PAD_NO::PAD_NO2)) {
+		if (IsPadOn(PAD_ID::PAD_D_RIGHT, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_RIGHT, PAD_NO::PAD_NO2)) 
+		{
 			select += 1;
-			if (select >= 2) {
+			if (select >= 2) 
+			{
 				select = 0;
 			}
 		}
 		if (select == 0) {
 			// BGMの音量を下げる
 			// 下ボタン
-			if (IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO2)) {
+			if (IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO2))
+			{
 				BGM_Volume -= 10;
 			}
 			// BGMの音量を上げる
 			// 上ボタン
-			if (IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO2)) {
+			if (IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO2)) 
+			{
 				BGM_Volume += 10;
 			}
 		}
 		else {
 			// SEの音量を下げる
 			// 下ボタン
-			if (IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO2)) {
+			if (IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO2)) 
+			{
 				SE_Volume -= 10;
 			}
 			// SEの音量を上げる
 			// 上ボタン
-			if (IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO2)) {
+			if (IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO2))
+			{
 				SE_Volume += 10;
 			}
 		}
@@ -118,7 +127,8 @@ void Option::Update()
 	if (SE_Volume >= Volume_MAX) { SE_Volume = Volume_MAX; }
 
 	// カウントが一定以上になったら
-	if (menu_count >= MENU_COUNT) {
+	if (menu_count >= MENU_COUNT) 
+	{
 		// オプションメニューが開いていて
 		// なおボタンが押されたら
 		if (IsPadOn(PAD_ID::PAD_START, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_START, PAD_NO::PAD_NO2))
@@ -139,7 +149,8 @@ void Option::Draw()
 	// ChangeFont("ＭＳ 明朝");
 	// オプションメニューが開いている時だけ
 	// 描画する
-	if (option_flag) {
+	if (option_flag) 
+	{
 		DrawExtendGraphF(option_box_pos.x, option_box_pos.y, option_box_pos.x + BOX_SIZE_X, option_box_pos.y + BOX_SIZE_Y, image_box, TRUE);  // オプションメニューの背景
 		// BGMバーの描画 
 		DrawBox(    (int)BGM_box_pos.x, (int)BGM_box_pos.y, (int)(BGM_box_pos.x + BAR_SIZE), (int)(BGM_box_pos.y - BGM_Volume), GetColor(0, 0, 0), true);
@@ -163,12 +174,14 @@ void Option::Draw()
 	
 	
 		// どちらのバーを選んでいるかわかりやすくするためのもの
-		if (select == 0) {
+		if (select == 0) 
+		{
 			// BGM側
 			DrawLineBox((int)BGM_box_pos.x, (int)BGM_box_pos.y, (int)(BGM_box_pos.x + BAR_SIZE), (int)(BGM_box_pos.y - BGM_Volume), GetColor(255, 255, 0));
 			DrawFormatStringF(BGM_box_pos.x + BAR_SIZE / 2 - bgm_pos.x / 2 - 2, BGM_box_pos.y - 2, GetColor(255, 255, 0), bgm);
 		}
-		else {
+		else
+		{
 			// SE側
 			DrawLineBox((int)SE_box_pos.x, (int)SE_box_pos.y, (int)(SE_box_pos.x + BAR_SIZE), (int)(SE_box_pos.y - SE_Volume), GetColor(225, 255, 0));
 			DrawFormatStringF(SE_box_pos.x + BAR_SIZE / 2 - se_pos.x / 2 -2, SE_box_pos.y-2, GetColor(255, 255, 0), se);

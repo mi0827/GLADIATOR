@@ -9,10 +9,12 @@ bool HitStop::Hit_Stop()
 	stop_frame_count--; // カウントを減らす
 
 	// ストップカウントが一定の値以上あると
-	if (stop_frame_count > 0) {
+	if (stop_frame_count > 0)
+	{
 		return  true; // ヒットストップしてほしい
 	}
-	else {
+	else
+	{
 		stop_frame_count = 0;
 	    return false; // してほしくない
 	}

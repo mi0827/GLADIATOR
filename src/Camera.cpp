@@ -14,15 +14,17 @@ constexpr float LOWER_ANGLE = -5.0f;           // カメラの下アングルの最低（地面
 constexpr float BOX_SIZE = 4.0f;                   // ボックスのサイズ
 constexpr float BOX_SIZE_HALF = (BOX_SIZE / 2.0f); // 半数のサイズ
 
-
+//---------------------------------------
 // コンストラクタ(初期化)
+//---------------------------------------
 Camera::Camera(int num)
 {
 	//! カメラ座標の初期設定
 	m_pos.set(0.0f, 0.0f, -20.0f);
 	//! カメラの向きは全部０度で開始
 	m_rot.set(0.0f, 0.0f, 0.0f);
-	if (num == 1) {
+	if (num == 1) 
+	{
 		m_rot.set(0.0f, 180.0f, 0.0f);
 	}
 	//! カメラが見る座標
@@ -39,9 +41,6 @@ Camera::Camera(int num)
 // 初期処理
 void Camera::Init()
 {
-
-
-
 }
 
 //---------------------------------------------------------------------------------
@@ -72,12 +71,14 @@ void Camera::Update(Vector3* player_pos)
 	m_rot.y += m_mouse_move_x * MOUSE_CAMERA_ROT_SPEED;
 
 	// カメラが地面に埋まらないようにしている
-	if (m_rot.x <= LOWER_ANGLE) {
+	if (m_rot.x <= LOWER_ANGLE) 
+	{
 		m_rot.x = LOWER_ANGLE;
 	}
 
 	// カメラが真上にいかないようにしている
-	if (m_rot.x >= UP_ANGLE_MAX) {
+	if (m_rot.x >= UP_ANGLE_MAX) 
+	{
 		m_rot.x = UP_ANGLE_MAX;
 	}
 
@@ -95,7 +96,8 @@ void Camera::Update(Vector3* player_pos)
 	// -32768 ～ 32767 を-1.0f　～　1.0fにします
 	rot /= 32768.0f;
 	// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
-	if (rot.GetLength() > 0.5f) {
+	if (rot.GetLength() > 0.5f)
+	{
 		m_rot.y += rot.y * PAD_CAMERA_ROT_SPEED;
 		m_rot.x -= rot.x * PAD_CAMERA_ROT_SPEED;
 		// m_rot += rot * PAD_CAMERA_ROT_SPEED;  // その移動ベクトル分座標移動
@@ -127,13 +129,13 @@ void Camera::Update(Vector3* player_pos)
 //---------------------------------------------------------------------------------
 void Camera::Hit_Object(Vector3* obj_pos, Vector3* obj_size)
 {
-	if (before_pos.x + hit_box_size.x >= obj_pos->x - obj_size->x && before_pos.x - hit_box_size.x <= obj_pos->x + obj_size->x) {
-	
+	if (before_pos.x + hit_box_size.x >= obj_pos->x - obj_size->x && before_pos.x - hit_box_size.x <= obj_pos->x + obj_size->x) 
+	{
 		m_pos.z = before_pos.z;
 		m_pos.x = before_pos.x;
 	}
-	if (before_pos.z + hit_box_size.z >= obj_pos->z - obj_size->z && before_pos.z - hit_box_size.z <= obj_pos->z + obj_size->z) {
-		
+	if (before_pos.z + hit_box_size.z >= obj_pos->z - obj_size->z && before_pos.z - hit_box_size.z <= obj_pos->z + obj_size->z)
+	{
 		m_pos.z = before_pos.z;
 		m_pos.x = before_pos.x;
 	}
@@ -142,12 +144,9 @@ void Camera::Hit_Object(Vector3* obj_pos, Vector3* obj_size)
 //---------------------------------------------------------------------------------
 //	描画前のカメラのセット
 //---------------------------------------------------------------------------------
-
 // めんどくさいけど頑張って工事しろ
-
 void Camera::Draw_Set()
 {
-	
 	// この下の二つを地番最後にしたい
 	// ２：今から描画するもの場所をテクスチャに変更します（レンダーターゲットの切り替え）
 	SetDrawScreen(m_screen_field);
@@ -161,10 +160,8 @@ void Camera::Draw_Set()
 	// カメラ座標と見る座標を渡してカメラの設定
 	SetCameraPositionAndTarget_UpVecY(m_pos.VGet(), m_look.VGet());
 
-	
-	// ここでエフェクトの座標を合わせたい
-
 }
+
 //---------------------------------------------------------------------------------
 //	描画処理
 //---------------------------------------------------------------------------------
@@ -191,7 +188,8 @@ void Camera::Draw(int camera_No)
 	float players_h = (float)GetFontSize();
 
 	// プレイヤー１の場合
-	if (camera_No == 0) {
+	if (camera_No == 0) 
+	{
 		// ３Dが描画された画像を描画
 		DrawGraphF(m_field_pos.x, m_field_pos.y, m_screen_field, TRUE);
 		// どっちの画面が移っているのかがわかるように
@@ -201,7 +199,8 @@ void Camera::Draw(int camera_No)
 
 	}
 	// プレイヤー２の場合
-	else {
+	else 
+	{
 		int player2_x = /*SCREEN_W / 50.0 +*/ SCREEN_W / (int)1.3 + (int)player2_w;
 		// ３Dが描画された画像を描画
 		DrawGraphF(m_field_pos.x + m_field_size.x, m_field_pos.y, m_screen_field, TRUE);
@@ -212,6 +211,7 @@ void Camera::Draw(int camera_No)
 	}
 	
 }
+
 //---------------------------------------------------------------------------------
 //	終了処理
 //---------------------------------------------------------------------------------

@@ -53,11 +53,13 @@ void Ninja::Init(int player_num)
 
 	//pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
 
-	if (player_num == 0) {
+	if (player_num == 0) 
+	{
 		m_pos.set(0.0f, 0.0f, -50.0f);           // 初期座標の設定
 		m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
 	}
-	else {
+	else 
+	{
 		m_pos.set(0.0f, 0.0f, 500.0f);            // 初期座標の設定
 		m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 	}
@@ -126,7 +128,8 @@ void Ninja::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 
 
 		// 移動中ならアニメーションの変更と当たり判定の移動
-		if (m_check_move) {
+		if (m_check_move) 
+		{
 
 			anim_num = ANIM_RUN;  // 移動中なので走るアニメーションに
 			{                     // プレイヤー座標に当たり判定用のカプセルの位置を合わせる
@@ -136,7 +139,8 @@ void Ninja::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 				m_hit_body_pos_under.y += 3.0f;
 			}
 		}
-		else {                           // どの移動キーも押されてなかったら
+		else 
+		{                           // どの移動キーも押されてなかったら
 			anim_num = ANIM_IDLE;        // アイドル状態にする
 			{                            // プレイヤー座標に当たり判定用のカプセルの位置を合わせる
 				m_hit_body_pos_top = m_pos;
@@ -151,7 +155,8 @@ void Ninja::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 		// 近距離攻撃
 		//=================================
 		// マウスの左クリックまたはAボタンで近距離攻撃
-		if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) {
+		if (PushMouseInput(MOUSE_INPUT_LEFT) || IsPadOn(PAD_ID::PAD_A, pad_no)) 
+		{
 			action_mode = ATTACK_ACTION;                    // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SHORT_NORMAL_1_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);                 // 行いたい攻撃アニメーションをセット
@@ -163,7 +168,8 @@ void Ninja::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 		// 遠距離攻撃
 		//=================================
 		// マウスの右クリック、または、Yボタンで遠距離攻撃
-		if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_Y, pad_no)) {
+		if (PushMouseInput(MOUSE_INPUT_RIGHT) || IsPadOn(PAD_ID::PAD_Y, pad_no))
+		{
 			action_mode = ATTACK_ACTION;                 // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_LONG_NORMAL_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);              // 行いたい攻撃アニメーションをセット
@@ -174,7 +180,8 @@ void Ninja::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 		// スライディング
 		//=================================
 		// スペースキークリック、または、Bボタンで遠距離攻撃
-		if (PushHitKey(KEY_INPUT_SPACE) || IsPadOn(PAD_ID::PAD_B, pad_no)) {
+		if (PushHitKey(KEY_INPUT_SPACE) || IsPadOn(PAD_ID::PAD_B, pad_no)) 
+		{
 			action_mode = ATTACK_ACTION;           // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SLIDE_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);        // 行いたい攻撃アニメーションをセット
@@ -186,7 +193,8 @@ void Ninja::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 		// 必殺技
 		//=================================
 		// 『 Eキー ＋ Qキー 』クリック、または、『 Rボタン + Lボタン 』で必殺技攻撃
-		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || IsPadOn(PAD_ID::PAD_L, pad_no) && IsPadOn(PAD_ID::PAD_R, pad_no)) {
+		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || IsPadOn(PAD_ID::PAD_L, pad_no) && IsPadOn(PAD_ID::PAD_R, pad_no)) 
+		{
 			action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
 			attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 近距離攻撃アクションを設定
 			CharacterBase::Attack_Action(0);          // 行いたい攻撃アニメーションをセット
@@ -194,14 +202,17 @@ void Ninja::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 		}
 
 		// アニメーション用のフレームカウントを進める
-		for (int i = 0; i < ANIM_MAX; ++i) {
+		for (int i = 0; i < ANIM_MAX; ++i) 
+		{
 			anim_frame[i] += 1.0f;
-			if (anim_frame[i] >= anim_total[i]) {
+			if (anim_frame[i] >= anim_total[i])
+			{
 				anim_frame[i] = 0.0f;
 			}
 			// アニメーションの再生
 			// 使いたくないアニメーション
-			if (i != anim_num) {
+			if (i != anim_num)
+			{
 
 				anim_rate[i] -= 0.1f; // 割合を減らす
 			}
@@ -232,10 +243,12 @@ void Ninja::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 	}
 
 
-	if (attack_flag) {
+	if (attack_flag) 
+	{
 
 		// 弾用の変数
-		if (lifespan_count >= 120.0f) {
+		if (lifespan_count >= 120.0f) 
+		{
 			bead_pos = new Vector3;
 			*bead_pos = m_pos; // 一旦プレイヤーの位置にしておく（本来プレイヤーの手の位置に合わせる）
 			bead_pos->y += 10.0f; // y座標をずらして空中に浮かべる
@@ -246,7 +259,8 @@ void Ninja::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 		lifespan_count--; // 弾が消えるまでのカウントを進める
 
 		// カウントが一定にまで減るか、当たり判定があったら
-		if (lifespan_count <= 0 || bead_hit_judg) {
+		if (lifespan_count <= 0 || bead_hit_judg)
+		{
 			delete bead_pos; // 弾の解放
 			bead_pos = NULL;
 			lifespan_count = 120.0f; // カウントのリセット
@@ -286,12 +300,14 @@ void Ninja::Block_Update()
 //---------------------------------------------------------------------------
 // CharacterBase::Draw_Status();
 
-
+//---------------------------------------------------------------------------
 // 描画処理
+//---------------------------------------------------------------------------
 void Ninja::Draw()
 {
 	// 玉を描画する(今だけ)
-	if (bead_pos != NULL) {
+	if (bead_pos != NULL) 
+	{
 		DrawSphere3D(bead_pos->VGet(), 2.0f, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 	}
 	DrawCapsule3D(m_hit_body_pos_top.VGet(), m_hit_body_pos_under.VGet(), m_hit_body_r, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), FALSE);
@@ -308,27 +324,28 @@ void Ninja::Draw()
 	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_rot.x), TO_RADIAN(m_rot.y + 180), TO_RADIAN(m_rot.z)));   // モデルの回転
 	MV1SetScale(m_model, VGet(0.1f, 0.1f, 0.1f));                                                         // モデルの大きさ(10分の１のサイズ)
 	MV1DrawModel(m_model);
-
-
-
 }
 
-
+//---------------------------------------------------------------------------
 // 終了処理
+//---------------------------------------------------------------------------
 void Ninja::Exit()
 {
 	MV1DeleteModel(m_model);       // モデルの削除
-	for (int i = 0; i < ANIM_MAX; i++) {  // アニメーションの削除
+	for (int i = 0; i < ANIM_MAX; i++) 
+	{  // アニメーションの削除
 		MV1DeleteModel(anim_model[i]);
 	}
 
 	// 攻撃アニメーションの削除
-	for (int i = 0; i < ATTACK_ANIM_MAX; i++) {
+	for (int i = 0; i < ATTACK_ANIM_MAX; i++)
+	{
 		MV1DeleteModel(attack_anim_model[i]);
 	}
 
 	// 弾が解放されていなかったら解放する
-	if (bead_pos != NULL) {
+	if (bead_pos != NULL)
+	{
 		delete bead_pos;
 	}
 
@@ -336,6 +353,9 @@ void Ninja::Exit()
 	CharacterBase::Anim_Delete();
 }
 
+//---------------------------------------------------------------------------
+// SEの初期化
+//---------------------------------------------------------------------------
 void Ninja::SE_Init()
 {
 }

@@ -43,7 +43,8 @@ void BGM::Play_BGM(int type, bool loop, int No)
 void BGM::BGM_ChangeVolume(int bgm_volume, int size)
 {
 	// BGM‚Ì”•ªƒ{ƒŠƒ…[ƒ€‚ğ•ÏX‚·‚é
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < size; ++i) 
+	{
 		ChangeVolumeSoundMem(bgm_volume, bgm_container[i]);
 	}
 }
@@ -71,10 +72,7 @@ bool BGM::Playing_BGM(int No)
 		return true;
 	}
 	return false;
-	/*if (playing == 0) {
-		
-	}*/
-
+	
 }
 
 //---------------------------------------------------------------------------

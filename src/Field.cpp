@@ -46,7 +46,8 @@ void Field::Init()
 	obj_max = Field_Init();
 	//wall_obj_max = Wall_Field_Init();
 	// オブジェクトの初期設定
-	for (int i = 0; i < obj_max; ++i) {
+	for (int i = 0; i < obj_max; ++i)
+	{
 		// ここでNEWする
 		Object* object = new Object;
 		// 追加登録(これでオブジェクトクラスの配列が増えていく)
@@ -57,8 +58,6 @@ void Field::Init()
 	
 	Field_Init();  // フィールド上にオブジェクトの置く数を返す
 	Object_Init(); // オブジェクトの座標、サイズの初期設定
-
-	
 }
 
 //---------------------------------------------------------------------------
@@ -68,9 +67,12 @@ int Field::Field_Init()
 {
 	// 何個のオブジェクトが必要か数える
 	int object_count = 0;
-	for (int h = 0; h < MAP_H; h++) {
-		for (int w = 0; w < MAP_W; w++) {
-			if (MapData[h][w] != 0) {
+	for (int h = 0; h < MAP_H; h++) 
+	{
+		for (int w = 0; w < MAP_W; w++) 
+		{
+			if (MapData[h][w] != 0) 
+			{
 				object_count++;
 			}
 		}
@@ -85,14 +87,18 @@ void Field::Object_Init()
 {
 	// 何個めオブジェクトか数える
 	int object_count = 0;
-	for (int h = 0; h < MAP_H; h++) {
-		for (int w = 0; w < MAP_W; w++) {
-			if (MapData[h][w] == 1) { // フィールドの上の置物
+	for (int h = 0; h < MAP_H; h++) 
+	{
+		for (int w = 0; w < MAP_W; w++)
+		{
+			if (MapData[h][w] == 1)
+			{   // フィールドの上の置物
 				// 最初の０個目を触るために上に置く
 				objects[object_count]->Field_Object_Init(m_field_size, h, w);
 				object_count++; // 次の分のカウントを進めておく
 			}
-			if (MapData[h][w] == 2) { // 壁
+			if (MapData[h][w] == 2)
+			{   // 壁
 				// 最初の2個目を触るために上に置く
 				objects[object_count]->Field_Wall_Object_Init(m_wall_size, h, w);
 				object_count++; // 次の分のカウントを進めてお
@@ -124,7 +130,8 @@ void Field::Draw()
 	// モデルの描画
 	MV1DrawModel(m_model);
 
-	for (int i = 0; i < obj_max; i++) {
+	for (int i = 0; i < obj_max; i++) 
+	{
 		objects[i]->Draw();
 	}
 }

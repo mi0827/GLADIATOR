@@ -19,11 +19,19 @@ public:
 	//---------------
 	//virtual と = 0 しておくことで派生クラスでオーバーロードできる
 	CharacterBase();
-	virtual void Init(int player_num) = 0; // 初期処理
+
+	// 初期処理
+	// 引数
+	// プレイヤーの一人目か二人目かの番号
+	virtual void Init(int player_num) = 0; 
 	virtual void Animation_Init() = 0;     // アニメーション用の初期処理
 	// カメラに対して前後左右に移動するため
 	// カメラがどの方向にあるのかを情報として使う
-	virtual void Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/) = 0;		// 更新処理
+	// 更新処理
+	// 引数
+	// １：カメラの向き
+	// ２：SEのボリューム
+	virtual void Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/) = 0;		
 	virtual void Draw() = 0;		               // 描画処理
 	virtual void Exit() = 0;		               // 終了処理
 	virtual void Move_Hit_Update() = 0;            // 壁擦り用の関数
@@ -33,61 +41,130 @@ public:
 	virtual void Block_Update() = 0;               // ガードが行われた時に行う
 	virtual void SE_Init() = 0;                    // SEの初期化よう関数
 
-	void Update_Status();   // ステータス更新処理
-	void Reset_Status();    // ステータスのリセット用関数
-	void Draw_Status(int i);     // ステータス描画用関数
-	//---------------------------------------------------------------------------
+	void Update_Status();        // ステータス更新処理
+	void Reset_Status();         // ステータスのリセット用関数
+
+	// ステータス描画用関数
+	// 引数
+	// プレイヤーの一人目か二人目かの番号
+	void Draw_Status(int player_num);    
+
+
 	// プレイヤーの移動をする関数
-	//---------------------------------------------------------------------------
+	// // 引数
+	// １：今動いていいのか
+	// ２：いまは移動していいていいかの判断
+	// ３：プレイヤーの向いている向き
+	// ４：移動スピード
 	void Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
-	//---------------------------------------------------------------------------
-	// 移動用関数
+
+	// 前移動
 	// 引数
 	// １：今動いていいのか
 	// ２：いまは移動していいていいかの判断
 	// ３：プレイヤーの向いている向き
 	// ４：移動スピード
-	//---------------------------------------------------------------------------
-	// 前移動
 	void Move_Front(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	
+
 	// 後ろ移動
+	// 引数
+	// １：今動いていいのか
+	// ２：いまは移動していいていいかの判断
+	// ３：プレイヤーの向いている向き
+	// ４：移動スピード
 	void Move_Dhindo(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+
 	// 左移動
+	// 引数
+	// １：今動いていいのか
+	// ２：いまは移動していいていいかの判断
+	// ３：プレイヤーの向いている向き
+	// ４：移動スピード
 	void Move_Left(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	
 	// 右移動
+	// 引数
+	// １：今動いていいのか
+	// ２：いまは移動していいていいかの判断
+	// ３：プレイヤーの向いている向き
+	// ４：移動スピード
 	void Move_Right(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 
 	// キャラクターの移動用関数(ゲームパッド用)
+	// 引数
+	// １：今動いていいのか
+	// ２：いまは移動していいていいかの判断
+	// ３：プレイヤーの向いている向き
+	// ４：移動スピード
 	void Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* camera_rot, const float* mov_speed);
 
 	// キャラクターの壁擦り用関数
+	// 引数
+	// １：自分（キャラ）の座標
+	// ２：自分（キャラ）のあたり判定のサイズ（中心から見たサイズ）
+	// ３：壁の座標
+	// ４：壁のあたり判定のサイズ（中心から見たサイズ）
 	void Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* other_pos, Vector3* other_size);
 
 
 	// 普通アニメーション変数のNew用関数
+	// 引数
+	// １：アニメーションの数
 	void Nomal_Anim_New(int ANIM_MAX);
 	// 普通アニメーションの初期設定
+	// 引数
+	// １：最初にしていてほしいいアニメーションの番号
+	// ２：アニメーションの最大数
+	// ３：アタッチするときの番号 １とか0とかの数字
 	void Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX, int index);
 
 	// 攻撃アニメーション変数のNew用関数
+	// 引数
+	// 攻撃アニメーションの数
 	void Attack_Anim_New(int ATTACK_ANIM_MAX);
+
 	// 攻撃アニメーションの初期設定
+	// 引数
+	// １：攻撃アニメーションの数
+	// ２：アタッチするときの番号 １とか0とかの数字
 	void Attack_Anim_Init(int ATTACK_ANIM_MAX, int index);
+
 	// アクションにあったアニメーションつける関数（攻撃）
+	// 引数
+	// アタッチするときの番号 １とか0とかの数字
 	void Attack_Action(int index);
 
 	// ダメージアニメーション用の変数のNew用関数
+	// 引数
+	// ダメージアニメーションの数
 	void Damage_Anim_New(int DAMAGE_ANIM_MAX);
+
 	// ダメージアニメーションの初期設定
+	// 引数
+	// １：ダメージアニメーションの数
+	// ２：アタッチするときの番号 １とか0とかの数字
 	void Damage_Anim_Init(int DAMAGE_ANIM_MAX, int index);
+
 	// アクションにあったアニメーションつける関数（ダメージ）
+	// 引数
+	// アタッチするときの番号 １とか0とかの数字
 	void Damage_Action(int index);
 
 	// ガードアニメーション用の変数のNew用関数
-	void Block_Anim_New(int DAMAGE_ANIM_MAX);
+	// 引数
+	// ガードアニメーションの数
+	void Block_Anim_New(int BLOCK_ANIM_MAX);
+
 	// ガードアニメーションの初期設定
-	void Block_Anim_Init(int DAMAGE_ANIM_MAX, int index);
+	// 引数
+	// １：ガードアニメーションの数
+	// ２：アタッチするときの番号 １とか0とかの数字
+	void Block_Anim_Init(int BLOCK_ANIM_MAX, int index);
+
 	// アクションにあったアニメーションつける関数（ガード）
+	// 引数
+	// アタッチするときの番号 １とか0とかの数字
 	void Block_Action(int index);
 
 	// アニメーション変数をdeleteする用の関数
@@ -97,14 +174,30 @@ public:
 
 
 	// 当たり判定のあったとき当たった相手の情報をとってくる関数
-	void Get_other(float* hit_other_x, float* hit_other_z, float* hit_other_r); // カプセル、円
+    // カプセル、円
+	// 引数
+	// １：Ｘ座標
+	// ２：Ｙ座標
+	// ３：半径
+	void Get_other(float* hit_other_x, float* hit_other_z, float* hit_other_r);
 
-	void Get_other(Vector3* hit_other_1, Vector3* hit_other_2);                 // 立方体
+	// 当たり判定のあったとき当たった相手の情報をとってくる関数
+	// 立方体
+	// 引数
+	// １：座標（Vector3型）
+	// ２：サイズ（Vector3型）
+	void Get_other(Vector3* hit_other_1, Vector3* hit_other_2);                
 
-	// 当たり判定を作る関数
+	// 当たり判定を作る関数(カプセル型、円型)
+	// 引数
+	// １：円、カプセルの上の部分
+	// ２：円、カプセルの下の部分
 	void Attack_Hit_New(Vector3* pot_pos, Vector3* under_pos);
 
 	// 攻撃力を保存する用の関数
+	// 引数
+	// １：攻撃アニメーションの数
+	// ２：各攻撃のダメージ用変数
 	void Set_Attack_Damage(int ATTACK_ANIM_MAX, const int* attack_damage);
 
 	// delete用の関数

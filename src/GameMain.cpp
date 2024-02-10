@@ -42,10 +42,6 @@ enum Scene
 	Scene_Max // ƒV[ƒ“‚ÌÅ‘å”
 };
 
-
-
-
-
 // ‰Šúˆ—
 void GameInit()
 {
@@ -100,7 +96,6 @@ void GameUpdate()
 		}
 		break;
 	}
-
 
 }
 

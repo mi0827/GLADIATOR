@@ -29,18 +29,21 @@ void CharacterBase::Update_Status()
 {
 	// HPバーが振り切れないようにする
 	// HPが０になったら
-	if (0 >= m_hp_count.x) {
+	if (0 >= m_hp_count.x) 
+	{
 		m_hp_count.x = 0;
 	}
 	m_now_hp = m_hp_count.x; // わかりやすくするために入れる
 
 	skill_flame_count++; // フレームカウントを増やす
 	// スキルクールダウンのカウントを増やす
-	if (skill_flame_count % 60 == 0) {
+	if (skill_flame_count % 60 == 0) 
+	{
 		m_skill_count.x += 30;
 	}
 	// スキルポイントがたまったら
-	if (m_skill_count.x >= SKILL_POINT_MAX) {
+	if (m_skill_count.x >= SKILL_POINT_MAX) 
+	{
 		m_skill_count.x  = SKILL_POINT_MAX;
 		skill_flag = true; // スキルを使用できるようにする
 	}
@@ -48,13 +51,15 @@ void CharacterBase::Update_Status()
 
 	sp_flame_count++; // フレームカウントを増やす
 	// SPクールダウンのカウントを増やす
-	if (sp_flame_count % 60 == 0) {
+	if (sp_flame_count % 60 == 0) 
+	{
 		// SPバーのカウントを増やす
 		m_sp_count.x += 40;
 	}
 
 	// SPポイントがたまったら
-	if (m_sp_count.x >= SP_POINT_MAX) {
+	if (m_sp_count.x >= SP_POINT_MAX) 
+	{
 		m_sp_count.x = SP_POINT_MAX;
 		sp_flag = true; // 必殺技を使用できるようにする
 	}
@@ -75,7 +80,7 @@ void CharacterBase::Reset_Status()
 //---------------------------------------------------------------------------
 // ステータスを描画する用の関数
 //---------------------------------------------------------------------------
-void CharacterBase::Draw_Status(int i)
+void CharacterBase::Draw_Status(int player_num)
 {
 	// 文字の最初の大きさをとっておく
 	int original_font_size = GetFontSize();
@@ -91,7 +96,8 @@ void CharacterBase::Draw_Status(int i)
 	float sp_w = (float)GetDrawStringWidth(sp, -1);
 
 	// HPバーの描画
-	if (i == 0) {
+	if (player_num == 0) 
+	{
 		// SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); // 描画するものを半透明にする
 		DrawBox(    (int)m_hp_pos.x ,                (int)m_hp_pos.y,   (int)(m_hp_pos.x + m_hp_count.x), (int)m_hp_count.y, GetColor(  0, 255,   0), TRUE); // 本体バー
 		DrawBox(   (int)(m_hp_pos.x + m_hp_count.x), (int)m_hp_count.y, (int)(HP_MAX + m_hp_pos.x),       (int)m_hp_pos.y,   GetColor(255,  20,  20), TRUE); // 余白バー
@@ -103,11 +109,12 @@ void CharacterBase::Draw_Status(int i)
 		DrawLineBox((int)m_skill_pos.x,                    (int)m_skill_pos.y,    (int)(SKILL_POINT_MAX + m_skill_pos.x), (int)m_skill_count.y, GetColor(255, 255, 255));	    // 外枠
 		// SPバーの描画
 		DrawString( (int)m_sp_pos.x , (int)(m_sp_pos.y - SCREEN_H / 27), sp, GetColor(255, 255, 255));
-		DrawBox(    (int)m_sp_pos.x ,                 (int)m_sp_pos.y,   (int)(m_sp_pos.x + m_sp_count.x), (int)m_sp_count.y, GetColor(255, 215,   0), TRUE); // 本体バー
-		DrawBox((int)(m_sp_pos.x  + m_sp_count.x),  (int)m_sp_count.y,   (int)(SP_POINT_MAX + m_sp_pos.x), (int)m_sp_pos.y,   GetColor(105, 105, 105), TRUE); // 余白バー
-		DrawLineBox((int)m_sp_pos.x ,                 (int)m_sp_pos.y,   (int)(SP_POINT_MAX + m_sp_pos.x), (int)m_sp_count.y, GetColor(255, 255, 255));		         // 外枠
+		DrawBox(    (int)m_sp_pos.x ,                   (int)m_sp_pos.y,   (int)(m_sp_pos.x + m_sp_count.x), (int)m_sp_count.y, GetColor(255, 215,   0), TRUE); // 本体バー
+		DrawBox(    (int)(m_sp_pos.x  + m_sp_count.x),  (int)m_sp_count.y, (int)(SP_POINT_MAX + m_sp_pos.x), (int)m_sp_pos.y,   GetColor(105, 105, 105), TRUE); // 余白バー
+		DrawLineBox((int)m_sp_pos.x ,                   (int)m_sp_pos.y,   (int)(SP_POINT_MAX + m_sp_pos.x), (int)m_sp_count.y, GetColor(255, 255, 255));		         // 外枠
 	}
-	else {
+	else 
+	{
 		DrawBox(    (int)(m_hp_pos.x + hp_x - HP_MAX), (int)m_hp_count.y,   (int)(hp_x + m_hp_pos.x),               (int)m_hp_pos.y,   GetColor(255, 20,   20), TRUE); // 余白バー
 		DrawBox(    (int)(m_hp_pos.x + hp_x),          (int)m_hp_pos.y,     (int)(m_hp_pos.x + hp_x - m_hp_count.x),(int)m_hp_count.y, GetColor(  0, 255,   0), TRUE); // 本体バー
 		DrawLineBox((int)(m_hp_pos.x + hp_x - HP_MAX), (int)m_hp_pos.y,     (int)(hp_x + m_hp_pos.x),               (int)m_hp_count.y, GetColor(255, 255, 255));               // 外枠
@@ -163,7 +170,8 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 	// -32768 ～ 32767 を-1.0f　～　1.0fにします
 	mov /= 32768.0f;
 	// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
-	if (mov.GetLength() > 0.5f) {
+	if (mov.GetLength() > 0.5f) 
+	{
 		Move_GamePad(m_check_move, &mov, camera_rot, mov_speed);
 	}
 	// WASDキーでプレイヤーの移動
@@ -266,11 +274,13 @@ void CharacterBase::Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* came
 //---------------------------------------------------------------------------
 void CharacterBase::Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* other_pos, Vector3* other_size)
 {
-	if (before_pos->x + hit_size->x >= other_pos->x - other_size->x && before_pos->x - hit_size->x <= other_pos->x + other_size->x) {
+	if (before_pos->x + hit_size->x >= other_pos->x - other_size->x && before_pos->x - hit_size->x <= other_pos->x + other_size->x)
+	{
 		// 縦方向だけ戻す
 		m_pos.z = before_pos->z;
 	}
-	if (before_pos->z + hit_size->z >= other_pos->z - other_size->z && before_pos->z - hit_size->z <= other_pos->z + other_size->z) {
+	if (before_pos->z + hit_size->z >= other_pos->z - other_size->z && before_pos->z - hit_size->z <= other_pos->z + other_size->z) 
+	{
 		// 縦方向だけ戻す
 		m_pos.x = before_pos->x;
 	}
@@ -302,8 +312,8 @@ void CharacterBase::Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX, int index)
 	for (int i = 0; i < ANIM_MAX; i++)
 	{
 		anim_attach[i] = MV1AttachAnim(m_model, index, anim_model[i]);         // モデルにアニメーションをアタッチ（つける）する
-		anim_total[i] = MV1GetAttachAnimTotalTime(m_model, anim_attach[i]);               // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		anim_rate[i] = MV1GetAttachAnimBlendRate(m_model, anim_attach[i]);                // ブレンド率の取得
+		anim_total[i] = MV1GetAttachAnimTotalTime(m_model, anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		anim_rate[i] = MV1GetAttachAnimBlendRate(m_model, anim_attach[i]);     // ブレンド率の取得
 		// 不必要なものにはブレンド率を0.0fにしておく（最初はアイドルにしておく）
 		if (i != ANIM_IDLE)  // アイドル以外のアニメーションをモデルから外す
 		{
@@ -351,16 +361,6 @@ void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX, int index)
 void CharacterBase::Attack_Action(int index)
 {
 	//// アニメーションの再生
-    // 使いたくないアニメーション
-	//if (anim_num == 0) {
-
-	//	anim_rate[0] = 1.0f; // 割合を減らす
-	//	anim_rate[1] = 0.0f;
-	//}
-	//  else {// 使いたいアニメーション		
-	//	anim_rate[0] = 0.0f; // 割合を減らす
-	//	anim_rate[1] = 1.0f;
-	//}
 	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
 	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, index, attack_anim_model[attack_anim_pick]); // 使いたいアニメーションをモデルにつけなおす
 	attack_flag = true; // 攻撃中にする
@@ -432,11 +432,9 @@ void CharacterBase::Block_Anim_Init(int BLOCK_ANIM_MAX, int index)
 {
 	for (int i = 0; i < BLOCK_ANIM_MAX; i++)
 	{
-
 		block_anim_attach[i] = MV1AttachAnim(m_model, index, block_anim_model[i]);   // モデルにアニメーションをアタッチ（つける）する
 		block_anim_total[i] =  MV1GetAttachAnimTotalTime(m_model, block_anim_attach[i]);        // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
 		block_anim_attach[i] = MV1DetachAnim(m_model, block_anim_attach[i]);                    // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
-	
 	}
 }
 //---------------------------------------------------------------------------
@@ -501,7 +499,7 @@ void CharacterBase::Get_other(Vector3* hit_other_pos, Vector3* hit_other_size)
 }
 
 //---------------------------------------------------------------------------
-// 当たり判定を作る関数
+// 当たり判定を作る関数(カプセル型、円型)
 //---------------------------------------------------------------------------
 void CharacterBase::Attack_Hit_New(Vector3* pot_pos, Vector3* under_pos)
 {

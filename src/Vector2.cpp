@@ -51,7 +51,8 @@ float Vector2::GetLength()
 void Vector2::normalize()
 {
 	float length = GetLength();
-	if( length > 0.0f ){
+	if( length > 0.0f )
+	{
 		x = x / length;
 		y = y / length;
 	}

@@ -82,9 +82,12 @@ bool CheckBoxHit3D(Vector3 box_pos1, Vector3 box_size1, Vector3 box_pos2, Vector
 	float front2 = box_pos2.z + box_size2.z;
 	float back2 = box_pos2.z - box_size2.z;
 
-	if (right1 >= left2 && left1 <= right2) {
-		if (up1 >= down2 && down1 <= up2) {
-			if (front1 >= back2 && back1 <= front2) {
+	if (right1 >= left2 && left1 <= right2)
+	{
+		if (up1 >= down2 && down1 <= up2) 
+		{
+			if (front1 >= back2 && back1 <= front2) 
+			{
 				return true;
 			}
 		}

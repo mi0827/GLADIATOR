@@ -62,9 +62,6 @@ bool SE::Playing_SE(int No)
 		return true;
 	}
 	return false;
-	/*if (playing == 0) {
-		
-	}*/
 }
 
 //---------------------------------------------------------------------------

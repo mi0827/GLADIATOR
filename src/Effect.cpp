@@ -8,7 +8,8 @@ void Effect_New(int Effect_MAX, int* effect_container, int* effect_handle)
 {
 	effect_container = new int[Effect_MAX];
 	effect_handle = new int[Effect_MAX];
-	for (int i = 0; i < Effect_MAX; i++) {
+	for (int i = 0; i < Effect_MAX; i++) 
+	{
 		effect_container[i] = 0;
 		effect_handle[i] = 0;
 	}

@@ -26,9 +26,12 @@ void EndScene::Init()
 	// フォントデータの読み込み
 	//GTA_font_data = LoadFontDataToHandle("Data/Font/Gta/GTA.dft", 1.0f);
 	GTA_font_path = "Data/Font/Gta/pricedown bl.ttf"; // 読み込むフォントファイルのパス
-	if (AddFontResourceEx(GTA_font_path, FR_PRIVATE, NULL) > 0) {
+	if (AddFontResourceEx(GTA_font_path, FR_PRIVATE, NULL) > 0) 
+	{
+
 	}
-	else {
+	else 
+	{
 		// フォント読込エラー処理
 		MessageBox(NULL, "フォント読込失敗", "", MB_OK);
 	}
@@ -104,9 +107,12 @@ void EndScene::Exit()
 {
 	DeleteGraph(background_image); // 画像データの解放
 	// ********** フォントのアンロード **********
-	if (RemoveFontResourceEx(GTA_font_path, FR_PRIVATE, NULL)) {
+	if (RemoveFontResourceEx(GTA_font_path, FR_PRIVATE, NULL))
+	{
+
 	}
-	else {
+	else 
+	{
 		MessageBox(NULL, "remove failure", "", MB_OK);
 	}
 	ChangeFont("ＭＳ 明朝", DX_CHARSET_DEFAULT);

@@ -39,6 +39,10 @@ public:
 	void Play_Victory_Draw(CharacterBase* character1, CharacterBase* character2); // 勝者を決める関数
 
 	// 描画用の文字列のサイズ調整
+	// 引数
+	// １：横の大きさ
+	// ２：縦の大きさ
+	// ３：文字列
 	void Draw_String_Size(float* w, float* h, const char* sting);
 
 	// キャラクターの更新処理
