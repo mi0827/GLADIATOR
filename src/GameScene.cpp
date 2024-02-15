@@ -366,8 +366,8 @@ void GameScene::Tutorial_Update()
 		}
 	}
 
-	// 両プレイヤーが準備完了なら
-	if (ready_flag1 && ready_flag2)
+	// 両プレイヤーが準備完了なら(今だけ一人で実行できるようにする)
+	if (ready_flag1 /*&& ready_flag2*/)
 	{
 		for (int i = 0; i < PLAYER_MAX; i++)
 		{

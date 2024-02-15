@@ -86,7 +86,7 @@ void CharacterBase::Draw_Status(int player_num)
 	int original_font_size = GetFontSize();
 	SetFontSize(SCREEN_H / 27);
 	int hp_x    = SCREEN_W / (int)10.5 + HP_MAX;
-	int skill_x = SCREEN_W / (int)3.3  + SKILL_POINT_MAX;
+	int skill_x = SCREEN_W / (int)(int)4 + 100 + SKILL_POINT_MAX;
 	int sp_x    = SCREEN_W / (int)4.0  + SP_POINT_MAX;
 	const char* skill = "スキル";
 	// 描画幅の取得
@@ -127,7 +127,7 @@ void CharacterBase::Draw_Status(int player_num)
 		DrawString( (int)(m_sp_pos.x + sp_x - sp_w), (int)(m_sp_pos.y - SCREEN_H / 27), sp, GetColor(255, 255, 255));
 		DrawBox(    (int)(m_sp_pos.x + sp_x - SP_POINT_MAX), (int)m_sp_count.y, (int)(m_sp_pos.x + sp_x - m_sp_count.x), (int)m_sp_pos.y,   GetColor(105, 105, 105), TRUE);  // 余白バー
 		DrawBox(    (int)(m_sp_pos.x + sp_x),                (int)m_sp_pos.y,   (int)(m_sp_pos.x + sp_x - m_sp_count.x), (int)m_sp_count.y, GetColor(255, 215,   0), TRUE);  // 本体バー
-		DrawLineBox((int)(m_sp_pos.x + sp_x - SP_POINT_MAX), (int)m_sp_pos.y,   (int)(sp_x + m_sp_pos.x),                (int)m_sp_count.y, GetColor(255, 255, 255));		          // 外枠
+		DrawLineBox((int)(m_sp_pos.x + sp_x - SP_POINT_MAX), (int)m_sp_pos.y,   (int)(sp_x + m_sp_pos.x),                (int)m_sp_count.y, GetColor(255, 255, 255));		 // 外枠
 	}
 	SetFontSize(original_font_size);
 }
