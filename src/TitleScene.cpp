@@ -14,19 +14,19 @@ SE title_se; // SEクラスのオブジェクト
 //------------------------------------------
 void TiteleScene::Init()
 {
-	background_image = LoadGraph("Data/Background/Title.jpg"); // 画像の用見込み
-	image_pos.set(0.0f, 0.0f); // 描画座標の設定
+	m_background_image = LoadGraph("Data/Background/Title.jpg"); // 画像の用見込み
+	m_image_pos.set(0.0f, 0.0f); // 描画座標の設定
 
 	// カウント類は最初はマックススタート
-	count_flame = FLAME_MAX;
-	count_time = Title_Time_MAX;
+	m_count_flame = FLAME_MAX;
+	m_count_time = Title_Time_MAX;
 
-	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
+	m_scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
 
 	// フォントデータの読み込み
 	//GTA_font_data = LoadFontDataToHandle("Data/Font/Gta/GTA.dft", 1.0f);
-	GTA_font_path = "Data/Font/Gta/pricedown bl.ttf"; // 読み込むフォントファイルのパス
-	if (AddFontResourceEx(GTA_font_path, FR_PRIVATE, NULL) > 0)
+	m_GTA_font_path = "Data/Font/Gta/pricedown bl.ttf"; // 読み込むフォントファイルのパス
+	if (AddFontResourceEx(m_GTA_font_path, FR_PRIVATE, NULL) > 0)
 	{
 
 	}
@@ -58,7 +58,7 @@ void TiteleScene::Update(int bgm_volume, int se_volume)
 
 	title_bgm.BGM_ChangeVolume(bgm_volume, BGM_MAX); // BGMのボリューム変更処理
 	title_se.SE_ChangeVolume(se_volume, SE_MAX);     // SEのボリューム変更処理
-	switch (title_scene)
+	switch (m_title_scene)
 	{
 	case TITLE:
 
@@ -73,42 +73,42 @@ void TiteleScene::Update(int bgm_volume, int se_volume)
 		if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_A)
 		{
 			// Aボタンを押されたら次のシーンに移動
-			start_flag = true;
+			m_start_flag = true;
 
 		}
 		else if (GetJoypadInputState(DX_INPUT_PAD2) & PAD_INPUT_A)
 		{
 			// Aボタンを押されたら次のシーンに移動
-			start_flag = true;
+			m_start_flag = true;
 		}
 		else
 		{
 			// ボタンが押されていないときはフラグを下げる
-			start_flag = false;
+			m_start_flag = false;
 		}
 
 
 		// スタートフラグがたっていたらSEの再生
-		if (start_flag) {
+		if (m_start_flag) {
 			title_se.Play_SE(DECISION, DX_PLAYTYPE_BACK, TRUE);
 		}
 		// スタートフラグがたっていたら次のシーンに進む
-		if (start_flag && title_se.Playing_SE(DECISION))
+		if (m_start_flag && title_se.Playing_SE(DECISION))
 		{
-			scene_change_judge = true; // シーンの切り替えを許可する
+			m_scene_change_judge = true; // シーンの切り替えを許可する
 			title_bgm.Stop_BGM(TITLE_BGM); // BGMを止める
 		}
 		else {
 			// フラグが下がっていたら
-			count_flame--; // フレームのカウントを減らす
-			if (count_flame <= 0)
+			m_count_flame--; // フレームのカウントを減らす
+			if (m_count_flame <= 0)
 			{ // フレームが設定された値以上になったら
-				count_flame = FLAME_MAX; // フレームカウントをリセット
-				count_time--;    // タイムカウントを進める
+				m_count_flame = FLAME_MAX; // フレームカウントをリセット
+				m_count_time--;    // タイムカウントを進める
 			}
-			if (count_time <= 0) // タイトル画面で一定時間止まっていたら
+			if (m_count_time <= 0) // タイトル画面で一定時間止まっていたら
 			{
-				title_scene = MOVIE; // 動画のシーンの切り替える
+				m_title_scene = MOVIE; // 動画のシーンの切り替える
 			}
 		}
 
@@ -119,15 +119,15 @@ void TiteleScene::Update(int bgm_volume, int se_volume)
 		title_bgm.Stop_BGM(TITLE_BGM); // BGMを止める
 
 		// プレイ動画の再生
-		movie = PlayMovie("Data/Movie/02.mp4", 1, DX_MOVIEPLAYTYPE_BCANCEL);
-		GetMovieStateToGraph(movie);
+		m_movie = PlayMovie("Data/Movie/02.mp4", 1, DX_MOVIEPLAYTYPE_BCANCEL);
+		GetMovieStateToGraph(m_movie);
 		// ゲームパッドの情報を丸ごと取得
-		if (GetMovieStateToGraph(movie))
+		if (GetMovieStateToGraph(m_movie))
 		{
 			// Aボタンを押されたらタイトル描画に戻る
-			title_scene = TITLE;
-			count_time = Title_Time_MAX;
-			PauseMovieToGraph(movie);
+			m_title_scene = TITLE;
+			m_count_time = Title_Time_MAX;
+			PauseMovieToGraph(m_movie);
 		}
 		// ゲームパッドの情報を丸ごと取得
 		//if (GetJoypadInputState(DX_INPUT_PAD2) & PAD_INPUT_A) {
@@ -146,13 +146,13 @@ void TiteleScene::Draw()
 {
 
 	// 背景画像の描画
-	DrawExtendGraphF(image_pos.x, image_pos.y, SCREEN_W, SCREEN_H, background_image, TRUE);
+	DrawExtendGraphF(m_image_pos.x, m_image_pos.y, SCREEN_W, SCREEN_H, m_background_image, TRUE);
 	// ここでとってきた文字をセットしておく
 	// 文字の最初の大きさをとっておく
 	int original_font_size = GetFontSize();
 
 
-	switch (title_scene)
+	switch (m_title_scene)
 	{
 	    case TITLE:
 	    {
@@ -188,10 +188,10 @@ void TiteleScene::Draw()
 //------------------------------------------
 void TiteleScene::Exit()
 {
-	DeleteGraph(background_image); // 画像データの解放
+	DeleteGraph(m_background_image); // 画像データの解放
 
 	// ********** フォントのアンロード **********
-	if (RemoveFontResourceEx(GTA_font_path, FR_PRIVATE, NULL)) 
+	if (RemoveFontResourceEx(m_GTA_font_path, FR_PRIVATE, NULL)) 
 	{
 
 	}

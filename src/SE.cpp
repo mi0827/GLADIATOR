@@ -15,7 +15,7 @@ SE::~SE()
 void SE::SE_ContainerNew(int size)
 {
 	// SE分の配列の確保
-	se_container = new int[size];
+	m_se_container = new int[size];
 }
 
 //---------------------------------------------------------------------------
@@ -24,7 +24,7 @@ void SE::SE_ContainerNew(int size)
 void SE::Load_SE(const char name[256], int No)
 {
 	// SEデータの読み込み
-	se_container[No] = LoadSoundMem(name);
+	m_se_container[No] = LoadSoundMem(name);
 }
 
 //---------------------------------------------------------------------------
@@ -33,7 +33,7 @@ void SE::Load_SE(const char name[256], int No)
 void SE::Play_SE(int No, int type, bool loop)
 {
 	// SEの再生
-	PlaySoundMem(se_container[No], type, loop);
+	PlaySoundMem(m_se_container[No], type, loop);
 }
 
 //---------------------------------------------------------------------------
@@ -43,7 +43,7 @@ void SE::SE_ChangeVolume(int se_volume, int size)
 {
 	// SEの数分ボリュームを変更する
 	for (int i = 0; i < size; i++) {
-		ChangeVolumeSoundMem(se_volume,se_container[i]);
+		ChangeVolumeSoundMem(se_volume,m_se_container[i]);
 	}
 }
 
@@ -57,7 +57,7 @@ bool SE::Playing_SE(int No)
 	// 再生中          ：  １
 	// 再生されていない：  ０
 	// エラー          ：－１
-	playing = CheckSoundMem(se_container[No]);
+	playing = CheckSoundMem(m_se_container[No]);
 	if (playing == 1) {
 		return true;
 	}
@@ -70,7 +70,7 @@ bool SE::Playing_SE(int No)
 void SE::SE_Delete()
 {
 	InitSoundMem();        // 読み込んだSEの削除
-	delete[] se_container; // 
+	delete[] m_se_container; // 
 
 }
 

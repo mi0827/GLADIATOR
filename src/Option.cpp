@@ -21,16 +21,16 @@ constexpr int BAR_Y = Volume_MAX / 2;// 中心からどれくらい隙間を開けるかの値(Y座
 
 Option::Option()
 {
-	menu_count = 0; // ０からスタート
+	m_menu_count = 0; // ０からスタート
 
 	// 座標設定
-	option_box_pos.set(SCREEN_W / 2 - BOX_SIZE_HARF_X, SCREEN_H / 2 - BOX_SIZE_HARF_Y); // 背景
-	BGM_box_pos.set(SCREEN_W / 2 - BAR_SPACE_X, SCREEN_H / 2 + BAR_Y);
-	SE_box_pos.set(SCREEN_W / 2 + BAR_SPACE_X - BAR_SIZE, SCREEN_H / 2 + BAR_Y);
-	option_flag = false; // 最初はオプションメニューは閉じている
-	BGM_Volume = 200;
-	SE_Volume = 255;
-	select = 0; // BGMからスタート
+	m_option_box_pos.set(SCREEN_W / 2 - BOX_SIZE_HARF_X, SCREEN_H / 2 - BOX_SIZE_HARF_Y); // 背景
+	m_BGM_box_pos.set(SCREEN_W / 2 - BAR_SPACE_X, SCREEN_H / 2 + BAR_Y);
+	m_SE_box_pos.set(SCREEN_W / 2 + BAR_SPACE_X - BAR_SIZE, SCREEN_H / 2 + BAR_Y);
+	m_option_flag = false; // 最初はオプションメニューは閉じている
+	m_BGM_Volume = 200;
+	m_SE_Volume = 255;
+	m_select = 0; // BGMからスタート
 }
 
 Option::~Option()
@@ -42,7 +42,7 @@ Option::~Option()
 //----------------------------------------------
 void Option::Init()
 {
-	image_box = LoadGraph("Data/Option/OptionMenu.png");
+	m_image_box = LoadGraph("Data/Option/OptionMenu.png");
 }
 
 //----------------------------------------------
@@ -56,50 +56,50 @@ void Option::Update()
 	if (IsPadOn(PAD_ID::PAD_START, PAD_NO::PAD_NO1))
 	{
 		// オプションメニューを開く
-		option_flag = true;
+		m_option_flag = true;
 	}
 	if (IsPadOn(PAD_ID::PAD_START, PAD_NO::PAD_NO2))
 	{
 		// オプションメニューを開く
-		option_flag = true;
+		m_option_flag = true;
 	}
 	// オプションメニューが開いているとき
-	if (option_flag) 
+	if (m_option_flag) 
 	{
-		menu_count++; // カウントを増やす
+		m_menu_count++; // カウントを増やす
 		// 左右のボタンで変更したい方を選択
 		// ０：BGM
 		// １：SE
 		// 左ボタン
 		if (IsPadOn(PAD_ID::PAD_D_DOWN, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_DOWN, PAD_NO::PAD_NO2))
 		{
-			select -= 1;
-			if (select < 0) 
+			m_select -= 1;
+			if (m_select < 0) 
 			{
-				select = 1;
+				m_select = 1;
 			}
 		}
 		// 右ボタン
 		if (IsPadOn(PAD_ID::PAD_D_RIGHT, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_RIGHT, PAD_NO::PAD_NO2)) 
 		{
-			select += 1;
-			if (select >= 2) 
+			m_select += 1;
+			if (m_select >= 2) 
 			{
-				select = 0;
+				m_select = 0;
 			}
 		}
-		if (select == 0) {
+		if (m_select == 0) {
 			// BGMの音量を下げる
 			// 下ボタン
 			if (IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO2))
 			{
-				BGM_Volume -= 10;
+				m_BGM_Volume -= 10;
 			}
 			// BGMの音量を上げる
 			// 上ボタン
 			if (IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO2)) 
 			{
-				BGM_Volume += 10;
+				m_BGM_Volume += 10;
 			}
 		}
 		else {
@@ -107,36 +107,36 @@ void Option::Update()
 			// 下ボタン
 			if (IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_LEFT, PAD_NO::PAD_NO2)) 
 			{
-				SE_Volume -= 10;
+				m_SE_Volume -= 10;
 			}
 			// SEの音量を上げる
 			// 上ボタン
 			if (IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_D_UP, PAD_NO::PAD_NO2))
 			{
-				SE_Volume += 10;
+				m_SE_Volume += 10;
 			}
 		}
 	}
 	// BGMの最低の値で止める
-	if (BGM_Volume <= Volume_LEAST) { BGM_Volume = Volume_LEAST; }
+	if (m_BGM_Volume <= Volume_LEAST) { m_BGM_Volume = Volume_LEAST; }
 	// BGMの最大値で止める
-	if (BGM_Volume >= Volume_MAX) { BGM_Volume = Volume_MAX; }
+	if (m_BGM_Volume >= Volume_MAX) { m_BGM_Volume = Volume_MAX; }
 	// SEの最低の値で止める
-	if (SE_Volume <= Volume_LEAST) { SE_Volume = Volume_LEAST; }
+	if (m_SE_Volume <= Volume_LEAST) { m_SE_Volume = Volume_LEAST; }
 	// SEの最大値で止める
-	if (SE_Volume >= Volume_MAX) { SE_Volume = Volume_MAX; }
+	if (m_SE_Volume >= Volume_MAX) { m_SE_Volume = Volume_MAX; }
 
 	// カウントが一定以上になったら
-	if (menu_count >= MENU_COUNT) 
+	if (m_menu_count >= MENU_COUNT) 
 	{
 		// オプションメニューが開いていて
 		// なおボタンが押されたら
 		if (IsPadOn(PAD_ID::PAD_START, PAD_NO::PAD_NO1) || IsPadOn(PAD_ID::PAD_START, PAD_NO::PAD_NO2))
 		{
 			// オプションメニューを閉じる
-			option_flag = false;
+			m_option_flag = false;
 			// カウントをリセット
-			menu_count = 0;
+			m_menu_count = 0;
 		}
 	}
 }
@@ -149,42 +149,42 @@ void Option::Draw()
 	// ChangeFont("ＭＳ 明朝");
 	// オプションメニューが開いている時だけ
 	// 描画する
-	if (option_flag) 
+	if (m_option_flag) 
 	{
-		DrawExtendGraphF(option_box_pos.x, option_box_pos.y, option_box_pos.x + BOX_SIZE_X, option_box_pos.y + BOX_SIZE_Y, image_box, TRUE);  // オプションメニューの背景
+		DrawExtendGraphF(m_option_box_pos.x, m_option_box_pos.y, m_option_box_pos.x + BOX_SIZE_X, m_option_box_pos.y + BOX_SIZE_Y, m_image_box, TRUE);  // オプションメニューの背景
 		// BGMバーの描画 
-		DrawBox(    (int)BGM_box_pos.x, (int)BGM_box_pos.y, (int)(BGM_box_pos.x + BAR_SIZE), (int)(BGM_box_pos.y - BGM_Volume), GetColor(0, 0, 0), true);
-		DrawLineBox((int)BGM_box_pos.x, (int)BGM_box_pos.y, (int)(BGM_box_pos.x + BAR_SIZE), (int)(BGM_box_pos.y - BGM_Volume), GetColor(255, 255, 255));
+		DrawBox(    (int)m_BGM_box_pos.x, (int)m_BGM_box_pos.y, (int)(m_BGM_box_pos.x + BAR_SIZE), (int)(m_BGM_box_pos.y - m_BGM_Volume), GetColor(0, 0, 0), true);
+		DrawLineBox((int)m_BGM_box_pos.x, (int)m_BGM_box_pos.y, (int)(m_BGM_box_pos.x + BAR_SIZE), (int)(m_BGM_box_pos.y - m_BGM_Volume), GetColor(255, 255, 255));
 		int original_font_size = GetFontSize();
 		SetFontSize(28); // フォントサイズの変更
 		const char* bgm = "BGM";
 		Vector2 bgm_pos; // 文字列の座標
 		bgm_pos.x = (float)GetDrawStringWidth(bgm, -1);
 		bgm_pos.y = (float)GetFontSize();
-		DrawFormatStringF((BGM_box_pos.x + BAR_SIZE / 2 - bgm_pos.x / 2), BGM_box_pos.y, GetColor(0, 0, 0), bgm);// 文字列の描画
+		DrawFormatStringF((m_BGM_box_pos.x + BAR_SIZE / 2 - bgm_pos.x / 2), m_BGM_box_pos.y, GetColor(0, 0, 0), bgm);// 文字列の描画
 
 		// SEバーの描画
-		DrawBox(    (int)SE_box_pos.x, (int)SE_box_pos.y, (int)(SE_box_pos.x + BAR_SIZE), (int)(SE_box_pos.y - SE_Volume), GetColor(0, 0, 0), true);
-		DrawLineBox((int)SE_box_pos.x, (int)SE_box_pos.y, (int)(SE_box_pos.x + BAR_SIZE), (int)(SE_box_pos.y - SE_Volume), GetColor(255, 255, 255));
+		DrawBox(    (int)m_SE_box_pos.x, (int)m_SE_box_pos.y, (int)(m_SE_box_pos.x + BAR_SIZE), (int)(m_SE_box_pos.y - m_SE_Volume), GetColor(0, 0, 0), true);
+		DrawLineBox((int)m_SE_box_pos.x, (int)m_SE_box_pos.y, (int)(m_SE_box_pos.x + BAR_SIZE), (int)(m_SE_box_pos.y - m_SE_Volume), GetColor(255, 255, 255));
 		const char* se = "SE";
 		Vector2 se_pos; // 文字列の座標
 		se_pos.x = (float)GetDrawStringWidth(se, -1);
 		se_pos.y = (float)GetFontSize();
-		DrawFormatStringF((SE_box_pos.x + BAR_SIZE / 2 - se_pos.x / 2), SE_box_pos.y, GetColor(0, 0, 0), se); // 文字列の描画
+		DrawFormatStringF((m_SE_box_pos.x + BAR_SIZE / 2 - se_pos.x / 2), m_SE_box_pos.y, GetColor(0, 0, 0), se); // 文字列の描画
 	
 	
 		// どちらのバーを選んでいるかわかりやすくするためのもの
-		if (select == 0) 
+		if (m_select == 0) 
 		{
 			// BGM側
-			DrawLineBox((int)BGM_box_pos.x, (int)BGM_box_pos.y, (int)(BGM_box_pos.x + BAR_SIZE), (int)(BGM_box_pos.y - BGM_Volume), GetColor(255, 255, 0));
-			DrawFormatStringF(BGM_box_pos.x + BAR_SIZE / 2 - bgm_pos.x / 2 - 2, BGM_box_pos.y - 2, GetColor(255, 255, 0), bgm);
+			DrawLineBox((int)m_BGM_box_pos.x, (int)m_BGM_box_pos.y, (int)(m_BGM_box_pos.x + BAR_SIZE), (int)(m_BGM_box_pos.y - m_BGM_Volume), GetColor(255, 255, 0));
+			DrawFormatStringF(m_BGM_box_pos.x + BAR_SIZE / 2 - bgm_pos.x / 2 - 2, m_BGM_box_pos.y - 2, GetColor(255, 255, 0), bgm);
 		}
 		else
 		{
 			// SE側
-			DrawLineBox((int)SE_box_pos.x, (int)SE_box_pos.y, (int)(SE_box_pos.x + BAR_SIZE), (int)(SE_box_pos.y - SE_Volume), GetColor(225, 255, 0));
-			DrawFormatStringF(SE_box_pos.x + BAR_SIZE / 2 - se_pos.x / 2 -2, SE_box_pos.y-2, GetColor(255, 255, 0), se);
+			DrawLineBox((int)m_SE_box_pos.x, (int)m_SE_box_pos.y, (int)(m_SE_box_pos.x + BAR_SIZE), (int)(m_SE_box_pos.y - m_SE_Volume), GetColor(225, 255, 0));
+			DrawFormatStringF(m_SE_box_pos.x + BAR_SIZE / 2 - se_pos.x / 2 -2, m_SE_box_pos.y-2, GetColor(255, 255, 0), se);
 		}
 		SetFontSize(original_font_size); // フォントサイズを戻す
 	}

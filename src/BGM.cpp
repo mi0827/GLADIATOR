@@ -16,7 +16,7 @@ BGM::~BGM()
 void BGM::BGM_ContainerNew(int size)
 {
 	// BGM分の配列の確保
-	bgm_container = new int[size];
+	m_bgm_container = new int[size];
 }
 
 //---------------------------------------------------------------------------
@@ -25,7 +25,7 @@ void BGM::BGM_ContainerNew(int size)
 void BGM::Load_BGM(const char name[256],int No)
 {
 	// BGMのデータを読み込む
-	bgm_container[No] = LoadSoundMem(name);
+	m_bgm_container[No] = LoadSoundMem(name);
 }
 
 //---------------------------------------------------------------------------
@@ -34,7 +34,7 @@ void BGM::Load_BGM(const char name[256],int No)
 void BGM::Play_BGM(int type, bool loop, int No)
 {
 	// BGMの再生
-	PlaySoundMem(bgm_container[No], type, loop);
+	PlaySoundMem(m_bgm_container[No], type, loop);
 }
 
 //---------------------------------------------------------------------------
@@ -45,7 +45,7 @@ void BGM::BGM_ChangeVolume(int bgm_volume, int size)
 	// BGMの数分ボリュームを変更する
 	for (int i = 0; i < size; ++i) 
 	{
-		ChangeVolumeSoundMem(bgm_volume, bgm_container[i]);
+		ChangeVolumeSoundMem(bgm_volume, m_bgm_container[i]);
 	}
 }
 
@@ -54,7 +54,7 @@ void BGM::BGM_ChangeVolume(int bgm_volume, int size)
 //---------------------------------------------------------------------------
 void BGM::Stop_BGM(int No)
 {
-	StopSoundMem(bgm_container[No]);
+	StopSoundMem(m_bgm_container[No]);
 }
 
 //---------------------------------------------------------------------------
@@ -67,7 +67,7 @@ bool BGM::Playing_BGM(int No)
 	// 再生中          ：  １
 	// 再生されていない：  ０
 	// エラー          ：－１
-	playing = CheckSoundMem(bgm_container[No]);
+	playing = CheckSoundMem(m_bgm_container[No]);
 	if (playing == 1) {
 		return true;
 	}
@@ -81,5 +81,5 @@ bool BGM::Playing_BGM(int No)
 void BGM::BGM_Delete()
 {
 	InitSoundMem();        // 読み込んだBGMの削除
-	delete[] bgm_container;
+	delete[] m_bgm_container;
 }

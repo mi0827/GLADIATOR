@@ -52,7 +52,7 @@ void GameInit()
 	scene_num = Titele; // 最初はタイトルシーンから始める
 	 
 	option.Init(); 
-	option.option_flag = false; // 最初は開かない
+	option.m_option_flag = false; // 最初は開かない
 
 }
 
@@ -65,8 +65,8 @@ void GameUpdate()
 	{
 	case Titele: // タイトルシーン
 
-		scene->Update(option.BGM_Volume, option.SE_Volume);
-		if (scene->scene_change_judge) {                             // シーンの切り替えの許可が下りれば
+		scene->Update(option.m_BGM_Volume, option.m_SE_Volume);
+		if (scene->m_scene_change_judge) {                             // シーンの切り替えの許可が下りれば
 			scene->Exit();                                           // dekete前に終了処理を回す
 			Scene_Change_Judge(scene_num, Play);                     // シーンの切り替え
 			delete scene;                                            // シーンの切り替えの前にタイトルシーンを初期化
@@ -76,8 +76,8 @@ void GameUpdate()
 		break;
 
 	case Play:  // プレイシーン
-		scene->Update(option.BGM_Volume, option.SE_Volume);
-		if (scene->scene_change_judge) {                              // シーンの切り替えの許可が下りれば
+		scene->Update(option.m_BGM_Volume, option.m_SE_Volume);
+		if (scene->m_scene_change_judge) {                              // シーンの切り替えの許可が下りれば
 			scene->Exit();                                            // dekete前に終了処理を回す
 			Scene_Change_Judge(scene_num, End);  // シーンの切り替え	                                                        
 			delete scene;                                            // シーンの切り替えの前にタイトルシーンを初期化
@@ -86,8 +86,8 @@ void GameUpdate()
 		}
 		break;
 	case End:  // エンドシーン
-		scene->Update(option.BGM_Volume, option.SE_Volume);
-		if (scene->scene_change_judge) {                             // シーンの切り替えの許可が下りれば
+		scene->Update(option.m_BGM_Volume, option.m_SE_Volume);
+		if (scene->m_scene_change_judge) {                             // シーンの切り替えの許可が下りれば
 			scene->Exit();                                           // dekete前に終了処理を回す
 			Scene_Change_Judge(scene_num, Titele);                   // シーンの切り替え
 			delete scene;                                            // シーンの切り替えの前にタイトルシーンを初期化

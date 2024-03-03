@@ -49,5 +49,5 @@ public:
 	
 public:
 
-	int* se_container; // SEの入れ物用の配列
+	int* m_se_container; // SEの入れ物用の配列
 };

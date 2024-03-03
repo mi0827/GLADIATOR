@@ -13,20 +13,20 @@ const int End_Time_MAX = 3;  // エンド描画時間(今だけ3秒)
 //------------------------------------------
 void EndScene::Init()
 {
-	background_image = LoadGraph("Data/background/End.jpg"); // 背景画像の読み込み
-	image_pos.set(0.0f, 0.0f); // 描画座標の設定
+	m_background_image = LoadGraph("Data/background/End.jpg"); // 背景画像の読み込み
+	m_image_pos.set(0.0f, 0.0f); // 描画座標の設定
 
 	// カウント類は最初はマックススタート
-	count_flame = FLAME_MAX;
-	count_time  = End_Time_MAX;
+	m_count_flame = FLAME_MAX;
+	m_count_time  = End_Time_MAX;
 
-	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
+	m_scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
 
 
 	// フォントデータの読み込み
 	//GTA_font_data = LoadFontDataToHandle("Data/Font/Gta/GTA.dft", 1.0f);
-	GTA_font_path = "Data/Font/Gta/pricedown bl.ttf"; // 読み込むフォントファイルのパス
-	if (AddFontResourceEx(GTA_font_path, FR_PRIVATE, NULL) > 0) 
+	m_GTA_font_path = "Data/Font/Gta/pricedown bl.ttf"; // 読み込むフォントファイルのパス
+	if (AddFontResourceEx(m_GTA_font_path, FR_PRIVATE, NULL) > 0) 
 	{
 
 	}
@@ -50,15 +50,15 @@ void EndScene::Update(int bgm_volume, int se_volume)
 	// BGMの音量の調整
 	end_bgm.BGM_ChangeVolume(bgm_volume, BGM_MAX);
 
-	count_flame--; // フレームのカウントを減らす
-	if (count_flame <= 0) { // フレームが設定された値以上になったら
-		count_flame = FLAME_MAX; // フレームカウントをリセット
-		count_time--;    // タイムカウントを進める
+	m_count_flame--; // フレームのカウントを減らす
+	if (m_count_flame <= 0) { // フレームが設定された値以上になったら
+		m_count_flame = FLAME_MAX; // フレームカウントをリセット
+		m_count_time--;    // タイムカウントを進める
 	}
 	//Flame_Time_Update(&count_flame, &count_time);
-	if (count_time <= 0) // タイトル画面で10秒経ったら
+	if (m_count_time <= 0) // タイトル画面で10秒経ったら
 	{
-		scene_change_judge = true; // シーンの切り替えを許可する
+		m_scene_change_judge = true; // シーンの切り替えを許可する
 		// BGMの再生を止める
 		end_bgm.Stop_BGM(BGM_1);
 	}
@@ -73,9 +73,9 @@ void EndScene::Draw()
 	int original_font_size = GetFontSize();
 	// 背景画像の描画
 
-	DrawExtendGraph((int)image_pos.x, (int)image_pos.y, SCREEN_W, SCREEN_H, (int)background_image, TRUE);
+	DrawExtendGraph((int)m_image_pos.x, (int)m_image_pos.y, SCREEN_W, SCREEN_H, (int)m_background_image, TRUE);
 	SetFontSize(100); // フォントサイズの変更
-	DrawFormatString(16, 16, GetColor(0, 0, 0), "RESTART:%2d", count_time);
+	DrawFormatString(16, 16, GetColor(0, 0, 0), "RESTART:%2d", m_count_time);
 	//SetFontSize(40); // フォントサイズの変更
 	//DrawFormatString(16, 16, GetColor(255, 255, 255), "RESTART:%2d", count_time);
 
@@ -105,9 +105,9 @@ void EndScene::Draw()
 //------------------------------------------
 void EndScene::Exit()
 {
-	DeleteGraph(background_image); // 画像データの解放
+	DeleteGraph(m_background_image); // 画像データの解放
 	// ********** フォントのアンロード **********
-	if (RemoveFontResourceEx(GTA_font_path, FR_PRIVATE, NULL))
+	if (RemoveFontResourceEx(m_GTA_font_path, FR_PRIVATE, NULL))
 	{
 
 	}

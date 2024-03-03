@@ -71,13 +71,13 @@ private:
 	// bead 関連
 	//------------------------------------
 	// 弾が消えるまでのカウント用変数
-	float lifespan_count = 120.0f;
+	float m_lifespan_count = 120.0f;
 
 public:
 
 	// 弾が何かにあたったか
-	bool bead_hit_judg;
+	bool m_bead_hit_judg;
 	// 弾変数
-	Vector3* bead_pos = 0;
+	Vector3* m_bead_pos = 0;
 
 };

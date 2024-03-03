@@ -95,40 +95,40 @@ public:
 
 private:
 
-	int time_count = 0;     // フレーム数を現実の時間で計算する用の変数
-	int flame_count = 0;    // フレーム数をカウントをする変数
-	int play_scene = 0;     // チュートリアルの途中かを判別
-	int end_count = 0;      // エンドシーンの時間
-	bool status_flag = false;   // ステータス更新処理していいかのフラグ
+	int m_time_count = 0;     // フレーム数を現実の時間で計算する用の変数
+	int m_flame_count = 0;    // フレーム数をカウントをする変数
+	int m_play_scene = 0;     // チュートリアルの途中かを判別
+	int m_end_count = 0;      // エンドシーンの時間
+	bool m_status_flag = false;   // ステータス更新処理していいかのフラグ
 
 	//-------------------------------------------
 	// チュートリアルで使う変数
 	//-------------------------------------------
 	const int BUTTON_COUNT_MAX = 180; // ３秒
 	// 準備完了フラグ
-	bool ready_flag1 = false;
-	bool ready_flag2 = false;
+	bool m_ready_flag1 = false;
+	bool m_ready_flag2 = false;
 	// ボタンの長押しをカウントする用の変数
-	float button_count1 = 0;
-	int button_count2 = 0;
+	float m_button_count1 = 0;
+	int m_button_count2 = 0;
 
-	// ヒットストップ科の判断用変数
-	bool stop = false;
+	// ヒットストップの判断用変数
+	bool m_stop = false;
 
 	// ライト用の変数
 	static const int light_MAX = 1;
-	int light_handle[light_MAX] = {0}; // ライトハンドル
-	COLOR_F original_dif_color = { 0,0,0 };
-	COLOR_F original_spc_color = { 0,0,0 };
-	COLOR_F original_amb_color = { 0,0,0 };
-	Vector3 original_light_rot = { 0,0,0 }; // 初期ライトの向き
-	Vector3 light_rot = { 0.0f,0.0f,0.0f }; // ライトの回転
-	Vector3 light_pos = { 0.0f,0.0f,0.0f }; // ライトのポジション
+	int m_light_handle[light_MAX] = {0}; // ライトハンドル
+	COLOR_F m_original_dif_color = { 0,0,0 };
+	COLOR_F m_original_spc_color = { 0,0,0 };
+	COLOR_F m_original_amb_color = { 0,0,0 };
+	Vector3 m_original_light_rot = { 0,0,0 }; // 初期ライトの向き
+	Vector3 m_light_rot = { 0.0f,0.0f,0.0f }; // ライトの回転
+	Vector3 m_light_pos = { 0.0f,0.0f,0.0f }; // ライトのポジション
 
 	static const int FIGHT_START_COUNT_MAX = 300; // 戦いが始まるまでの準備時間
-	bool fight_start_flag = false; // 戦いが始まる用のフラグ
-	int fight_start_count = 0; // レディーされから戦いが始まるまでのカウント
+	bool m_fight_start_flag = false; // 戦いが始まる用のフラグ
+	int m_fight_start_count = 0; // レディーされから戦いが始まるまでのカウント
 
-	int draw_fight_pos_x = 0; // Lady,Fightの描画座標用変数
+	int m_draw_fight_pos_x = 0; // Lady,Fightの描画座標用変数
 	//int shadowmap_handle; // シャドーマっプ
 };

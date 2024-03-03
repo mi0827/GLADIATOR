@@ -33,7 +33,7 @@ Field::Field()
 	m_pos.set(0 + MODEL_SIZE* 15,0.0f, 0 + MODEL_SIZE * 15); // 描画座標の設定
 	m_rot.clear(); // 回転量の 
 
-	wall_obj_max = 0;
+	m_wall_obj_max = 0;
 	m_model = 0;
 }
 
@@ -43,10 +43,10 @@ void Field::Init()
 {
 	// ここでフィールドモデルの読み込みをする
 	m_model = MV1LoadModel("Data/Model/Field/Ground_2.mv1");
-	obj_max = Field_Init();
+	m_obj_max = Field_Init();
 	//wall_obj_max = Wall_Field_Init();
 	// オブジェクトの初期設定
-	for (int i = 0; i < obj_max; ++i)
+	for (int i = 0; i < m_obj_max; ++i)
 	{
 		// ここでNEWする
 		Object* object = new Object;
@@ -130,7 +130,7 @@ void Field::Draw()
 	// モデルの描画
 	MV1DrawModel(m_model);
 
-	for (int i = 0; i < obj_max; i++) 
+	for (int i = 0; i < m_obj_max; i++) 
 	{
 		objects[i]->Draw();
 	}
@@ -146,5 +146,5 @@ void Field::Exit()
 
 	// オブジェクトの配列の解放
 	objects.clear();
-	wall_objects.clear();
+	m_wall_objects.clear();
 }

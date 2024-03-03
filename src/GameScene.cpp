@@ -72,12 +72,12 @@ void GameScene::Init()
 	camera[1]->SetPadNo(DX_INPUT_PAD2);
 
 	// 最初はマックス値から始める
-	time_count = TIME_MAX;      // タイマーの設定
-	flame_count = FLAME_MAX;    // フレームカウントの設定
-	end_count = END_TIME_MAX;   // エンドに行くまでのカウントダウン
-	scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
-	status_flag = false;        // 最初はステータス更新をしてほしくない
-	play_scene = Play_Tutorial; // 最初はチュートリアルシーン
+	m_time_count = TIME_MAX;      // タイマーの設定
+	m_flame_count = FLAME_MAX;    // フレームカウントの設定
+	m_end_count = END_TIME_MAX;   // エンドに行くまでのカウントダウン
+	m_scene_change_judge = false; // 最初はシーンの切り替えをしてはいけない
+	m_status_flag = false;        // 最初はステータス更新をしてほしくない
+	m_play_scene = Play_Tutorial; // 最初はチュートリアルシーン
 
 	SE_Init(); // SEの初期化
 	BGM_Init(); // BGMの初期化
@@ -97,11 +97,11 @@ void GameScene::Update(int bgm_volume, int se_volume)
 
 	game_bgm.BGM_ChangeVolume(bgm_volume, BGM_MAX); // BGMのボリューム変更処理
 	se_game.SE_ChangeVolume(se_volume, SE_MAX);	 // SEのボリューム変更処理   
-	if (!fight_start_flag) 
+	if (!m_fight_start_flag) 
 	{
 		// ヒットストップしてほしいかしてほしくないか
-		stop = hit_stop.Hit_Stop();
-		if (!stop)
+		m_stop = hit_stop.Hit_Stop();
+		if (!m_stop)
 		{
 			Character_Update(se_volume); // キャラクターたちの更新処理
 		}
@@ -116,18 +116,18 @@ void GameScene::Update(int bgm_volume, int se_volume)
 	}
 
 
-	switch (play_scene)
+	switch (m_play_scene)
 	{
 	case Play_Tutorial:
-		status_flag = false;        // ステータス更新をしてほしくない
+		m_status_flag = false;        // ステータス更新をしてほしくない
 		Tutorial_Update();
 		break;
 	case Play_Main:
-		status_flag = true;         // ステータス更新をしてほしくない
+		m_status_flag = true;         // ステータス更新をしてほしくない
 		PlayMain_Update();
 		break;
 	case Play_End:
-		status_flag = false;        // 最初はステータス更新をしてほしくない
+		m_status_flag = false;        // 最初はステータス更新をしてほしくない
 		PlayEnd_Update();
 		break;
 	};
@@ -140,7 +140,7 @@ void GameScene::Update(int bgm_volume, int se_volume)
 void GameScene::Draw()
 {
 	// オリジナルのライトの向きを取ってくる
-	original_light_rot = GetLightDirection();
+	m_original_light_rot = GetLightDirection();
 
 	// 各クラスの描画処理
 	for (int i = 0; i < PLAYER_MAX; i++) 
@@ -170,7 +170,7 @@ void GameScene::Draw()
 
 		camera[i]->Draw(i); // カメラの描画処理（ ※ 描画処理の一番最後にすること）
 	}
-	switch (play_scene)
+	switch (m_play_scene)
 	{
 	case Play_Tutorial:
 
@@ -209,7 +209,7 @@ void GameScene::Exit()
 	// ライトの初期化
 	for (int i = 0; i < light_MAX; i++) 
 	{
-		DeleteLightHandle(light_handle[i]);
+		DeleteLightHandle(m_light_handle[i]);
 	}
 }
 
@@ -244,26 +244,26 @@ void GameScene::BGM_Init()
 void GameScene::Light_Init()
 {
 	// もとからあるライトの値をもらってくる
-	original_dif_color = GetLightDifColor();
-	original_spc_color = GetLightSpcColor();
-	original_amb_color = GetLightAmbColor();
+	m_original_dif_color = GetLightDifColor();
+	m_original_spc_color = GetLightSpcColor();
+	m_original_amb_color = GetLightAmbColor();
 
 
 	for (int i = 0; i < light_MAX; i++)
 	{
 		// ライトの作成
-		light_handle[i] = CreateDirLightHandle(VGet(0.0f, 1.0f, 0.0f));
+		m_light_handle[i] = CreateDirLightHandle(VGet(0.0f, 1.0f, 0.0f));
 
 		//light_handle[i] = CreateDirLightHandle(VGet(1.0f, 0.0f, 0.0f));
 
 		// ライトの座標設定
-		light_pos.set(500, 200, 500);
-		SetLightPositionHandle(light_handle[i], light_pos.VGet());
+		m_light_pos.set(500, 200, 500);
+		SetLightPositionHandle(m_light_handle[i], m_light_pos.VGet());
 		//	スポットライトの向きの設定（とりあえず真下を向かせています）
-		light_rot.set(-4.0f, -1.0f, -2.0f);
-		SetLightDirectionHandle(light_handle[i], light_rot.VGet());
+		m_light_rot.set(-4.0f, -1.0f, -2.0f);
+		SetLightDirectionHandle(m_light_handle[i], m_light_rot.VGet());
 		// ライトの色の変更
-		SetLightDifColorHandle(light_handle[i], GetColorF(1.0f, 1.0f, 1.0f, 0.0f));
+		SetLightDifColorHandle(m_light_handle[i], GetColorF(1.0f, 1.0f, 1.0f, 0.0f));
 
 	}
 }
@@ -278,11 +278,11 @@ void GameScene::Light_Update()
 		/*SetLightPositionHandle(light_handle[i], light_pos.VGet());*/
 
 		// 新たに追加したスポットライトの向きを変更しましす
-		SetLightDirectionHandle(light_handle[i], light_rot.VGet());
+		SetLightDirectionHandle(m_light_handle[i], m_light_rot.VGet());
 		// 色を変更する場合
-		SetLightDifColorHandle(light_handle[i], GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
+		SetLightDifColorHandle(m_light_handle[i], GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
 		//	スポットライトの色の設定
-		SetLightDifColorHandle(light_handle[i], GetColorF(original_dif_color.r, original_dif_color.g, original_dif_color.b, 1.0f));
+		SetLightDifColorHandle(m_light_handle[i], GetColorF(m_original_dif_color.r, m_original_dif_color.g, m_original_dif_color.b, 1.0f));
 		// 十字キーでライトの向きを変更
 		// 調整に使うもの
 		/*if (CheckHitKey(KEY_INPUT_RIGHT)) {
@@ -308,66 +308,66 @@ void GameScene::Tutorial_Update()
 {
 	// プレイヤー１
 
-	if (IsPadRepeat(PAD_ID::PAD_X, players[0]->pad_no)) 
+	if (IsPadRepeat(PAD_ID::PAD_X, players[0]->m_pad_no)) 
 	{
-		if (!ready_flag1) 
+		if (!m_ready_flag1) 
 		{
-			button_count1++; // ボタンの長押しカウントを増やす
-			if (button_count1 >= BUTTON_COUNT_MAX) 
+			m_button_count1++; // ボタンの長押しカウントを増やす
+			if (m_button_count1 >= BUTTON_COUNT_MAX) 
 			{
 				// カウントが一定以上になると準備完了
-				ready_flag1 = true;
+				m_ready_flag1 = true;
 				// 指定のSEが再生中じゃなかったら
 				if (!se_game.Playing_SE(READY))
 				{
 					// SEの再生
 					se_game.Play_SE(READY, DX_PLAYTYPE_BACK, true);
 				}
-				PadVidation(players[0]->pad_input, 1000, 300, -1);
+				PadVidation(players[0]->m_pad_input, 1000, 300, -1);
 			}
 		}
 	}
 	else {
 		// 押されていない時はカウントを減らす
-		button_count1--;
-		if (button_count1 < 0) 
+		m_button_count1--;
+		if (m_button_count1 < 0) 
 		{
 			// ボタンカウントがマイナスにならないようにする
-			button_count1 = 0;
+			m_button_count1 = 0;
 		}
 	}
 	// プレイヤー２
-	if (IsPadRepeat(PAD_ID::PAD_X, players[1]->pad_no)) 
+	if (IsPadRepeat(PAD_ID::PAD_X, players[1]->m_pad_no)) 
 	{
-		if (!ready_flag2) 
+		if (!m_ready_flag2) 
 		{
-			button_count2++; // ボタンの長押しカウントを増やす
-			if (button_count2 >= BUTTON_COUNT_MAX)
+			m_button_count2++; // ボタンの長押しカウントを増やす
+			if (m_button_count2 >= BUTTON_COUNT_MAX)
 			{
 				// カウントが一定以上になると準備完了
-				ready_flag2 = true;
+				m_ready_flag2 = true;
 				// 指定のSEが再生中じゃなかったら
 				if (!se_game.Playing_SE(READY))
 				{
 					// SEの再生
 					se_game.Play_SE(READY, DX_PLAYTYPE_BACK, true);
 				}
-				PadVidation(players[1]->pad_input, 1000, 300, -1);
+				PadVidation(players[1]->m_pad_input, 1000, 300, -1);
 			}
 		}
 	}
 	else {
 		// 押されていない時はカウントを減らす
-		button_count2--;
-		if (button_count2 < 0)
+		m_button_count2--;
+		if (m_button_count2 < 0)
 		{
 			// ボタンカウントがマイナスにならないようにする
-			button_count2 = 0;
+			m_button_count2 = 0;
 		}
 	}
 
 	// 両プレイヤーが準備完了なら(今だけ一人で実行できるようにする)
-	if (ready_flag1 /*&& ready_flag2*/)
+	if (m_ready_flag1 /*&& ready_flag2*/)
 	{
 		for (int i = 0; i < PLAYER_MAX; i++)
 		{
@@ -381,18 +381,18 @@ void GameScene::Tutorial_Update()
 
 		
 		// 試合開始までのフラグを立てる
-		fight_start_flag = true;
+		m_fight_start_flag = true;
 
 	}
 	// ファイトフラグが立ったら
-	if (fight_start_flag)
+	if (m_fight_start_flag)
 	{
-		fight_start_count++; // ファイトカウントを増やす
-		if (fight_start_count >= FIGHT_START_COUNT_MAX)
+		m_fight_start_count++; // ファイトカウントを増やす
+		if (m_fight_start_count >= FIGHT_START_COUNT_MAX)
 		{
 			// 一定時間たったら
-			play_scene = Play_Main; // プレイメインに移動
-			fight_start_flag = false;
+			m_play_scene = Play_Main; // プレイメインに移動
+			m_fight_start_flag = false;
 			game_bgm.Stop_BGM(TUTORIAL_BGM); // チュートリアルBGMを止める
 			game_bgm.Play_BGM(DX_PLAYTYPE_BACK, true, BATTLE_2_BGM); // バトル用のBGMに変える
 		}
@@ -410,18 +410,18 @@ void GameScene::PlayMain_Update()
 	int player2 = 1;
 	bool is_both_no_guard =	// 両方とも攻撃中
 		(
-			players[player1]->block_flag == false &&
-			players[player2]->block_flag == false
+			players[player1]->m_block_flag == false &&
+			players[player2]->m_block_flag == false
 			);
 	bool is_player1_guard =	// プレイヤー1がガード中
 		(
-			players[player1]->block_flag == true &&
-			players[player2]->attack_flag == true
+			players[player1]->m_block_flag == true &&
+			players[player2]->m_attack_flag == true
 			);
 	bool is_player2_guard =	// プレイヤー2がガード中
 		(
-			players[player1]->attack_flag == true &&
-			players[player2]->block_flag == true
+			players[player1]->m_attack_flag == true &&
+			players[player2]->m_block_flag == true
 			);
 
 	// プレイヤー1の攻撃とプレイヤー2の攻撃
@@ -442,11 +442,11 @@ void GameScene::PlayMain_Update()
 		Block_Hit(player2, player1);
 	}
 
-	Time_Update(time_count); // タイマーの更新
+	Time_Update(m_time_count); // タイマーの更新
 	// タイマーが０になったら
-	if (time_count == 0) 
+	if (m_time_count == 0) 
 	{
-		play_scene = Play_End; // プレイエンドに進む
+		m_play_scene = Play_End; // プレイエンドに進む
 	}
 
 	// どちらかのキャラの体力がゼロになったらエンドに移動
@@ -454,7 +454,7 @@ void GameScene::PlayMain_Update()
 	{
 		if (players[i]->m_now_hp == 0)
 		{
-			play_scene = Play_End; // プレイエンドに進む
+			m_play_scene = Play_End; // プレイエンドに進む
 		}
 	}
 }
@@ -464,15 +464,15 @@ void GameScene::PlayMain_Update()
 //------------------------------------
 void GameScene::PlayEnd_Update()
 {
-	Time_Update(end_count);
+	Time_Update(m_end_count);
 
 	Play_Victory_Draw(players[0], players[1]);
 
-	if (end_count <= 0)
+	if (m_end_count <= 0)
 	{
-		end_count = 0;
+		m_end_count = 0;
 		// タイマーが終わったら
-		scene_change_judge = true; // シーンの切り替えを許可する
+		m_scene_change_judge = true; // シーンの切り替えを許可する
 		game_bgm.Stop_BGM(BATTLE_2_BGM); // BGMを止める
 	}
 }
@@ -487,7 +487,7 @@ void GameScene::Character_Update(int se_volume)
 	{
 		players[player]->Update(&camera[player]->m_rot, se_volume/*, status_flag*/);
 		// 立方体とプレイヤーのあたり判定
-		for (int i = 0; i < field.obj_max; i++) 
+		for (int i = 0; i < field.m_obj_max; i++) 
 		{
 			if (CheckBoxHit3D(players[player]->m_pos, players[player]->m_move_hit_box_size, field.objects[i]->m_cube_hit_pos, field.objects[i]->m_cube_size_half))
 			{
@@ -531,11 +531,11 @@ void GameScene::Character_Update(int se_volume)
 //---------------------------------------------------------------------------
 void GameScene::Time_Update(int& time_count)
 {
-	flame_count--;               // フレームカウントを減らす
-	if (flame_count < 0) 
+	m_flame_count--;               // フレームカウントを減らす
+	if (m_flame_count < 0) 
 	{       // フレームカウントが０になったら
 		time_count--;            // タイマーを減らす
-		flame_count = FLAME_MAX; // フレームカウントを設定しなおす
+		m_flame_count = FLAME_MAX; // フレームカウントを設定しなおす
 	}
 
 	// タイマーがゼロになったら
@@ -558,7 +558,7 @@ void GameScene::Time_Draw()
 	Draw_String_Size(&w, &h, name);
 
 	// 描画
-	DrawFormatStringF(SCREEN_W / 2 - w / 2 + 50, h / 2, GetColor(255, 255, 0), name, time_count);
+	DrawFormatStringF(SCREEN_W / 2 - w / 2 + 50, h / 2, GetColor(255, 255, 0), name, m_time_count);
 	SetFontSize(18); // フォントサイズを戻す
 }
 
@@ -567,7 +567,7 @@ void GameScene::Time_Draw()
 //---------------------------------------------------------------------------
 void GameScene::Tutorial_Draw()
 {
-	if (!fight_start_flag) 
+	if (!m_fight_start_flag) 
 	{
 		int original_font_size = GetFontSize();
 		SetFontSize(55); // フォントサイズの変更
@@ -577,7 +577,7 @@ void GameScene::Tutorial_Draw()
 		float w, h;
 		Draw_String_Size(&w, &h, name);
 		// 描画
-		DrawFormatStringF(SCREEN_W / 2 - w / 2, h - 25, GetColor(255, 255, 0), name, time_count);
+		DrawFormatStringF(SCREEN_W / 2 - w / 2, h - 25, GetColor(255, 255, 0), name, m_time_count);
 		SetFontSize(original_font_size); // フォントサイズを戻す
 
 		Ready_Draw();
@@ -588,7 +588,7 @@ void GameScene::Tutorial_Draw()
 		SetFontSize(200); // フォントサイズの変更
 		// 文字列の設定
 		const char* name;
-		if (fight_start_count <= FIGHT_START_COUNT_MAX / 2) 
+		if (m_fight_start_count <= FIGHT_START_COUNT_MAX / 2) 
 		{
 			name = "READY";
 		}
@@ -599,21 +599,21 @@ void GameScene::Tutorial_Draw()
 		// 描画座標の定義
 		float w, h;
 		Draw_String_Size(&w, &h, name);
-		if (fight_start_count <= FIGHT_START_COUNT_MAX / 2) 
+		if (m_fight_start_count <= FIGHT_START_COUNT_MAX / 2) 
 		{
-			draw_fight_pos_x += 15; // 文字の移動をする
+			m_draw_fight_pos_x += 15; // 文字の移動をする
 		}
 		else
 		{
-			draw_fight_pos_x += 18; // 文字の移動をする
+			m_draw_fight_pos_x += 18; // 文字の移動をする
 		}
 		// 画面右端までいったら
-		if (draw_fight_pos_x - (int)w >= SCREEN_W)
+		if (m_draw_fight_pos_x - (int)w >= SCREEN_W)
 		{
-			draw_fight_pos_x = 0 - (int)w; // 画面左端に移動
+			m_draw_fight_pos_x = 0 - (int)w; // 画面左端に移動
 		}
 		// 描画
-		DrawFormatStringF((float)(draw_fight_pos_x -(w / 2)), (float)(SCREEN_H / 2 - h / 2), GetColor(255, 255, 0), name, time_count);
+		DrawFormatStringF((float)(m_draw_fight_pos_x -(w / 2)), (float)(SCREEN_H / 2 - h / 2), GetColor(255, 255, 0), name, m_time_count);
 		SetFontSize(original_font_size); // フォントサイズを戻す
 	}
 
@@ -636,10 +636,10 @@ void GameScene::Ready_Draw()
 		//	線を上向きから開始したいので開始角度
 		const float OFFSET = -90.0f;
 		//	今のスピードが PLAYER_MOV_SPEED を最大としたときにどのくらいの割合か（ 0.0f ～ 1.0f ）
-		float rate = button_count1 / BUTTON_COUNT_MAX;
+		float rate = m_button_count1 / BUTTON_COUNT_MAX;
 		// 三角形のをいくつかくか
 		int count = 360 * (int)rate;
-		if (ready_flag1)
+		if (m_ready_flag1)
 		{
 			// 準備が完了したら常に円を描画する
 			count = 360 * 1;
@@ -670,7 +670,7 @@ void GameScene::Ready_Draw()
 		float y = CENTER_Y + RADIUS * sinf(TO_RADIAN(rot));
 
 		//	この２点を結んで線の描画
-		if (!ready_flag1)
+		if (!m_ready_flag1)
 		{
 			// 準備が完了していない時だけ描画する
 			DrawLineAA(CENTER_X, CENTER_Y, x, y, GetColor(255, 255, 0), 5.0f);
@@ -682,7 +682,7 @@ void GameScene::Ready_Draw()
 		int original_font_size = GetFontSize();
 
 		SetFontSize(50); // フォントサイズの変更
-		if (ready_flag1)
+		if (m_ready_flag1)
 		{
 			const char* name = "ready";
 			// 描画幅の取得
@@ -716,10 +716,10 @@ void GameScene::Ready_Draw()
 		//	線を上向きから開始したいので開始角度
 		const float OFFSET = -90.0f;
 		//	今のスピードが PLAYER_MOV_SPEED を最大としたときにどのくらいの割合か（ 0.0f ～ 1.0f ）
-		int rate = button_count2 / BUTTON_COUNT_MAX;
+		int rate = m_button_count2 / BUTTON_COUNT_MAX;
 		// 三角形のをいくつかくか
 		int count = 360 * rate;
-		if (ready_flag2) 
+		if (m_ready_flag2) 
 		{
 			// 準備が完了したら常に円を描画する
 			count = 360 * 1;
@@ -750,7 +750,7 @@ void GameScene::Ready_Draw()
 		float y = CENTER_Y + RADIUS * sinf(TO_RADIAN(rot));
 
 		//	この２点を結んで線の描画
-		if (!ready_flag2) 
+		if (!m_ready_flag2) 
 		{
 			// 準備が完了していない時だけ描画する
 			DrawLineAA(CENTER_X, CENTER_Y, x, y, GetColor(255, 255, 0), 5.0f);
@@ -763,7 +763,7 @@ void GameScene::Ready_Draw()
 		int original_font_size = GetFontSize();
 
 		SetFontSize(50); // フォントサイズの変更
-		if (ready_flag2)
+		if (m_ready_flag2)
 		{
 			{
 				const char* name = "ready";
@@ -804,7 +804,7 @@ void GameScene::End_Draw()
 	Draw_String_Size(&w, &h, name);
 
 	// 描画(今がなんのシーンなのかがわかるように)
-	DrawFormatStringF((float)(SCREEN_W / 2 - (int)w / 2), h, GetColor(255, 255, 0), name, time_count);
+	DrawFormatStringF((float)(SCREEN_W / 2 - (int)w / 2), h, GetColor(255, 255, 0), name, m_time_count);
 	SetFontSize(original_font_size); // フォントサイズを戻す
 
 	// 勝敗の描画
@@ -881,21 +881,21 @@ void GameScene::Attack_Hit(int player1, int player2)
 {
 	// 当たり判定を取っていいときに当たっていたらダメージを入れる
 	// (当たり判定と攻撃フラグがたっていたら)
-	if (players[player1]->cd_hit_flag && players[player1]->attack_flag) 
+	if (players[player1]->m_cd_hit_flag && players[player1]->m_attack_flag) 
 	{
 		if (HitCheck_Capsule_Capsule(players[player1]->m_hit_cd_pos_top.VGet(), players[player1]->m_hit_cd_pos_under.VGet(), players[player1]->m_hit_cd_r,
 			players[player2]->m_hit_body_pos_top.VGet(), players[player2]->m_hit_body_pos_under.VGet(), players[player2]->m_hit_body_r))
 		{
 			// 当たり判定があったら
 			// なおダメージフラグが降りてたら
-			if (!players[player2]->damage_flag) 
+			if (!players[player2]->m_damage_flag) 
 			{
-				players[player2]->m_hp_count.x -= players[player1]->m_attack_damage[players[player1]->attack_anim_pick]; // ダメージを入れる
-				players[player2]->Damage_Update(&players[player1]->m_attack_damage[players[player1]->attack_anim_pick]);
-				players[player2]->damage_flag = true; // ダメージを食らってるようにする
+				players[player2]->m_hp_count.x -= players[player1]->m_attack_damage[players[player1]->m_attack_anim_pick]; // ダメージを入れる
+				players[player2]->Damage_Update(&players[player1]->m_attack_damage[players[player1]->m_attack_anim_pick]);
+				players[player2]->m_damage_flag = true; // ダメージを食らってるようにする
 				hit_stop.Stop_Count_Reset(); // ヒットストップをさせる
-				int  time = players[player1]->m_attack_damage[players[player1]->attack_anim_pick];
-				PadVidation(players[player2]->pad_input, 1000, 10 * time, -1);
+				int  time = players[player1]->m_attack_damage[players[player1]->m_attack_anim_pick];
+				PadVidation(players[player2]->m_pad_input, 1000, 10 * time, -1);
 			}
 		}
 	}
@@ -959,7 +959,7 @@ void GameScene::Block_Hit(int player1, int player2)
 	//	ガードしている人に対しての当たり判定を行うかどうか
 	// ------------------------------------------------
 	// 当たり判定をしていいかどうか
-	bool can_check_hit = players[player1]->cd_hit_flag && players[player1]->block_flag;
+	bool can_check_hit = players[player1]->m_cd_hit_flag && players[player1]->m_block_flag;
 	//　プレイヤー１方向ベクトル(殴る方)
 	Vector3 vec1 = players[1]->m_pos - players[0]->m_pos;
 	// プレイヤー２の方向ベクトル（殴られる方）
@@ -979,15 +979,15 @@ void GameScene::Block_Hit(int player1, int player2)
 		{
 			// ガードの後ろからじゃないとあたらない
 			// と、殴ってくる方のあたり判定を行っていいとき
-			if (vec <= 0.0f && players[player2]->cd_hit_flag) {
+			if (vec <= 0.0f && players[player2]->m_cd_hit_flag) {
 				// player1の本体用のカプセルとplayer2の攻撃用カプセルが当たったとき
-				players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->attack_anim_pick]; // ダメージを入れる
-				players[player1]->damage_flag = true; // ダメージを受けているフラグを上げる
-				players[player1]->block_flag = false; // ガードを離すためにガード中のフラグを下げる
+				players[player1]->m_hp_count.x -= players[player2]->m_attack_damage[players[player2]->m_attack_anim_pick]; // ダメージを入れる
+				players[player1]->m_damage_flag = true; // ダメージを受けているフラグを上げる
+				players[player1]->m_block_flag = false; // ガードを離すためにガード中のフラグを下げる
 				//cd_hit_flag = false
-				int  time = players[player1]->m_attack_damage[players[player1]->attack_anim_pick];
-				PadVidation(players[player2]->pad_input, 1000, 500, -1);
-				if (!stop) 
+				int  time = players[player1]->m_attack_damage[players[player1]->m_attack_anim_pick];
+				PadVidation(players[player2]->m_pad_input, 1000, 500, -1);
+				if (!m_stop) 
 				{
 					hit_stop.Stop_Count_Reset(); // ヒットストップをさせる
 				}

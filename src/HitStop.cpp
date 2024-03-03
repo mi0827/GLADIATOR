@@ -6,16 +6,16 @@
 // --------------------------------------------------
 bool HitStop::Hit_Stop()
 {
-	stop_frame_count--; // カウントを減らす
+	m_stop_frame_count--; // カウントを減らす
 
 	// ストップカウントが一定の値以上あると
-	if (stop_frame_count > 0)
+	if (m_stop_frame_count > 0)
 	{
 		return  true; // ヒットストップしてほしい
 	}
 	else
 	{
-		stop_frame_count = 0;
+		m_stop_frame_count = 0;
 	    return false; // してほしくない
 	}
 
@@ -27,5 +27,5 @@ bool HitStop::Hit_Stop()
 void HitStop::Stop_Count_Reset()
 {
 	// カウントのリセット
-	stop_frame_count = hit_stop_count_max;
+	m_stop_frame_count = m_hit_stop_count_max;
 }

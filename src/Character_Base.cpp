@@ -35,9 +35,9 @@ void CharacterBase::Update_Status()
 	}
 	m_now_hp = m_hp_count.x; // わかりやすくするために入れる
 
-	skill_flame_count++; // フレームカウントを増やす
+	m_skill_flame_count++; // フレームカウントを増やす
 	// スキルクールダウンのカウントを増やす
-	if (skill_flame_count % 60 == 0) 
+	if (m_skill_flame_count % 60 == 0) 
 	{
 		m_skill_count.x += 30;
 	}
@@ -45,13 +45,13 @@ void CharacterBase::Update_Status()
 	if (m_skill_count.x >= SKILL_POINT_MAX) 
 	{
 		m_skill_count.x  = SKILL_POINT_MAX;
-		skill_flag = true; // スキルを使用できるようにする
+		m_skill_flag = true; // スキルを使用できるようにする
 	}
 	m_now_skill = m_skill_count.x; // わかりやすくするために入れる
 
-	sp_flame_count++; // フレームカウントを増やす
+	m_sp_flame_count++; // フレームカウントを増やす
 	// SPクールダウンのカウントを増やす
-	if (sp_flame_count % 60 == 0) 
+	if (m_sp_flame_count % 60 == 0) 
 	{
 		// SPバーのカウントを増やす
 		m_sp_count.x += 40;
@@ -61,7 +61,7 @@ void CharacterBase::Update_Status()
 	if (m_sp_count.x >= SP_POINT_MAX) 
 	{
 		m_sp_count.x = SP_POINT_MAX;
-		sp_flag = true; // 必殺技を使用できるようにする
+		m_sp_flag = true; // 必殺技を使用できるようにする
 	}
 	m_now_sp = m_sp_count.x; // わかりやすくするために入れる
 }
@@ -72,9 +72,9 @@ void CharacterBase::Update_Status()
 void CharacterBase::Reset_Status()
 {
 	m_skill_count.x = 0; // スキルポイントを戻す
-	skill_flag = false;   // スキルを使用できないようにする
+	m_skill_flag = false;   // スキルを使用できないようにする
 	m_sp_count.x = 0;    // SPポイントを戻す
-	sp_flag = false;     // 必殺技を使できないようにする
+	m_sp_flag = false;     // 必殺技を使できないようにする
 }
 
 //---------------------------------------------------------------------------
@@ -148,7 +148,7 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 	// GetJoypadXInputState((int) pad_no, &input);
 
 	//GetJoypadXInputState((int)((PAD_NO)pad_no), &input);
-	switch (pad_no)
+	switch (m_pad_no)
 	{
 	case PAD_NO::PAD_NO1:
 		GetJoypadXInputState(DX_INPUT_PAD1, &input);
@@ -165,14 +165,14 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 	}
 	
 	// 左スティックの値を設定
-	mov.x = input.ThumbLX;
-	mov.z = input.ThumbLY;
+	m_mov.x = input.ThumbLX;
+	m_mov.z = input.ThumbLY;
 	// -32768 ～ 32767 を-1.0f　～　1.0fにします
-	mov /= 32768.0f;
+	m_mov /= 32768.0f;
 	// この移動用ベクトルの大きさがある程度大きい時だけ移動させようと思います
-	if (mov.GetLength() > 0.5f) 
+	if (m_mov.GetLength() > 0.5f) 
 	{
-		Move_GamePad(m_check_move, &mov, camera_rot, mov_speed);
+		Move_GamePad(m_check_move, &m_mov, camera_rot, mov_speed);
 	}
 	// WASDキーでプレイヤーの移動
 	if (CheckHitKey(KEY_INPUT_W)) // 上移動
@@ -291,17 +291,17 @@ void CharacterBase::Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* ot
 //---------------------------------------------------------------------------
 void CharacterBase::Nomal_Anim_New(int ANIM_MAX)
 {
-	anim_model = new int[ANIM_MAX];   // アニメーションモデル
-	anim_attach = new int[ANIM_MAX];  // アタッチ用変数
-	anim_total = new float[ANIM_MAX]; // アニメーションが何フレームあるか
-	anim_rate = new float[ANIM_MAX];  // アニメーションのブレンド率
-	anim_frame = new float[ANIM_MAX]; // アニメーションの進めるフレーム
+	m_anim_model = new int[ANIM_MAX];   // アニメーションモデル
+	m_anim_attach = new int[ANIM_MAX];  // アタッチ用変数
+	m_anim_total = new float[ANIM_MAX]; // アニメーションが何フレームあるか
+	m_anim_rate = new float[ANIM_MAX];  // アニメーションのブレンド率
+	m_anim_frame = new float[ANIM_MAX]; // アニメーションの進めるフレーム
 
 	// アニメーションが何フレーム進んでいるか用の変数
 	// 最初は０から開始
 	for (int i = 0; i < ANIM_MAX; i++)
 	{
-		anim_frame[i] = 0.0f;
+		m_anim_frame[i] = 0.0f;
 	}
 }
 //---------------------------------------------------------------------------
@@ -311,16 +311,16 @@ void CharacterBase::Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX, int index)
 {
 	for (int i = 0; i < ANIM_MAX; i++)
 	{
-		anim_attach[i] = MV1AttachAnim(m_model, index, anim_model[i]);         // モデルにアニメーションをアタッチ（つける）する
-		anim_total[i] = MV1GetAttachAnimTotalTime(m_model, anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		anim_rate[i] = MV1GetAttachAnimBlendRate(m_model, anim_attach[i]);     // ブレンド率の取得
+		m_anim_attach[i] = MV1AttachAnim(m_model, index, m_anim_model[i]);         // モデルにアニメーションをアタッチ（つける）する
+		m_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, m_anim_attach[i]);    // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		m_anim_rate[i] = MV1GetAttachAnimBlendRate(m_model, m_anim_attach[i]);     // ブレンド率の取得
 		// 不必要なものにはブレンド率を0.0fにしておく（最初はアイドルにしておく）
 		if (i != ANIM_IDLE)  // アイドル以外のアニメーションをモデルから外す
 		{
-			anim_rate[i] = 0.0f;
+			m_anim_rate[i] = 0.0f;
 		}
 		else {
-			anim_rate[i] = 1.0f;
+			m_anim_rate[i] = 1.0f;
 		}
 	}
 }
@@ -330,16 +330,16 @@ void CharacterBase::Nomal_Anim_Init(int ANIM_IDLE, int ANIM_MAX, int index)
 //---------------------------------------------------------------------------
 void CharacterBase::Attack_Anim_New(int ATTACK_ANIM_MAX)
 {
-	attack_anim_model = new int[ATTACK_ANIM_MAX];   // アニメーションモデル
-	attack_anim_attach = new int[ATTACK_ANIM_MAX];  // アタッチ用変数
-	attack_anim_total = new float[ATTACK_ANIM_MAX]; // アニメーションが何フレームあるか
-	attack_anim_rate = new float[ATTACK_ANIM_MAX];  // アニメーションのブレンド率
-	attack_anim_frame = new float[ATTACK_ANIM_MAX]; // アニメーションの進めるフレーム
+	m_attack_anim_model = new int[ATTACK_ANIM_MAX];   // アニメーションモデル
+	m_attack_anim_attach = new int[ATTACK_ANIM_MAX];  // アタッチ用変数
+	m_attack_anim_total = new float[ATTACK_ANIM_MAX]; // アニメーションが何フレームあるか
+	m_attack_anim_rate = new float[ATTACK_ANIM_MAX];  // アニメーションのブレンド率
+	m_attack_anim_frame = new float[ATTACK_ANIM_MAX]; // アニメーションの進めるフレーム
 	// アニメーションが何フレーム進んでいるか用の変数
 	// 最初は０から開始
 	for (int i = 0; i < ATTACK_ANIM_MAX; i++)
 	{
-		attack_anim_frame[i] = 0.0f;
+		m_attack_anim_frame[i] = 0.0f;
 	}
 }
 //---------------------------------------------------------------------------
@@ -349,10 +349,10 @@ void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX, int index)
 {
 	for (int i = 0; i < ATTACK_ANIM_MAX; i++)
 	{
-		attack_anim_attach[i] = MV1AttachAnim(m_model, index, attack_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
-		attack_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, attack_anim_attach[i]);        // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		attack_anim_rate[i] = MV1GetAttachAnimBlendRate(m_model, attack_anim_attach[i]);         // ブレンド率の取得
-		attack_anim_attach[i] = MV1DetachAnim(m_model, attack_anim_attach[i]);                   // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+		m_attack_anim_attach[i] = MV1AttachAnim(m_model, index, m_attack_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
+		m_attack_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, m_attack_anim_attach[i]);        // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		m_attack_anim_rate[i] = MV1GetAttachAnimBlendRate(m_model, m_attack_anim_attach[i]);         // ブレンド率の取得
+		m_attack_anim_attach[i] = MV1DetachAnim(m_model, m_attack_anim_attach[i]);                   // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
 }
 //---------------------------------------------------------------------------
@@ -361,9 +361,9 @@ void CharacterBase::Attack_Anim_Init(int ATTACK_ANIM_MAX, int index)
 void CharacterBase::Attack_Action(int index)
 {
 	//// アニメーションの再生
-	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
-	attack_anim_attach[attack_anim_pick] = MV1AttachAnim(m_model, index, attack_anim_model[attack_anim_pick]); // 使いたいアニメーションをモデルにつけなおす
-	attack_flag = true; // 攻撃中にする
+	m_anim_attach[m_anim_num] = MV1DetachAnim(m_model, m_anim_attach[m_anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+	m_attack_anim_attach[m_attack_anim_pick] = MV1AttachAnim(m_model, index, m_attack_anim_model[m_attack_anim_pick]); // 使いたいアニメーションをモデルにつけなおす
+	m_attack_flag = true; // 攻撃中にする
 }
 
 
@@ -372,16 +372,16 @@ void CharacterBase::Attack_Action(int index)
 //---------------------------------------------------------------------------
 void CharacterBase::Damage_Anim_New(int DAMAGE_ANIM_MAX)
 {
-	damage_anim_model  = new int[DAMAGE_ANIM_MAX];   // アニメーションモデル
-	damage_anim_attach = new int[DAMAGE_ANIM_MAX];   // アタッチ用変数
-	damage_anim_total  = new float[DAMAGE_ANIM_MAX]; // アニメーションが何フレームあるか
-	damage_anim_rate   = new float[DAMAGE_ANIM_MAX]; // アニメーションのブレンド率
-	damage_anim_frame  = new float[DAMAGE_ANIM_MAX]; // アニメーションの進めるフレーム
+	m_damage_anim_model  = new int[DAMAGE_ANIM_MAX];   // アニメーションモデル
+	m_damage_anim_attach = new int[DAMAGE_ANIM_MAX];   // アタッチ用変数
+	m_damage_anim_total  = new float[DAMAGE_ANIM_MAX]; // アニメーションが何フレームあるか
+	m_damage_anim_rate   = new float[DAMAGE_ANIM_MAX]; // アニメーションのブレンド率
+	m_damage_anim_frame  = new float[DAMAGE_ANIM_MAX]; // アニメーションの進めるフレーム
 	// アニメーションが何フレーム進んでいるか用の変数
 	// 最初は０から開始
 	for (int i = 0; i < DAMAGE_ANIM_MAX; i++)
 	{
-		damage_anim_frame[i] = 0.0f;
+		m_damage_anim_frame[i] = 0.0f;
 	}
 }
 //---------------------------------------------------------------------------
@@ -391,10 +391,10 @@ void CharacterBase::Damage_Anim_Init(int DAMAGE_ANIM_MAX, int index)
 {
 	for (int i = 0; i < DAMAGE_ANIM_MAX; i++)
 	{
-		damage_anim_attach[i] = MV1AttachAnim(m_model, index, damage_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
-		damage_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, damage_anim_attach[i]);        // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		damage_anim_rate[i] = MV1GetAttachAnimBlendRate(m_model, damage_anim_attach[i]);         // ブレンド率の取得
-		damage_anim_attach[i] = MV1DetachAnim(m_model, damage_anim_attach[i]);                   // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+		m_damage_anim_attach[i] = MV1AttachAnim(m_model, index, m_damage_anim_model[i]);  // モデルにアニメーションをアタッチ（つける）する
+		m_damage_anim_total[i] = MV1GetAttachAnimTotalTime(m_model, m_damage_anim_attach[i]);        // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		m_damage_anim_rate[i] = MV1GetAttachAnimBlendRate(m_model, m_damage_anim_attach[i]);         // ブレンド率の取得
+		m_damage_anim_attach[i] = MV1DetachAnim(m_model, m_damage_anim_attach[i]);                   // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
 }
 //---------------------------------------------------------------------------
@@ -402,8 +402,8 @@ void CharacterBase::Damage_Anim_Init(int DAMAGE_ANIM_MAX, int index)
 //---------------------------------------------------------------------------
 void CharacterBase::Damage_Action(int index)
 {
-	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
-	damage_anim_attach[damage_anim_pick] = MV1AttachAnim(m_model, index, damage_anim_model[damage_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
+	m_anim_attach[m_anim_num] = MV1DetachAnim(m_model, m_anim_attach[m_anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+	m_damage_anim_attach[m_damage_anim_pick] = MV1AttachAnim(m_model, index, m_damage_anim_model[m_damage_anim_pick]);      	// 使いたいアニメーションをモデルにつけなおす
 	// damage_flag = true; // 攻撃中にする
 }
 
@@ -413,16 +413,16 @@ void CharacterBase::Damage_Action(int index)
 //---------------------------------------------------------------------------
 void CharacterBase::Block_Anim_New(int BLOCK_ANIM_MAX)
 {
-	block_anim_model  = new int[BLOCK_ANIM_MAX];   // アニメーションモデル
-	block_anim_attach = new int[BLOCK_ANIM_MAX];   // アタッチ用変数
-	block_anim_total  = new float[BLOCK_ANIM_MAX]; // アニメーションが何フレームあるか
-	block_anim_rate   = new float[BLOCK_ANIM_MAX]; // アニメーションのブレンド率
-	block_anim_frame  = new float[BLOCK_ANIM_MAX]; // アニメーションの進めるフレーム
+	m_block_anim_model  = new int[BLOCK_ANIM_MAX];   // アニメーションモデル
+	m_block_anim_attach = new int[BLOCK_ANIM_MAX];   // アタッチ用変数
+	m_block_anim_total  = new float[BLOCK_ANIM_MAX]; // アニメーションが何フレームあるか
+	m_block_anim_rate   = new float[BLOCK_ANIM_MAX]; // アニメーションのブレンド率
+	m_block_anim_frame  = new float[BLOCK_ANIM_MAX]; // アニメーションの進めるフレーム
 	// アニメーションが何フレーム進んでいるか用の変数
 	// 最初は０から開始
 	for (int i = 0; i < BLOCK_ANIM_MAX; i++)
 	{
-		block_anim_frame[i] = 0.0f;
+		m_block_anim_frame[i] = 0.0f;
 	}
 }
 //---------------------------------------------------------------------------
@@ -432,9 +432,9 @@ void CharacterBase::Block_Anim_Init(int BLOCK_ANIM_MAX, int index)
 {
 	for (int i = 0; i < BLOCK_ANIM_MAX; i++)
 	{
-		block_anim_attach[i] = MV1AttachAnim(m_model, index, block_anim_model[i]);   // モデルにアニメーションをアタッチ（つける）する
-		block_anim_total[i] =  MV1GetAttachAnimTotalTime(m_model, block_anim_attach[i]);        // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
-		block_anim_attach[i] = MV1DetachAnim(m_model, block_anim_attach[i]);                    // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
+		m_block_anim_attach[i] = MV1AttachAnim(m_model, index, m_block_anim_model[i]);   // モデルにアニメーションをアタッチ（つける）する
+		m_block_anim_total[i] =  MV1GetAttachAnimTotalTime(m_model, m_block_anim_attach[i]);        // 取得したアタッチ番号からそのアニメーションが何フレームかを取得
+		m_block_anim_attach[i] = MV1DetachAnim(m_model, m_block_anim_attach[i]);                    // 最初は攻撃アニメーションはしないのでディタッチしておく（使いたいときにまたアタッチする）
 	}
 }
 //---------------------------------------------------------------------------
@@ -442,9 +442,9 @@ void CharacterBase::Block_Anim_Init(int BLOCK_ANIM_MAX, int index)
 //---------------------------------------------------------------------------
 void CharacterBase::Block_Action(int index)
 {
-	anim_attach[anim_num] = MV1DetachAnim(m_model, anim_attach[anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
-	block_anim_attach[block_anim_pick] = MV1AttachAnim(m_model, index, block_anim_model[block_anim_pick]); // 使いたいアニメーションをモデルにつけなおす
-	block_flag = true; // 防御フラグを上げる
+	m_anim_attach[m_anim_num] = MV1DetachAnim(m_model, m_anim_attach[m_anim_num]);  // 攻撃アニメーションに入る前に普通アニメを外す（直近のアニメーション） 
+	m_block_anim_attach[m_block_anim_pick] = MV1AttachAnim(m_model, index, m_block_anim_model[m_block_anim_pick]); // 使いたいアニメーションをモデルにつけなおす
+	m_block_flag = true; // 防御フラグを上げる
 }
 
 
@@ -454,29 +454,29 @@ void CharacterBase::Block_Action(int index)
 void CharacterBase::Anim_Delete()
 {
 	//! 普通アニメーション 
-	delete[] anim_model;
-	delete[] anim_attach;
-	delete[] anim_total;
-	delete[] anim_rate;
-	delete[] anim_frame;
+	delete[] m_anim_model;
+	delete[] m_anim_attach;
+	delete[] m_anim_total;
+	delete[] m_anim_rate;
+	delete[] m_anim_frame;
 	// 攻撃アニメーション
-	delete[] attack_anim_model;
-	delete[] attack_anim_attach;
-	delete[] attack_anim_total;
-	delete[] attack_anim_rate;
-	delete[] attack_anim_frame;
+	delete[] m_attack_anim_model;
+	delete[] m_attack_anim_attach;
+	delete[] m_attack_anim_total;
+	delete[] m_attack_anim_rate;
+	delete[] m_attack_anim_frame;
 	// ダメージアニメーション
-	delete[] damage_anim_model;
-	delete[] damage_anim_attach;
-	delete[] damage_anim_total;
-	delete[] damage_anim_rate;
-	delete[] damage_anim_frame;
+	delete[] m_damage_anim_model;
+	delete[] m_damage_anim_attach;
+	delete[] m_damage_anim_total;
+	delete[] m_damage_anim_rate;
+	delete[] m_damage_anim_frame;
 	// ガードアニメーション
-	delete[] block_anim_model;
-	delete[] block_anim_attach;
-	delete[] block_anim_total;
-	delete[] block_anim_rate;
-	delete[] block_anim_frame;
+	delete[] m_block_anim_model;
+	delete[] m_block_anim_attach;
+	delete[] m_block_anim_total;
+	delete[] m_block_anim_rate;
+	delete[] m_block_anim_frame;
 }
 
 //---------------------------------------------------------------------------
@@ -503,8 +503,8 @@ void CharacterBase::Get_other(Vector3* hit_other_pos, Vector3* hit_other_size)
 //---------------------------------------------------------------------------
 void CharacterBase::Attack_Hit_New(Vector3* pot_pos, Vector3* under_pos)
 {
-	hit_pos_pot;
-	hit_pos_under;
+	m_hit_pos_pot;
+	m_hit_pos_under;
 	// 当たり判定を見えるようにする物
 	// 向いている方向に座標を設定（今はパンチに位置）
 	m_hit_cd_pos_top.set(m_pos.x + pot_pos->x * sinf(TO_RADIAN(m_rot.y)), m_pos.y + pot_pos->y, m_pos.z + pot_pos->z * cosf(TO_RADIAN(m_rot.y)));

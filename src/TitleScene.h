@@ -19,15 +19,15 @@ public:
 	void Exit()override;
 
 public:
-	int background_image = 0; // 背景画像用の変数
-	Vector2 image_pos = {0.0f,0.0f};    // 画像用の描画座標
-	int count_flame = 0; // フレームカウント用の変数 
-	int count_time = 0;  // フレームから実際の割り出して入れる用の時間
-	int movie = 0;       // 動画用の変数
+	int m_background_image = 0; // 背景画像用の変数
+	Vector2 m_image_pos = {0.0f,0.0f};    // 画像用の描画座標
+	int m_count_flame = 0; // フレームカウント用の変数 
+	int m_count_time = 0;  // フレームから実際の割り出して入れる用の時間
+	int m_movie = 0;       // 動画用の変数
 
 	// フォントデータ用
-	int GTA_font_data = 0; // GTAのフォントデータ用の変数
-	LPCSTR GTA_font_path = 0;
+	int m_GTA_font_data = 0; // GTAのフォントデータ用の変数
+	LPCSTR m_GTA_font_path = 0;
 
 	enum Title_se
 	{
@@ -53,8 +53,8 @@ private:
 	};
 
 	// 画面切り替え用の変数
-	int title_scene = 0;
+	int m_title_scene = 0;
 
-	bool start_flag = false; // タイトル画面でボタンが押されたかどうかのフラグ
+	bool m_start_flag = false; // タイトル画面でボタンが押されたかどうかのフラグ
 
 };

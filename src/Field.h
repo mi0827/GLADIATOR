@@ -40,11 +40,11 @@ public:
 	const int m_wall_size = 70 ;
 	// 置物用のオブジェクト
 	std::vector<Object*> objects;  // オブジェクトクラス型のポインタはいてる　
-	int obj_max = 0;               // オブジェクトの数
+	int m_obj_max = 0;               // オブジェクトの数
 
 	// 周りの壁
-	std::vector<Object*> wall_objects;  // オブジェクトクラス型のポインタはいてる
-	int wall_obj_max = 0;                   // オブジェクトの数
+	std::vector<Object*> m_wall_objects;  // オブジェクトクラス型のポインタはいてる
+	int m_wall_obj_max = 0;                   // オブジェクトの数
 private:
 	int m_model = 0; // モデル用の変数
 

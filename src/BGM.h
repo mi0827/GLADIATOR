@@ -49,5 +49,5 @@ public:
 	// BGMのデリート（配列の解放）
 	void BGM_Delete();
 public:
-	int* bgm_container = 0; // BGMの入れ物用変数
+	int* m_bgm_container = 0; // BGMの入れ物用変数
 };

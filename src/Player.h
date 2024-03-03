@@ -149,11 +149,11 @@ public:
 	// bead 関連
 	//------------------------------------
 	// 弾が消えるまでのカウント用変数
-	float lifespan_count = NULL;
+	float m_lifespan_count = NULL;
 
 public:
 	// それぞれの攻撃ダメージの設定
-	const int attack_damage[ATTACK_ANIM_MAX]
+	const int m_attack_damage[ATTACK_ANIM_MAX]
 	{
 		40,  // 遠距離攻撃
 		40,  // パンチ１
@@ -164,7 +164,7 @@ public:
 		400, // 必殺技
 	};
 	// 引数で使用するために移す
-	const int* m_damage = attack_damage;
+	const int* m_damage = m_attack_damage;
 
 
 	// 近接攻撃にの当たり判定用の構造体
@@ -228,7 +228,7 @@ public:
 		},
 	};
 
-	Hit_capsule_data* now_hit_area = 0;
+	Hit_capsule_data* m_now_hit_area = 0;
 
 	int m_player_num = 0; // 1pか2pかを判断する用の変数
 	COLOR_F m_color[2] = {0}; // このキャラの色
