@@ -162,7 +162,7 @@
     <ClCompile Include="src\System\Option.cpp" />
     <ClCompile Include="src\System\Vector2.cpp" />
     <ClCompile Include="src\System\Vector3.cpp" />
-    <ClCompile Include="src\System\WinMain.cpp" />
+    <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Base.h" />
@@ -187,7 +187,7 @@
     <ClInclude Include="src\System\Option.h" />
     <ClInclude Include="src\System\Vector2.h" />
     <ClInclude Include="src\System\Vector3.h" />
-    <ClInclude Include="src\System\WinMain.h" />
+    <ClInclude Include="src\WinMain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

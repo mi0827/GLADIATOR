@@ -95,14 +95,14 @@
     <ClCompile Include="src\System\Vector3.cpp">
       <Filter>scr\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\System\WinMain.cpp">
-      <Filter>scr\System</Filter>
-    </ClCompile>
     <ClCompile Include="src\System\InputPad.cpp">
       <Filter>scr\System</Filter>
     </ClCompile>
     <ClCompile Include="src\System\Option.cpp">
       <Filter>scr\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WinMain.cpp">
+      <Filter>scr</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera.cpp">
       <Filter>scr</Filter>
@@ -169,19 +169,19 @@
     <ClInclude Include="src\System\Vector3.h">
       <Filter>scr\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\System\WinMain.h">
-      <Filter>scr\System</Filter>
-    </ClInclude>
     <ClInclude Include="src\System\InputPad.h">
       <Filter>scr\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\Base.h">
+    <ClInclude Include="src\WinMain.h">
       <Filter>scr</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera.h">
       <Filter>scr</Filter>
     </ClInclude>
     <ClInclude Include="src\GameMain.h">
+      <Filter>scr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Base.h">
       <Filter>scr</Filter>
     </ClInclude>
   </ItemGroup>
