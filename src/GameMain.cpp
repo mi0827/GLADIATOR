@@ -1,25 +1,25 @@
-#include "WinMain.h"
-#include "Vector3.h"
-#include "Vector2.h"
-#include "Hit.h" // あたり判定
+#include "System/WinMain.h"
+#include "System/Vector3.h"
+#include "System/Vector2.h"
+#include "Hit/Hit.h" // あたり判定
 #include "Base.h"
-#include "InputPad.h"
-#include "Option.h"
+#include "System/InputPad.h"
+#include "System/Option.h"
 // キャラクター.h
-#include "Character_Base.h"
-#include "Player.h"
-#include "Ninja.h"
+#include "Character/Base/Character_Base.h"
+#include "Character/Player.h"
+#include "Character/Ninja.h"
 // オブジェクトクラス
-#include "Object.h"
+#include "Object/Object.h"
 // フィールド.h
-#include "Field.h"
+#include "Field/Field.h"
 // カメラ.h
 #include "Camera.h"
 
-#include "Scene_Base.h"
-#include "GameScene.h"
-#include "TitleScene.h"
-#include "EndScene.h"
+#include "Scene/Base/Scene_Base.h"
+#include "Scene/GameScene.h"
+#include "Scene/TitleScene.h"
+#include "Scene/EndScene.h"
 #include "GameMain.h"
 
 Option option;

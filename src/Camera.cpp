@@ -1,6 +1,6 @@
-#include "WinMain.h"
-#include "Vector3.h"
-#include "Vector2.h"
+#include "System/WinMain.h"
+#include "System/Vector3.h"
+#include "System/Vector2.h"
 #include "Base.h"
 #include "Camera.h"
 
