@@ -150,6 +150,7 @@
     <ClCompile Include="src\GameMain.cpp" />
     <ClCompile Include="src\Hit\Hit.cpp" />
     <ClCompile Include="src\Hit\HitStop.cpp" />
+    <ClCompile Include="src\Model\Model.cpp" />
     <ClCompile Include="src\Object\Object.cpp" />
     <ClCompile Include="src\Scene\Base\Scene_Base.cpp" />
     <ClCompile Include="src\Scene\EndScene.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="src\GameMain.h" />
     <ClInclude Include="src\Hit\Hit.h" />
     <ClInclude Include="src\Hit\HitStop.h" />
+    <ClInclude Include="src\Model\Model.h" />
     <ClInclude Include="src\Object\Object.h" />
     <ClInclude Include="src\Scene\Base\Scene_Base.h" />
     <ClInclude Include="src\Scene\EndScene.h" />
@@ -188,6 +190,10 @@
     <ClInclude Include="src\System\Vector2.h" />
     <ClInclude Include="src\System\Vector3.h" />
     <ClInclude Include="src\WinMain.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shader\SamplePS.fx" />
+    <FxCompile Include="shader\SampleVS.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

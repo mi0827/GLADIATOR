@@ -42,6 +42,9 @@
     <Filter Include="scr\Object">
       <UniqueIdentifier>{8ff9111e-3f09-42e1-b311-f036d5517430}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{5f98806a-4555-4acc-8ab4-a9fb369a549b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Character\Base\Character_Base.cpp">
@@ -112,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="src\Base.cpp">
       <Filter>scr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Model\Model.cpp">
+      <Filter>scr\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,5 +190,16 @@
     <ClInclude Include="src\Base.h">
       <Filter>scr</Filter>
     </ClInclude>
+    <ClInclude Include="src\Model\Model.h">
+      <Filter>scr\Model</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shader\SamplePS.fx">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\SampleVS.fx">
+      <Filter>shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

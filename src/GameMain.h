@@ -21,3 +21,8 @@ void GameExit();
 // ２：次のシーン
 void Scene_Change_Judge(int& now_scene, const int& next_scene);
 
+//! 頂点シェーダー用の変数
+int vertex_shader;
+
+//! ピクセルシェーダー用の変数
+int pixel_shader;

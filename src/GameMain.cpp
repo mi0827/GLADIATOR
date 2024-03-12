@@ -45,13 +45,17 @@ enum Scene
 // 初期処理
 void GameInit()
 {
+	// シェーダファイルの読み込み（ＤＸライブラリ用に変換されたファイル）
+	vertex_shader = LoadVertexShader("shader/SampleVS.vso");//	頂点シェーダー
+	pixel_shader = LoadPixelShader("shader/SamplePS.pso");	//	ピクセルシェーダー
+
 	// 最初はタイトルシーンから始める
 	scene = new TiteleScene;
 	scene->Init(); // タイトルシーンの初期化
 
 	scene_num = Titele; // 最初はタイトルシーンから始める
-	 
-	option.Init(); 
+
+	option.Init();
 	option.m_option_flag = false; // 最初は開かない
 
 }
@@ -102,7 +106,13 @@ void GameUpdate()
 // 描画処理
 void GameDraw()
 {
-	
+	//	シェーダーを使って描画します
+	MV1SetUseOrigShader(TRUE);
+	//	頂点シェーダーのセット
+	SetUseVertexShader(vertex_shader);
+	//	ピクセルシェーダーのセット
+	SetUsePixelShader(pixel_shader);
+
 	scene->Draw(); // 各シーン
 	option.Draw(); // オプション画面
 }
@@ -111,6 +121,9 @@ void GameDraw()
 void GameExit()
 {
 	scene->Exit();
+	//	シェーダーファイルの終了処理
+	DeleteShader(vertex_shader);
+	DeleteShader(pixel_shader);
 }
 
 
