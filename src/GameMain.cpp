@@ -31,6 +31,11 @@ GameScene play_scene;    // ゲームプレイシーン
 EndScene end_scene;      // エンド
 
 
+// 基準の座標となる用の変数を用意
+//FLOAT4 base_pos;
+
+
+
 int scene_num; // 今どのシーン名のを見る用の変数
 // 各シーンでの使い分けをするためのシーンの列挙隊
 enum Scene
@@ -46,8 +51,8 @@ enum Scene
 void GameInit()
 {
 	// シェーダファイルの読み込み（ＤＸライブラリ用に変換されたファイル）
-	vertex_shader = LoadVertexShader("shader/SampleVS.vso");//	頂点シェーダー
-	pixel_shader = LoadPixelShader("shader/SamplePS.pso");	//	ピクセルシェーダー
+	//vertex_shader = LoadVertexShader("shader/SampleVS.vso");//	頂点シェーダー
+	//pixel_shader = LoadPixelShader("shader/SamplePS.pso");	//	ピクセルシェーダー
 
 	// 最初はタイトルシーンから始める
 	scene = new TiteleScene;
@@ -57,6 +62,12 @@ void GameInit()
 
 	option.Init();
 	option.m_option_flag = false; // 最初は開かない
+
+	// いったん全部０初期化
+	/*base_pos.x = 0.0f;
+	base_pos.y = 0.0f;
+	base_pos.z = 0.0f;
+	base_pos.w = 0.0f;*/
 
 }
 
@@ -101,17 +112,19 @@ void GameUpdate()
 		break;
 	}
 
+	// ３：子の変数の値をシェーダーに渡します
+	//SetPSConstF(25, base_pos);
 }
 
 // 描画処理
 void GameDraw()
 {
-	//	シェーダーを使って描画します
-	MV1SetUseOrigShader(TRUE);
-	//	頂点シェーダーのセット
-	SetUseVertexShader(vertex_shader);
-	//	ピクセルシェーダーのセット
-	SetUsePixelShader(pixel_shader);
+	////	シェーダーを使って描画します
+	//MV1SetUseOrigShader(TRUE);
+	////	頂点シェーダーのセット
+	//SetUseVertexShader(vertex_shader);
+	////	ピクセルシェーダーのセット
+	//SetUsePixelShader(pixel_shader);
 
 	scene->Draw(); // 各シーン
 	option.Draw(); // オプション画面
@@ -121,9 +134,9 @@ void GameDraw()
 void GameExit()
 {
 	scene->Exit();
-	//	シェーダーファイルの終了処理
-	DeleteShader(vertex_shader);
-	DeleteShader(pixel_shader);
+//	//	シェーダーファイルの終了処理
+//	DeleteShader(vertex_shader);
+//	DeleteShader(pixel_shader);
 }
 
 
