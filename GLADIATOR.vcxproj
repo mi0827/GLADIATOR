@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Animation\Animation.cpp" />
     <ClCompile Include="src\Base.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Character\Base\Character_Base.cpp" />
@@ -161,12 +162,14 @@
     <ClCompile Include="src\Sound\BGM.cpp" />
     <ClCompile Include="src\Sound\SE.cpp" />
     <ClCompile Include="src\System\InputPad.cpp" />
+    <ClCompile Include="src\System\Move.cpp" />
     <ClCompile Include="src\System\Option.cpp" />
     <ClCompile Include="src\System\Vector2.cpp" />
     <ClCompile Include="src\System\Vector3.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Animation\Animation.h" />
     <ClInclude Include="src\Base.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Character\Base\Character_Base.h" />
@@ -188,6 +191,7 @@
     <ClInclude Include="src\Sound\BGM.h" />
     <ClInclude Include="src\Sound\SE.h" />
     <ClInclude Include="src\System\InputPad.h" />
+    <ClInclude Include="src\System\Move.h" />
     <ClInclude Include="src\System\Option.h" />
     <ClInclude Include="src\System\Vector2.h" />
     <ClInclude Include="src\System\Vector3.h" />

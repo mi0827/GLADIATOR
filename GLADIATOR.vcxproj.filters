@@ -45,6 +45,9 @@
     <Filter Include="shader">
       <UniqueIdentifier>{5f98806a-4555-4acc-8ab4-a9fb369a549b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scr\Animation">
+      <UniqueIdentifier>{39280ef4-d252-4769-89d9-ceacbeb0d302}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Character\Base\Character_Base.cpp">
@@ -122,6 +125,12 @@
     <ClCompile Include="src\Character\Fighter.cpp">
       <Filter>scr\Character</Filter>
     </ClCompile>
+    <ClCompile Include="src\Animation\Animation.cpp">
+      <Filter>scr\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\Move.cpp">
+      <Filter>scr\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Character\Base\Character_Base.h">
@@ -198,6 +207,12 @@
     </ClInclude>
     <ClInclude Include="src\Character\Fighter.h">
       <Filter>scr\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\Animation.h">
+      <Filter>scr\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\Move.h">
+      <Filter>scr\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

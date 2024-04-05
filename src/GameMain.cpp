@@ -68,7 +68,6 @@ void GameInit()
 	base_pos.y = 0.0f;
 	base_pos.z = 0.0f;
 	base_pos.w = 0.0f;*/
-
 }
 
 // XVˆ—
