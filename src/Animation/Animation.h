@@ -28,13 +28,19 @@ public:
 	//! @param アニメーション番号
 	void Load_Anim(const char file_path[256], int anim_no, int anim_index);
 
+
+
 	//! アッタチ
-	void Attach_Anim();
+	//! @param ベースのモデル
+	//! @param アッタチしたいモデル番号
+	void Attach_Anim(Model* model, int anim_num);
 
 	//! デタッチ
-	void Detach_Anim();
+	//! @param ベースのモデル
+	//! @param デタッチしたいモデル番号
+	void Detach_Anim(Model* model,int anim_num);
 
-
+	//! アニメーションの切り替え用関数
 
 
 
@@ -57,8 +63,11 @@ public:
 		float play_time = 0.0f;             //!< 現在再生中の時間
 	};
 
-	Context contexts_[2];           //!< 構造体はアニメーションブレンドのため2系統を持つ
+	//! [0]現在のアニメーション
+	//! [1]次のアニメーション
+	Context m_contexts[2];           //!< 構造体はアニメーションブレンドのため2系統を持つ
 	
+
 	float   m_blend_time = 1.0f;    //!< ブレンドの補間時間
 	struct Anim_
 	{
