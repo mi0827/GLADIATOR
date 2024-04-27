@@ -70,6 +70,7 @@ public:
 	void SetModelScale(Vector3 rot);
 
 public:
+
 	// •Ï”
 
 	//! ƒ‚ƒfƒ‹—p‚Ì•Ï”

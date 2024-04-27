@@ -111,13 +111,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\SPG_mitumori\GLADIATOR;C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\SPG_mitumori\GLADIATOR;C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

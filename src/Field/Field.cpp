@@ -52,7 +52,6 @@ void Field::Init()
 		Object* object = new Object;
 		// 追加登録(これでオブジェクトクラスの配列が増えていく)
 		objects.push_back(object);
-		
 	}
 
 	
