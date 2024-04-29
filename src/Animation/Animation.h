@@ -17,41 +17,46 @@ public:
 	Animation();
 
 
-	//1 デストラクタ
+	//! デストラクタ
 	virtual ~Animation();
 
 	struct AnimData
 	{
-
 		int handle = -1;     //! アニメーションの入れ物
 		int index = -1;     //! アニメションのインデックス
 	};
 	std::vector<AnimData*> anim_handle;
 
 
-	void Init(int anim_max);
+	void Init_Animation(int anim_max);
 
 	//! 読み込み用関数
 	//! @param ファイルのパス
 	//! @param アニメーション番号
-	void Load_Anim(const char file_path[256], int anim_no, int anim_index);
+	void Load_Animation(const char file_path[256], int anim_no, int anim_index);
 
 
 
-	//! アッタチ
+	//! アニメーションをセットする関数
 	//! @param ベースのモデル
 	//! @param アッタチしたいモデル番号
-	void Attach_Anim(Model* model, int anim_num);
+	//! @param ループ再生させるかどうか
+	void Attach_Animation(Model* model, int anim_num, bool loop);
 
-	//! デタッチ
+
+	//! ついているアニメーションを取り外すようの関数
 	//! @param ベースのモデル
 	//! @param デタッチしたいモデル番号
-	void Detach_Anim(Model* model, int anim_num);
+	void Detach_Animation(Model* model);
+
 
 	//! アニメーションの切り替え用関数
+	//! @param ベースのモデル
+	//! @param 次にセットしたいアニメーション番号
+	void Change_Animation(Model* model, int anim_num);
 
-
-
+	//! アニメーションの再生
+	void Play_Animation();
 
 private:
 
@@ -72,7 +77,7 @@ public:
 	};
 
 	//! [0]現在のアニメーション
-	//! [1]次のアニメーション
+	//! [1]前のアニメーション
 	Context m_contexts[2];           //!< 構造体はアニメーションブレンドのため2系統を持つ
 
 
