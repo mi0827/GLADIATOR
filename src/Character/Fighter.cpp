@@ -2,15 +2,18 @@
 #include "src/System/Vector3.h"
 #include "src/System/Vector2.h"
 #include "src/Base.h"
-#include "src/Model/Model.h"
 #include "src/Character/Base/Character_Base.h"
+#include "src/Model/Model.h"
+#include "src/Animation/Animation.h"
 #include "Fighter.h"
 #define PANEL_SIZE	5.0f              // パネルの大きさ
 #define PANEL_HALF	(PANEL_SIZE/2.0f) // パネルの半分の大きさ
 #define ATTACK_ANIM_SPEED 1.4f
 //! モデル用のクラスのオブジェクト
+//! モデル用のクラスのオブジェクト
+ 
 Model fighter;
-
+Animation anim;
 //---------------------------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------------------------
@@ -35,7 +38,7 @@ Fighter::~Fighter()
 void Fighter::Init(int player_num)
 {
 	/*fighter = new Model;*/
-	fighter.LoadModel("Data/Model/Fighter/Fighter.mv1");
+	fighter.LoadModel("Data/Model/Ninja/Ninja.mv1");
 
 	if (player_num == 0)
 	{
@@ -55,6 +58,10 @@ void Fighter::Init(int player_num)
 //---------------------------------------------------------------------------
 void Fighter::Animation_Init()
 {
+	anim.Init(anim_max);
+	anim.Load_Anim("Data/Model/Ninja/Animation/Idle.mv1", 0, 0);
+	
+	//m_anim_model[1] = MV1LoadModel("Data/Model/Ninja/Animation/Run.mv1");   // 走る
 }
 
 //---------------------------------------------------------------------------

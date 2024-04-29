@@ -1,5 +1,5 @@
 #pragma once
-
+#include "src/Base.h"
 /**
 * @file Model.h
 * @ brief モデル用のクラス

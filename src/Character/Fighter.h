@@ -69,4 +69,8 @@ public:
 
 public:
 	const float MOVE_SPEED = 1.5f; // 走る用のスピード
+	 
+	static const int anim_max = 2;
+	
+	
 };

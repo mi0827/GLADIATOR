@@ -8,20 +8,28 @@
 /**
 * アニメーション用のクラス
 */
-class Animation final
+class Animation
 {
 public:
 
-
-
-
 	//! コンストラクタ
 	//! @param アニメーションの最大数
-	Animation(int anim_max);
+	Animation();
 
 
 	//1 デストラクタ
 	virtual ~Animation();
+
+	struct AnimData
+	{
+
+		int handle = -1;     //! アニメーションの入れ物
+		int index = -1;     //! アニメションのインデックス
+	};
+	std::vector<AnimData*> anim_handle;
+
+
+	void Init(int anim_max);
 
 	//! 読み込み用関数
 	//! @param ファイルのパス
@@ -38,7 +46,7 @@ public:
 	//! デタッチ
 	//! @param ベースのモデル
 	//! @param デタッチしたいモデル番号
-	void Detach_Anim(Model* model,int anim_num);
+	void Detach_Anim(Model* model, int anim_num);
 
 	//! アニメーションの切り替え用関数
 
@@ -66,15 +74,10 @@ public:
 	//! [0]現在のアニメーション
 	//! [1]次のアニメーション
 	Context m_contexts[2];           //!< 構造体はアニメーションブレンドのため2系統を持つ
-	
+
 
 	float   m_blend_time = 1.0f;    //!< ブレンドの補間時間
-	struct Anim_
-	{
-		int handl = -1;     //! アニメーションの入れ物
-		int index = -1;     //! アニメションのインデックス
-	};
-	Anim_* anim_handl;
+
 
 	////---------------------------------------------------------------------------
 	//// 普通アニメーション読み込み用の配列
