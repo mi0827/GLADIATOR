@@ -3,6 +3,7 @@
 #include "src/System/Vector2.h"
 #include "src/Base.h"
 #include "src/System/InputPad.h"
+#include "src/System/Transform.h"
 #include "src/System/Move.h"
 
 #include "Character_Base.h"
@@ -139,7 +140,7 @@ void CharacterBase::Draw_Status(int player_num)
 //---------------------------------------------------------------------------
 // プレイヤーの移動をする関数
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Player(bool* m_check_move, Vector3* player_pos, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	// 移動中はダッシュする
 		// ゲームパッドの入力状態をとる
@@ -198,27 +199,27 @@ void CharacterBase::Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3
 	//}
 	
 
-	move.Update(m_check_move, camera_rot, player_rot, mov_speed, &m_pos, m_pad_no, m_mov);
+	move.Update(m_check_move, camera_rot, player_rot, mov_speed, player_pos, m_pad_no, m_mov);
 }
 
 //---------------------------------------------------------------------------
 // 前移動
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Front(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Front(bool* m_check_move, Vector3* player_pos, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 	//　画面奥：カメラのある方向の逆の方向
 	player_rot->y = camera_rot->y;
 	// 動いていい
 	*m_check_move = true;
 	// 向いている方向に座標移動
-	m_pos.x += *mov_speed * sinf(TO_RADIAN(m_rot.y));
-	m_pos.z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
+	player_pos->x += *mov_speed * sinf(TO_RADIAN(m_rot.y));
+	player_pos->z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
 }
 
 //---------------------------------------------------------------------------
 // 後ろ移動
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Dhindo(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Dhindo(bool* m_check_move, Vector3* player_pos, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 
 	// 画面手前（カメラのある方向）
@@ -226,15 +227,15 @@ void CharacterBase::Move_Dhindo(bool* m_check_move, Vector3* camera_rot, Vector3
 	// 動いていい
 	*m_check_move = true;
 	// 向いている方向に座標移動
-	m_pos.x += *mov_speed * sinf(TO_RADIAN(m_rot.y));
-	m_pos.z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
+	player_pos->x += *mov_speed * sinf(TO_RADIAN(m_rot.y));
+	player_pos->z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
 
 }
 
 //---------------------------------------------------------------------------
 // 左移動
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Left(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Left(bool* m_check_move, Vector3* player_pos, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 
 	// 画面から見て：左
@@ -242,15 +243,15 @@ void CharacterBase::Move_Left(bool* m_check_move, Vector3* camera_rot, Vector3* 
 	// 動いていい
 	*m_check_move = true;
 	// 向いている方向に座標移動
-	m_pos.x += *mov_speed * sinf(TO_RADIAN(m_rot.y));
-	m_pos.z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
+	player_pos->x += *mov_speed * sinf(TO_RADIAN(m_rot.y));
+	player_pos->z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
 
 }
 
 //---------------------------------------------------------------------------
 // 右移動
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Right(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
+void CharacterBase::Move_Right(bool* m_check_move, Vector3* player_pos, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed)
 {
 
 	// 画面から見て：右
@@ -258,15 +259,15 @@ void CharacterBase::Move_Right(bool* m_check_move, Vector3* camera_rot, Vector3*
 	// 動いていい
 	*m_check_move = true;
 	// 向いている方向に座標移動		
-	m_pos.x += *mov_speed * sinf(TO_RADIAN(m_rot.y));
-	m_pos.z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
+	player_pos->x += *mov_speed * sinf(TO_RADIAN(m_rot.y));
+	player_pos->z += *mov_speed * cosf(TO_RADIAN(m_rot.y));
 
 }
 
 //---------------------------------------------------------------------------
 // キャラクターの移動用関数(ゲームパッド用)
 //---------------------------------------------------------------------------
-void CharacterBase::Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* camera_rot, const float* mov_speed)
+void CharacterBase::Move_GamePad(bool* m_check_move, Vector3* player_pos, Vector3* mov, Vector3* camera_rot, const float* mov_speed)
 {
 	*m_check_move = true; // 動いていい
 	// 向いている方向に座標移動
@@ -280,16 +281,16 @@ void CharacterBase::Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* came
 	// 移動ベクトルの大きさを PLAYER_MOV_SPEED のおおきさにします
 	mov->SetLength(*mov_speed);
 	// その移動ベクトル分座標移動
-	m_pos += *mov;
+	*player_pos += *mov;
 }
 
 //---------------------------------------------------------------------------
 // キャラクターの壁擦り用関数
 //---------------------------------------------------------------------------
-void CharacterBase::Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* other_pos, Vector3* other_size)
+void CharacterBase::Move_Hit(Vector3* before_pos, Vector3* player_pos, Vector3* hit_size, Vector3* other_pos, Vector3* other_size)
 {
 	// 移動用の値判定
-	move.Move_Hit(&m_pos,before_pos,  hit_size,  other_pos,  other_size );		
+	move.Move_Hit(player_pos, before_pos,  hit_size,  other_pos,  other_size );
 }
 
 //---------------------------------------------------------------------------

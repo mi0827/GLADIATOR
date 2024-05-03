@@ -145,8 +145,18 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Character\Base\Character_Base.cpp" />
     <ClCompile Include="src\Character\Fighter.cpp" />
-    <ClCompile Include="src\Character\Ninja.cpp" />
-    <ClCompile Include="src\Character\Player.cpp" />
+    <ClCompile Include="src\Character\Ninja.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\Character\Player.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\Effect\Effect.cpp" />
     <ClCompile Include="src\Field\Field.cpp" />
     <ClCompile Include="src\GameMain.cpp" />
@@ -164,6 +174,7 @@
     <ClCompile Include="src\System\InputPad.cpp" />
     <ClCompile Include="src\System\Move.cpp" />
     <ClCompile Include="src\System\Option.cpp" />
+    <ClCompile Include="src\System\Transform.cpp" />
     <ClCompile Include="src\System\Vector2.cpp" />
     <ClCompile Include="src\System\Vector3.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
@@ -174,8 +185,18 @@
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Character\Base\Character_Base.h" />
     <ClInclude Include="src\Character\Fighter.h" />
-    <ClInclude Include="src\Character\Ninja.h" />
-    <ClInclude Include="src\Character\Player.h" />
+    <ClInclude Include="src\Character\Ninja.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\Character\Player.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="src\Effect\Effect.h" />
     <ClInclude Include="src\Field\Field.h" />
     <ClInclude Include="src\GameMain.h" />
@@ -193,6 +214,7 @@
     <ClInclude Include="src\System\InputPad.h" />
     <ClInclude Include="src\System\Move.h" />
     <ClInclude Include="src\System\Option.h" />
+    <ClInclude Include="src\System\Transform.h" />
     <ClInclude Include="src\System\Vector2.h" />
     <ClInclude Include="src\System\Vector3.h" />
     <ClInclude Include="src\WinMain.h" />

@@ -9,6 +9,8 @@ class CharacterBase : public Base
 {
 public:
 
+	
+
 	// 全キャラ共通の値
 /** @def
  * HPの最大値
@@ -66,6 +68,8 @@ public:
 	// プレイヤーの一人目か二人目かの番号
 	void Draw_Status(int player_num);
 
+	void Move_Player(bool* m_check_move, Vector3* player_pos, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+
 
 	// プレイヤーの移動をする関数
 	// // 引数
@@ -73,7 +77,7 @@ public:
 	// ２：いまは移動していいていいかの判断
 	// ３：プレイヤーの向いている向き
 	// ４：移動スピード
-	void Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	//void Move_Player(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 
 	// 前移動
 	// 引数
@@ -81,7 +85,7 @@ public:
 	// ２：いまは移動していいていいかの判断
 	// ３：プレイヤーの向いている向き
 	// ４：移動スピード
-	void Move_Front(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	void Move_Front(bool* m_check_move, Vector3* player_pos, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 
 
 	// 後ろ移動
@@ -90,7 +94,7 @@ public:
 	// ２：いまは移動していいていいかの判断
 	// ３：プレイヤーの向いている向き
 	// ４：移動スピード
-	void Move_Dhindo(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	void Move_Dhindo(bool* m_check_move, Vector3* player_pos, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 
 	// 左移動
 	// 引数
@@ -98,7 +102,7 @@ public:
 	// ２：いまは移動していいていいかの判断
 	// ３：プレイヤーの向いている向き
 	// ４：移動スピード
-	void Move_Left(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	void Move_Left(bool* m_check_move, Vector3* player_pos, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 
 	// 右移動
 	// 引数
@@ -106,7 +110,7 @@ public:
 	// ２：いまは移動していいていいかの判断
 	// ３：プレイヤーの向いている向き
 	// ４：移動スピード
-	void Move_Right(bool* m_check_move, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
+	void Move_Right(bool* m_check_move, Vector3* player_pos, Vector3* camera_rot, Vector3* player_rot, const float* mov_speed);
 
 	// キャラクターの移動用関数(ゲームパッド用)
 	// 引数
@@ -114,7 +118,7 @@ public:
 	// ２：いまは移動していいていいかの判断
 	// ３：プレイヤーの向いている向き
 	// ４：移動スピード
-	void Move_GamePad(bool* m_check_move, Vector3* mov, Vector3* camera_rot, const float* mov_speed);
+	void Move_GamePad(bool* m_check_move, Vector3* player_pos, Vector3* mov, Vector3* camera_rot, const float* mov_speed);
 
 	// キャラクターの壁擦り用関数
 	// 引数
@@ -122,7 +126,7 @@ public:
 	// ２：自分（キャラ）のあたり判定のサイズ（中心から見たサイズ）
 	// ３：壁の座標
 	// ４：壁のあたり判定のサイズ（中心から見たサイズ）
-	void Move_Hit(Vector3* before_pos, Vector3* hit_size, Vector3* other_pos, Vector3* other_size);
+	void Move_Hit(Vector3* before_pos, Vector3* player_pos, Vector3* hit_size, Vector3* other_pos, Vector3* other_size);
 
 
 	// 普通アニメーション変数のNew用関数
@@ -404,4 +408,8 @@ public:
 	//---------------------------------------------------------------------------
 	Vector3 m_hit_pos_pot = { 0.0f,0.0f,0.0f };
 	Vector3 m_hit_pos_under = { 0.0f,0.0f,0.0f };
+
+
+	Transform transform;
+
 };

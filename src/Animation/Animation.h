@@ -1,5 +1,5 @@
 #pragma once
-#include <iostream>
+
 /**
 * @fule Animation.h
 * @brief アニメーション用のクラス

@@ -70,14 +70,12 @@ void Animation::Attach_Animation(Model* model, int anim_num, bool loop)
 		anim_handle[anim_num]->handle
 	);
 
-
 	// アニメーション総再生フレームの取得
 	m_contexts[0].animation_total_time = MV1GetAttachAnimTotalTime
 	(
 		model->m_model,
 		m_contexts[0].animation_attach_index
 	);
-
 
 	// ブレンド率の取得
 	m_contexts[0].m_blend_ratio = MV1GetAttachAnimBlendRate
@@ -142,7 +140,9 @@ void Animation::Action_Change_Animation(Model* model, int anim_num, bool loop)
 // アニメーションを再生させるための関数
 void Animation::Play_Animation(Model* model)
 {
-
+	// アニメーションを再生中にしておく
+	m_contexts[0].is_playering = true;
+	// アニメーションの再生フレームを進める
 	m_contexts[0].play_time++;
 	// ループするかどうかによって処理の変更
 	if (m_contexts[0].is_loop)
@@ -167,14 +167,12 @@ void Animation::Play_Animation(Model* model)
 // アニメーションをループさせる
 void Animation::Loop_Animation()
 {
-
 	// アニメーションフレームが最後まで回ったら
 	if (m_contexts[0].play_time > m_contexts[0].animation_total_time)
 	{
 		// 最初にリセットする
 		m_contexts[0].play_time = 0.0f;
 	}
-
 }
 
 void Animation::Not_Loop(Model* model)
@@ -185,7 +183,6 @@ void Animation::Not_Loop(Model* model)
 		// デフォルトのアニメーションに設定
 		Change_Animation(model, m_default_anim, true);
 	}
-
 }
 
 

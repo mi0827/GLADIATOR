@@ -672,7 +672,7 @@ void Player::Attack_Update()
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 3)) * m_now_hit_area->hit_under.x, m_pos.y + m_now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 3)) * m_now_hit_area->hit_under.z);
 			m_hit_cd_r = m_now_hit_area->hit_r;
 			// SEÇÃçƒê∂
-			if (!player_se.Playing_SE(SE_PUNCH_2)) 
+			if (!player_se.Playing_SE(SE_PUNCH_2))
 			{
 				player_se.Play_SE(SE_PUNCH_2, DX_PLAYTYPE_BACK, true);
 			}
@@ -719,7 +719,7 @@ void Player::Attack_Update()
 			m_hit_cd_pos_under.set(m_pos.x + sinf(TO_RADIAN(m_rot.y + 25)) * m_now_hit_area->hit_under.x, m_pos.y + m_now_hit_area->hit_under.y, m_pos.z + cosf(TO_RADIAN(m_rot.y + 25)) * m_now_hit_area->hit_under.z);
 			m_hit_cd_r = m_now_hit_area->hit_r;
 			// SEÇÃçƒê∂
-			if (!player_se.Playing_SE(SE_PUNCH_3)) 
+			if (!player_se.Playing_SE(SE_PUNCH_3))
 			{
 				player_se.Play_SE(SE_PUNCH_3, DX_PLAYTYPE_BACK, true);
 			}
@@ -858,7 +858,7 @@ void Player::Attack_Update()
 			m_cd_hit_flag = false;    //< ìñÇΩÇËîªíËÇÇµÇƒÇŸÇµÇ≠Ç»Ç¢ÇÃÇ≈ÉtÉâÉOÇâ∫Ç∑
 		}
 		// SEÇÃçƒê∂
-		if (!player_se.Playing_SE(SE_SPECIAL)) 
+		if (!player_se.Playing_SE(SE_SPECIAL))
 		{
 			player_se.Play_SE(SE_SPECIAL, DX_PLAYTYPE_BACK, true);
 		}

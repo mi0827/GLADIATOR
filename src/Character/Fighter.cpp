@@ -1,136 +1,87 @@
 #include "src/WinMain.h"
+#include "src/GameMain.h"
 #include "src/System/Vector3.h"
 #include "src/System/Vector2.h"
+#include "src/Sound/BGM.h"
+#include "src/Sound/SE.h"
+#include "src/System/InputPad.h"
 #include "src/Base.h"
-#include "src/Character/Base/Character_Base.h"
+#include "src/System/Transform.h"
 #include "src/Model/Model.h"
 #include "src/Animation/Animation.h"
+
+#include "src/Character/Base/Character_Base.h"
+#include "src/Effect/Effect.h"
+
 #include "Fighter.h"
+
 #define PANEL_SIZE	5.0f              // パネルの大きさ
 #define PANEL_HALF	(PANEL_SIZE/2.0f) // パネルの半分の大きさ
 #define ATTACK_ANIM_SPEED 1.4f
-//! モデル用のクラスのオブジェクト
-//! モデル用のクラスのオブジェクト
- 
-Model fighter;
+
+// SEクラスのオブジェクト
+SE figher_se;
+//Transform transform;
+//Model model();
 Animation anim;
 //---------------------------------------------------------------------------
-// コンストラクタ
+// コンストラクタ（初期化）
 //---------------------------------------------------------------------------
+
 Fighter::Fighter()
 {
-	//fighter = 0;
-	// 移動用のボックス                                                   
-	m_move_hit_box_size.set(PANEL_HALF - (float)0.1, PANEL_HALF - (float)0.1, PANEL_HALF - (float)0.1);    // パネルの大きさ
 }
 
-//---------------------------------------------------------------------------
-// デストラクタ
-//---------------------------------------------------------------------------
-Fighter::~Fighter()
-{
-	
-}
-
-//---------------------------------------------------------------------------
-// 初期化処理
-//---------------------------------------------------------------------------
 void Fighter::Init(int player_num)
 {
-	/*fighter = new Model;*/
-	fighter.LoadModel("Data/Model/Ninja/Ninja.mv1");
-
+	model.LoadModel("Data/Model/Player/Player.mv1");
 	if (player_num == 0)
 	{
-		m_pos.set(350.0f, 0.0f, 150.0f);           // 初期座標の設定
-		m_rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
+		transform.pos.set(350.0f, 0.0f, 150.0f);           // 初期座標の設定
+		transform.rot.set(0.0f, 0.0f, 0.0f);             // 向きの設定
 	}
 	else
 	{
-		m_pos.set(350.0f, 0.0f, 450.0f);            // 初期座標の設定
-		m_rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
+		transform.pos.set(350.0f, 0.0f, 450.0f);            // 初期座標の設定
+		transform.rot.set(0.0f, 180.0f, 0.0f);			  // 向きの設定
 	}
-
 }
 
-//---------------------------------------------------------------------------
-// アニメーション用の初期処理
-//---------------------------------------------------------------------------
 void Fighter::Animation_Init()
 {
-	anim.Init(anim_max);
-	anim.Load_Anim("Data/Model/Ninja/Animation/Idle.mv1", 0, 0);
-	
-	//m_anim_model[1] = MV1LoadModel("Data/Model/Ninja/Animation/Run.mv1");   // 走る
 }
 
-//---------------------------------------------------------------------------
-// 更新処理
-//---------------------------------------------------------------------------
 void Fighter::Update(Vector3* camera_rot, int SE_Volume)
 {
-	m_before_mov = m_pos; // 移動される前に入れ替えとく
-
-	Move_Player(&m_check_move, camera_rot, &m_rot, &MOVE_SPEED);
-	fighter.SetModelPos(m_pos);
-	fighter.SetModelRot(m_rot);
 }
-
-//---------------------------------------------------------------------------
-// プレイヤーの移動用当たり判定
-//---------------------------------------------------------------------------
-void Fighter::Move_Hit_Update()
-{
-	CharacterBase::Move_Hit(&m_before_mov, &m_move_hit_box_size, &m_hit_other_pos, &m_hit_other_size);
-}
-
-//---------------------------------------------------------------------------
-// アクションのボタンに関する関数
-//---------------------------------------------------------------------------
-void Fighter::Attack_PressButton_Update(Vector3* camera_rot)
-{
-}
-
-//---------------------------------------------------------------------------
-// 攻撃用関数
-//---------------------------------------------------------------------------
-void Fighter::Attack_Update()
-{
-}
-
-//---------------------------------------------------------------------------
-// ダメージを食らった時に行う関数
-//---------------------------------------------------------------------------
-void Fighter::Damage_Update(int* m_attack_damage)
-{
-}
-
-//---------------------------------------------------------------------------
-// ガードが行われた時に行う
-//---------------------------------------------------------------------------
-void Fighter::Block_Update()
-{
-}
-
-//---------------------------------------------------------------------------
-// 描画処理
-//---------------------------------------------------------------------------
 void Fighter::Draw()
 {
-
-	fighter.DrawModel();
+	model.DrawModel(&transform);
 }
 
-//---------------------------------------------------------------------------
-// 終了処理
-//---------------------------------------------------------------------------
 void Fighter::Exit()
 {
 }
 
-//---------------------------------------------------------------------------
-// SEの初期化関数
-//---------------------------------------------------------------------------
 void Fighter::SE_Init()
+{
+}
+void Fighter::Move_Hit_Update()
+{
+}
+
+void Fighter::Attack_PressButton_Update(Vector3* camera_rot)
+{
+}
+
+void Fighter::Attack_Update()
+{
+}
+
+void Fighter::Damage_Update(int* m_attack_damage)
+{
+}
+
+void Fighter::Block_Update()
 {
 }

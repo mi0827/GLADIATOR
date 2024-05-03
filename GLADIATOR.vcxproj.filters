@@ -131,6 +131,9 @@
     <ClCompile Include="src\System\Move.cpp">
       <Filter>scr\System</Filter>
     </ClCompile>
+    <ClCompile Include="src\System\Transform.cpp">
+      <Filter>scr\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Character\Base\Character_Base.h">
@@ -212,6 +215,9 @@
       <Filter>scr\Animation</Filter>
     </ClInclude>
     <ClInclude Include="src\System\Move.h">
+      <Filter>scr\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\Transform.h">
       <Filter>scr\System</Filter>
     </ClInclude>
   </ItemGroup>

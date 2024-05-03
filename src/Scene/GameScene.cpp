@@ -49,7 +49,7 @@ GameScene::GameScene()
 void GameScene::Init()
 {
 	players[0] = new Fighter;
-	players[1] = new Player;
+	players[1] = new Fighter;
 	// プレイヤー０にカメラ０をつける
 	// プレイヤー１にカメラ１をつける
 	camera[0] = new Camera(0);

@@ -1,8 +1,9 @@
 #include "src/WinMain.h"
 #include "src/System/Vector3.h"
 #include "src/Base.h"
+#include "src/System/Transform.h"
 #include "Model.h"
-#include "src/Animation/Animation.h"
+
 
 
 // コンストラクタ
@@ -27,40 +28,44 @@ void Model::LoadModel(const char data[256])
 }
 
 // 描画用関数
-void Model::DrawModel()
+void Model::DrawModel(Transform *transform)
 {
-	MV1SetPosition(m_model, VGet(transform.pos.x, transform.pos.y, transform.pos.z)); // 描画するプレイヤーモデルの座標の設定
-	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(transform.rot.x), TO_RADIAN(transform.rot.y + 180), TO_RADIAN(transform.rot.z))); // モデルの回転
-	MV1SetScale(m_model, transform.scale.VGet()); // モデルの大きさ(10分の１のサイズ)
+
+	m_transform = *transform;
+
+
+	MV1SetPosition(m_model, VGet(m_transform.pos.x, m_transform.pos .y, m_transform.pos .z)); // 描画するプレイヤーモデルの座標の設定
+	MV1SetRotationXYZ(m_model, VGet(TO_RADIAN(m_transform.rot.x), TO_RADIAN(m_transform.rot.y + 180), TO_RADIAN(m_transform.rot.z))); // モデルの回転
+	MV1SetScale(m_model, m_transform.scale.VGet()); // モデルの大きさ(10分の１のサイズ)
 	MV1DrawModel(m_model); // モデルの描画
 }
 
 // モデルの座標をもらってくる用関数
 Vector3 Model::GetModelPos()
 {
-	return transform.pos;
+	return m_transform.pos;
 }
 
 // モデルの座標をセットする用関数
 void Model::SetModelPos(Vector3 pos)
 {
-	transform.pos.set(pos);
+	m_transform.pos.set(pos);
 }
 
 // モデルの向きをもらう用関数
-Vector3 Model::GetModelRot()
+Vector3 Model::GetModelRot(Vector3 rot)
 {
-	return transform.rot;
+	return m_transform.rot;
 }
 
 // モデルに向きをセットするため用関数
 void Model::SetModelRot(Vector3 rot)
 {
-	transform.rot.set(rot);
+	m_transform.rot.set(rot);
 }
 
 // モデルのスケールを変更するための関数
 void Model::SetModelScale(Vector3 scale)
 {
-	transform.scale.set(scale);
+	m_transform.scale.set(scale);
 }
