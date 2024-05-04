@@ -77,13 +77,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\OCA SPG\GLADIATOR;C:\OCA SPG\GLADIATOR\dxlib;C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\OCA SPG\GLADIATOR;C:\OCA SPG\GLADIATOR\dxlib;C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -94,7 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\OCA SPG\GLADIATOR;\dxlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\OCA SPG\GLADIATOR;C:\OCA SPG\GLADIATOR\dxlib;C:\OCA SPG\GLADIATOR;\dxlib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -102,7 +102,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\OCA SPG\GLADIATOR;\dxlib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\OCA SPG\GLADIATOR;C:\OCA SPG\GLADIATOR\dxlib;C:\OCA SPG\GLADIATOR;\dxlib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -111,13 +111,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\SPGmitumori\3nenn\GLADIATOR;D:\SPG_mitumori\GLADIATOR;C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\OCA SPG\GLADIATOR;C:\OCA SPG\GLADIATOR\dxlib;D:\SPGmitumori\3nenn\GLADIATOR;D:\SPG_mitumori\GLADIATOR;C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\SPGmitumori\3nenn\GLADIATOR;D:\SPG_mitumori\GLADIATOR;C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\OCA SPG\GLADIATOR;C:\OCA SPG\GLADIATOR\dxlib;D:\SPGmitumori\3nenn\GLADIATOR;D:\SPG_mitumori\GLADIATOR;C:\OCA SPG\GLADIATOR;.\dxlib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -128,7 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\OCA SPG\GLADIATOR;\dxlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\OCA SPG\GLADIATOR;C:\OCA SPG\GLADIATOR\dxlib;C:\OCA SPG\GLADIATOR;\dxlib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -136,7 +136,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\OCA SPG\GLADIATOR;\dxlib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\OCA SPG\GLADIATOR;C:\OCA SPG\GLADIATOR\dxlib;C:\OCA SPG\GLADIATOR;\dxlib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
