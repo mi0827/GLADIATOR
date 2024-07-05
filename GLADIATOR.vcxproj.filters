@@ -1,232 +1,170 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
     <Filter Include="リソース ファイル">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="scr">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="ソース ファイル\Game">
+      <UniqueIdentifier>{82f39eff-e02b-46c5-bdfd-eaeb3f71ac5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="scr\System">
+    <Filter Include="ソース ファイル\System">
       <UniqueIdentifier>{c4fb9514-8299-4c02-9491-dd13f1fe8127}</UniqueIdentifier>
     </Filter>
-    <Filter Include="scr\Sound">
-      <UniqueIdentifier>{6861c7de-8643-465a-83d3-9dc84b04664b}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\Game\Base">
+      <UniqueIdentifier>{7108fadb-7c64-4222-9972-eb09f7dd94e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="scr\Hit">
-      <UniqueIdentifier>{2ed0a1af-e054-4cc1-b811-0edbf3614ffa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scr\Character">
+    <Filter Include="ソース ファイル\Game\Character">
       <UniqueIdentifier>{70f4bdd9-3ec7-4c10-82ec-0794d8f23c44}</UniqueIdentifier>
     </Filter>
-    <Filter Include="scr\Character\Base">
-      <UniqueIdentifier>{a1598f2e-3faa-4158-9d0d-5c656a6280bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scr\Field">
-      <UniqueIdentifier>{4e715d5f-139d-4fd2-b3f5-4216aa51907e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scr\Effect">
-      <UniqueIdentifier>{adb888a5-6614-46ec-b041-53ed4b84031f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scr\Model">
-      <UniqueIdentifier>{13e9233e-084f-4de5-8420-5f469b1279d9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scr\Scene">
-      <UniqueIdentifier>{8eb67503-cad0-4233-91eb-cc4e3f5b2bf5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scr\Scene\Base">
-      <UniqueIdentifier>{3203260b-aea8-4c56-b6ab-f611b68ec036}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scr\Object">
+    <Filter Include="ソース ファイル\Game\Object">
       <UniqueIdentifier>{8ff9111e-3f09-42e1-b311-f036d5517430}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shader">
-      <UniqueIdentifier>{5f98806a-4555-4acc-8ab4-a9fb369a549b}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{8eb67503-cad0-4233-91eb-cc4e3f5b2bf5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="scr\Animation">
-      <UniqueIdentifier>{39280ef4-d252-4769-89d9-ceacbeb0d302}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\Scene\Scene_Base">
+      <UniqueIdentifier>{3203260b-aea8-4c56-b6ab-f611b68ec036}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Character\Base\Character_Base.cpp">
-      <Filter>scr\Character\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Character\Player.cpp">
-      <Filter>scr\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Character\Ninja.cpp">
-      <Filter>scr\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Effect\Effect.cpp">
-      <Filter>scr\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Field\Field.cpp">
-      <Filter>scr\Field</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Hit\HitStop.cpp">
-      <Filter>scr\Hit</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Hit\Hit.cpp">
-      <Filter>scr\Hit</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Object\Object.cpp">
-      <Filter>scr\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scene\Base\Scene_Base.cpp">
-      <Filter>scr\Scene\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scene\TieleScene.cpp">
-      <Filter>scr\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scene\TitleScene.cpp">
-      <Filter>scr\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scene\EndScene.cpp">
-      <Filter>scr\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scene\GameScene.cpp">
-      <Filter>scr\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Sound\SE.cpp">
-      <Filter>scr\Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Sound\BGM.cpp">
-      <Filter>scr\Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\Vector2.cpp">
-      <Filter>scr\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\Vector3.cpp">
-      <Filter>scr\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\InputPad.cpp">
-      <Filter>scr\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\Option.cpp">
-      <Filter>scr\System</Filter>
-    </ClCompile>
     <ClCompile Include="src\WinMain.cpp">
-      <Filter>scr</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Camera.cpp">
-      <Filter>scr</Filter>
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\GameMain.cpp">
-      <Filter>scr</Filter>
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vector3.cpp">
+      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="src\Base.cpp">
-      <Filter>scr</Filter>
+      <Filter>ソース ファイル\Game\Base</Filter>
     </ClCompile>
-    <ClCompile Include="src\Model\Model.cpp">
-      <Filter>scr\Model</Filter>
+    <ClCompile Include="src\Character_Base.cpp">
+      <Filter>ソース ファイル\Game\Base</Filter>
     </ClCompile>
-    <ClCompile Include="src\Character\Fighter.cpp">
-      <Filter>scr\Character</Filter>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>ソース ファイル\Game\Character</Filter>
     </ClCompile>
-    <ClCompile Include="src\Animation\Animation.cpp">
-      <Filter>scr\Animation</Filter>
+    <ClCompile Include="src\Field.cpp">
+      <Filter>ソース ファイル\Game</Filter>
     </ClCompile>
-    <ClCompile Include="src\System\Move.cpp">
-      <Filter>scr\System</Filter>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>ソース ファイル\Game</Filter>
     </ClCompile>
-    <ClCompile Include="src\System\Transform.cpp">
-      <Filter>scr\System</Filter>
+    <ClCompile Include="src\Ninja.cpp">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object.cpp">
+      <Filter>ソース ファイル\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hit.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vector2.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\InputPad.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameScene.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TitleScene.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EndScene.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene_Base.cpp">
+      <Filter>ソース ファイル\Scene\Scene_Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Effect.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SE.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BGM.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Option.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HitStop.cpp">
+      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Character\Base\Character_Base.h">
-      <Filter>scr\Character\Base</Filter>
+    <ClInclude Include="src\Base.h">
+      <Filter>ソース ファイル\Game\Base</Filter>
     </ClInclude>
-    <ClInclude Include="src\Character\Ninja.h">
-      <Filter>scr\Character</Filter>
+    <ClInclude Include="src\Character_Base.h">
+      <Filter>ソース ファイル\Game\Base</Filter>
     </ClInclude>
-    <ClInclude Include="src\Character\Player.h">
-      <Filter>scr\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Effect\Effect.h">
-      <Filter>scr\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Field\Field.h">
-      <Filter>scr\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Hit\Hit.h">
-      <Filter>scr\Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Hit\HitStop.h">
-      <Filter>scr\Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Object\Object.h">
-      <Filter>scr\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scene\Base\Scene_Base.h">
-      <Filter>scr\Scene\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scene\GameScene.h">
-      <Filter>scr\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scene\TieleScene.h">
-      <Filter>scr\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scene\TitleScene.h">
-      <Filter>scr\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scene\EndScene.h">
-      <Filter>scr\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Sound\BGM.h">
-      <Filter>scr\Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Sound\SE.h">
-      <Filter>scr\Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="src\System\Option.h">
-      <Filter>scr\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\System\Vector2.h">
-      <Filter>scr\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\System\Vector3.h">
-      <Filter>scr\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\System\InputPad.h">
-      <Filter>scr\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\WinMain.h">
-      <Filter>scr</Filter>
+    <ClInclude Include="src\Player.h">
+      <Filter>ソース ファイル\Game\Character</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera.h">
-      <Filter>scr</Filter>
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Field.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WinMain.h">
+      <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\GameMain.h">
-      <Filter>scr</Filter>
+      <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Base.h">
-      <Filter>scr</Filter>
+    <ClInclude Include="src\Vector3.h">
+      <Filter>ソース ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\Model\Model.h">
-      <Filter>scr\Model</Filter>
+    <ClInclude Include="src\Ninja.h">
+      <Filter>ソース ファイル\Game\Character</Filter>
     </ClInclude>
-    <ClInclude Include="src\Character\Fighter.h">
-      <Filter>scr\Character</Filter>
+    <ClInclude Include="src\Object.h">
+      <Filter>ソース ファイル\Game\Object</Filter>
     </ClInclude>
-    <ClInclude Include="src\Animation\Animation.h">
-      <Filter>scr\Animation</Filter>
+    <ClInclude Include="src\Hit.h">
+      <Filter>ソース ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\System\Move.h">
-      <Filter>scr\System</Filter>
+    <ClInclude Include="src\Vector2.h">
+      <Filter>ソース ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\System\Transform.h">
-      <Filter>scr\System</Filter>
+    <ClInclude Include="src\InputPad.h">
+      <Filter>ソース ファイル\System</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="shader\SamplePS.fx">
-      <Filter>shader</Filter>
-    </FxCompile>
-    <FxCompile Include="shader\SampleVS.fx">
-      <Filter>shader</Filter>
-    </FxCompile>
+    <ClInclude Include="src\GameScene.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TitleScene.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EndScene.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene_Base.h">
+      <Filter>ソース ファイル\Scene\Scene_Base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Effect.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SE.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BGM.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Option.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HitStop.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

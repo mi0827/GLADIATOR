@@ -20,7 +20,7 @@
 #define SCREEN_W	1920//1920//800
 #define SCREEN_H	1080//1080//450
 
-#include "System/InputPad.h" // ゲームパッド
+#include "InputPad.h" // ゲームパッド
 
 // EffekseerForDXLib.hをインクルードします。
 #include "EffekseerForDXLib.h"
@@ -43,6 +43,6 @@ float TO_RADIAN(float degree);
 // ラジアンを度に変換する関数
 float TO_DEGREE(float radian);
 
-#include "src/System/Vector3.h"
+#include "Vector3.h"
 void DrawCircle3D_XZ(Vector3 center, float radius, int color, bool fill = false);
 

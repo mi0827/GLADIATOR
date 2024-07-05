@@ -530,10 +530,10 @@ void Player::Attack_PressButton_Update(Vector3* camera_rot)
 	{ // 必殺技が使用可能なら
 		if (PushHitKey(KEY_INPUT_E) && PushHitKey(KEY_INPUT_Q) || IsPadOn(PAD_ID::PAD_L, m_pad_no) && IsPadOn(PAD_ID::PAD_R, m_pad_no) && m_action_flag == false)
 		{
-			m_sp_count.x = 0;                        // SPの使用なのでカウントをリセット
+			m_sp_count.x = 0;                          // SPの使用なのでカウントをリセット
 			m_action_mode = ATTACK_ACTION;             // モデルのアクションを攻撃に変更
 			m_attack_anim_pick = ATTACK_SPECIAL_ANIM;  // 必殺攻撃アクションを設定
-			CharacterBase::Attack_Action(1);   // 行いたい攻撃アニメーションをセット
+			CharacterBase::Attack_Action(1);           // 行いたい攻撃アニメーションをセット
 			// bead_hit_flag = false;
 			m_action_flag = true;                      // アクションフラグを上げる
 			m_sp_flag = false;                         // SPを使用済みにしておく

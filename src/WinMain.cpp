@@ -94,8 +94,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	srand(GetNowCount() % RAND_MAX);
 
-	for (int i = 0; i < 256; i++) 
-	{
+	for (int i = 0; i < 256; i++) {
 		KeyFrame[i] = 0;
 	}
 	MouseLeftFrame = 0;
@@ -127,8 +126,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		GetHitKeyStateAll(KeyBuffer); // キーボードのすべてのキーの押下状態を取得する
 
 		// キーが押された時をとる処理
-		for (int i = 0; i < 256; i++)
-		{
+		for (int i = 0; i < 256; i++) {
 			if (KeyBuffer[i])	KeyFrame[i]++; // 何か押されたらカウントを増やす
 			else				KeyFrame[i] = 0; // 何も押されてなっかたらカウントを0にする
 		}
@@ -161,14 +159,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		while (GetNowCount() - Time < 17) {}
 		// ５：赤いXボタンを押したらループを抜ける（ウィンドウを閉じたら）
-		if (ProcessMessage()) 
-		{
+		if (ProcessMessage()) {
 			break;
 		}
 
 		// ５：エスケープキーを押したら終了
-		if (CheckHitKey(KEY_INPUT_ESCAPE))
-		{
+		if (CheckHitKey(KEY_INPUT_ESCAPE)) {
 			break;
 		}
 	}
@@ -189,8 +185,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 //	キーが押された瞬間を取得する
 bool PushHitKey(int key)
 {
-	if (KeyFrame[key] == 1)
-	{
+	if (KeyFrame[key] == 1) {
 		return true;
 	}
 	return false;
@@ -200,8 +195,7 @@ bool PushHitKey(int key)
 //	マウスが押されているかを取得する
 bool CheckMouseInput(int button)
 {
-	if (GetMouseInput() & button)
-	{
+	if (GetMouseInput() & button) {
 		return true;
 	}
 	return false;
@@ -211,18 +205,13 @@ bool CheckMouseInput(int button)
 //	マウスが押された瞬間を取得する
 bool PushMouseInput(int button)
 {
-	if (button & MOUSE_INPUT_LEFT) 
-	{
-		if (MouseLeftFrame == 1) 
-		{
+	if (button & MOUSE_INPUT_LEFT) {
+		if (MouseLeftFrame == 1) {
 			return true;
 		}
 	}
-
-	if (button & MOUSE_INPUT_RIGHT)
-	{
-		if (MouseRightFrame == 1)
-		{
+	if (button & MOUSE_INPUT_RIGHT) {
+		if (MouseRightFrame == 1) {
 			return true;
 		}
 	}

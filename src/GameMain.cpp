@@ -1,25 +1,25 @@
 #include "WinMain.h"
-#include "System/Vector3.h"
-#include "System/Vector2.h"
-#include "Hit/Hit.h" // あたり判定
+#include "Vector3.h"
+#include "Vector2.h"
+#include "Hit.h" // あたり判定
 #include "Base.h"
-#include "System/InputPad.h"
-#include "System/Option.h"
+#include "InputPad.h"
+#include "Option.h"
 // キャラクター.h
-#include "Character/Base/Character_Base.h"
-#include "Character/Player.h"
-#include "Character/Ninja.h"
+#include "Character_Base.h"
+#include "Player.h"
+#include "Ninja.h"
 // オブジェクトクラス
-#include "Object/Object.h"
+#include "Object.h"
 // フィールド.h
-#include "Field/Field.h"
+#include "Field.h"
 // カメラ.h
 #include "Camera.h"
 
-#include "Scene/Base/Scene_Base.h"
-#include "Scene/GameScene.h"
-#include "Scene/TitleScene.h"
-#include "Scene/EndScene.h"
+#include "Scene_Base.h"
+#include "GameScene.h"
+#include "TitleScene.h"
+#include "EndScene.h"
 #include "GameMain.h"
 
 Option option;
@@ -29,11 +29,6 @@ Scene_Base* scene;
 TiteleScene titel_scene; // タイトル
 GameScene play_scene;    // ゲームプレイシーン
 EndScene end_scene;      // エンド
-
-
-// 基準の座標となる用の変数を用意
-//FLOAT4 base_pos;
-
 
 
 int scene_num; // 今どのシーン名のを見る用の変数
@@ -47,27 +42,22 @@ enum Scene
 	Scene_Max // シーンの最大数
 };
 
+
+
+
+
 // 初期処理
 void GameInit()
 {
-	// シェーダファイルの読み込み（ＤＸライブラリ用に変換されたファイル）
-	//vertex_shader = LoadVertexShader("shader/SampleVS.vso");//	頂点シェーダー
-	//pixel_shader = LoadPixelShader("shader/SamplePS.pso");	//	ピクセルシェーダー
-
 	// 最初はタイトルシーンから始める
 	scene = new TiteleScene;
 	scene->Init(); // タイトルシーンの初期化
 
 	scene_num = Titele; // 最初はタイトルシーンから始める
+	 
+	option.Init(); 
+	option.option_flag = false; // 最初は開かない
 
-	option.Init();
-	option.m_option_flag = false; // 最初は開かない
-
-	// いったん全部０初期化
-	/*base_pos.x = 0.0f;
-	base_pos.y = 0.0f;
-	base_pos.z = 0.0f;
-	base_pos.w = 0.0f;*/
 }
 
 // 更新処理
@@ -79,8 +69,8 @@ void GameUpdate()
 	{
 	case Titele: // タイトルシーン
 
-		scene->Update(option.m_BGM_Volume, option.m_SE_Volume);
-		if (scene->m_scene_change_judge) {                             // シーンの切り替えの許可が下りれば
+		scene->Update(option.BGM_Volume, option.SE_Volume);
+		if (scene->scene_change_judge) {                             // シーンの切り替えの許可が下りれば
 			scene->Exit();                                           // dekete前に終了処理を回す
 			Scene_Change_Judge(scene_num, Play);                     // シーンの切り替え
 			delete scene;                                            // シーンの切り替えの前にタイトルシーンを初期化
@@ -90,8 +80,8 @@ void GameUpdate()
 		break;
 
 	case Play:  // プレイシーン
-		scene->Update(option.m_BGM_Volume, option.m_SE_Volume);
-		if (scene->m_scene_change_judge) {                              // シーンの切り替えの許可が下りれば
+		scene->Update(option.BGM_Volume, option.SE_Volume);
+		if (scene->scene_change_judge) {                              // シーンの切り替えの許可が下りれば
 			scene->Exit();                                            // dekete前に終了処理を回す
 			Scene_Change_Judge(scene_num, End);  // シーンの切り替え	                                                        
 			delete scene;                                            // シーンの切り替えの前にタイトルシーンを初期化
@@ -100,8 +90,8 @@ void GameUpdate()
 		}
 		break;
 	case End:  // エンドシーン
-		scene->Update(option.m_BGM_Volume, option.m_SE_Volume);
-		if (scene->m_scene_change_judge) {                             // シーンの切り替えの許可が下りれば
+		scene->Update(option.BGM_Volume, option.SE_Volume);
+		if (scene->scene_change_judge) {                             // シーンの切り替えの許可が下りれば
 			scene->Exit();                                           // dekete前に終了処理を回す
 			Scene_Change_Judge(scene_num, Titele);                   // シーンの切り替え
 			delete scene;                                            // シーンの切り替えの前にタイトルシーンを初期化
@@ -111,20 +101,13 @@ void GameUpdate()
 		break;
 	}
 
-	// ３：子の変数の値をシェーダーに渡します
-	//SetPSConstF(25, base_pos);
+
 }
 
 // 描画処理
 void GameDraw()
 {
-	////	シェーダーを使って描画します
-	//MV1SetUseOrigShader(TRUE);
-	////	頂点シェーダーのセット
-	//SetUseVertexShader(vertex_shader);
-	////	ピクセルシェーダーのセット
-	//SetUsePixelShader(pixel_shader);
-
+	
 	scene->Draw(); // 各シーン
 	option.Draw(); // オプション画面
 }
@@ -132,10 +115,8 @@ void GameDraw()
 // 終了処理
 void GameExit()
 {
+
 	scene->Exit();
-//	//	シェーダーファイルの終了処理
-//	DeleteShader(vertex_shader);
-//	DeleteShader(pixel_shader);
 }
 
 
@@ -147,3 +128,5 @@ void Scene_Change_Judge(int& now_scene, const int& next_scene)
 	// 今のシーン番号に次行いたいシーン番号を入れる
 	now_scene = next_scene;
 }
+
+
