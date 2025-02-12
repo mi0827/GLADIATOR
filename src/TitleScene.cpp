@@ -152,10 +152,8 @@ void TiteleScene::Draw()
 	int original_font_size = GetFontSize();
 
 
-	switch (title_scene)
-	{
-	case TITLE:
-	{
+	
+
 		SetFontSize(200); // フォントサイズの変更
 		const char* name = "GLADIATOR";
 		// 描画幅の取得
@@ -169,22 +167,7 @@ void TiteleScene::Draw()
 		DrawString(SCREEN_W / 2 - w / 2 + 7, SCREEN_H / 2 + taile_h + 7, name, GetColor(128, 0, 0)); // 下
 		DrawString(SCREEN_W / 2 - w / 2, SCREEN_H / 2 + taile_h, name, GetColor(255, 0, 0)); // 上
 
-
-	}
-	break;
-
-	case MOVIE:
-
-	{
-	}
-	break;
-	}
-
-
 	
-
-
-
 
 	SetFontSize(100); // フォントサイズの変更
 	//DrawFormatString(16 + 7, 16 + 7, GetColor(0, 128, 128), "START:%02d", count_time); // 下
