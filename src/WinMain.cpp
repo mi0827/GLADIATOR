@@ -91,6 +91,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 	//-----------------------------------------------------------
 
+	// マウスポインタを見えなくする
+	SetMouseDispFlag(FALSE);
 
 	srand(GetNowCount() % RAND_MAX);
 
