@@ -412,7 +412,7 @@ bool IsPadRepeat(PAD_ID pad_id, PAD_NO pad_no)
 	// 各ボタン
 	case PAD_ID::PAD_A:		case PAD_ID::PAD_B:
 	case PAD_ID::PAD_X:		case PAD_ID::PAD_Y:
-	case PAD_ID::PAD_L:		case PAD_ID::PAD_R:
+	case PAD_ID::PAD_L:		    case PAD_ID::PAD_R:
 	case PAD_ID::PAD_START:	case PAD_ID::PAD_BACK:
 	case PAD_ID::PAD_L_PUSH:case PAD_ID::PAD_R_PUSH:
 		return pad_buttons[pad_index][id_index] > 1;

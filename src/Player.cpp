@@ -4,7 +4,7 @@
 #include "Vector2.h"
 #include "SE.h"
 #include "Base.h"
-#include "InputPad.h"
+
 #include "Character_Base.h"
 #include "Effect.h"
 #include "Player.h"
@@ -82,7 +82,6 @@ void Player::Init(int player_num)
 	m_effect_container[SPECIAL2_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/special2.efkefc", 13.0f);  // 必殺技２
 	m_effect_container[WARP_EFFECT] = LoadEffekseerEffect("Data/Model/Player/Effect/warp.efkefc", 1.0f);  // ワープエフェクト
 	// pad_input = GetJoypadInputState(DX_INPUT_PAD3);  // ゲームパッドの読み込み
-
 
 	if (player_num == 0) {
 		m_pos.set(350.0f, 0.0f, 150.0f);           // 初期座標の設定
@@ -228,12 +227,9 @@ void Player::Update(Vector3* camera_rot, int SE_Volume/*, bool status_flag*/)
 			MV1SetAttachAnimTime(m_model, anim_attach[i], anim_frame[i]);  // そのフレームのアニメーションにする
 			MV1SetAttachAnimBlendRate(m_model, anim_attach[i], anim_rate[i]);   // それぞれにアニメーションの割合分再生します
 		}
-
-
 		break;
 
 	case ATTACK_ACTION: // 攻撃アクション
-
 		// アニメーションの再生
 		// 攻撃アニメーション用のフレームカウントを進める
 		attack_anim_frame[attack_anim_pick] += ATTACK_ANIM_SPEED;
